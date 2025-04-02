@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {ArrowRightFromSquare, CircleQuestion, Gear, Sliders} from '@gravity-ui/icons';
+import {ArrowRightFromSquare, CircleQuestion, Gear, Sliders, Persons, ListCheck, Tags} from '@gravity-ui/icons';
 import type {AsideHeaderProps, AsideHeaderTopAlertProps, MenuItem} from '@gravity-ui/navigation';
 import {AsideHeader, FooterItem} from '@gravity-ui/navigation';
 import type {IconData} from '@gravity-ui/uikit';
@@ -171,6 +171,8 @@ export const AsideHeaderAdapter = ({renderContent, superUser, logoIcon}: AsideHe
             {
                 id: 'users',
                 title: i18n('switch_service-users'),
+                icon: Persons,
+                iconSize: ITEMS_NAVIGATION_DEFAULT_SIZE,
                 current: pathname.includes(USERS_PATH),
                 itemWrapper: (params: any, makeItem: any) => {
                     return getLinkWrapper(makeItem(params), USERS_PATH);
@@ -179,6 +181,8 @@ export const AsideHeaderAdapter = ({renderContent, superUser, logoIcon}: AsideHe
             {
                 id: 'projects',
                 title: i18n('switch_service-projects'),
+                icon: ListCheck,
+                iconSize: ITEMS_NAVIGATION_DEFAULT_SIZE,
                 current: pathname.includes(PROJECTS_PATH),
                 itemWrapper: (params: any, makeItem: any) => {
                     return getLinkWrapper(makeItem(params), PROJECTS_PATH);
@@ -187,6 +191,8 @@ export const AsideHeaderAdapter = ({renderContent, superUser, logoIcon}: AsideHe
             {
                 id: 'roles',
                 title: i18n('switch_service-roles'),
+                icon: Tags,
+                iconSize: ITEMS_NAVIGATION_DEFAULT_SIZE,
                 current: pathname.includes(ROLES_PATH),
                 itemWrapper: (params: any, makeItem: any) => {
                     return getLinkWrapper(makeItem(params), ROLES_PATH);

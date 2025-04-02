@@ -32,7 +32,7 @@ export function getChartkitLayoutSettings(
     } else if (chartkitSettings.highcharts.external) {
         const {
             protocol = 'https',
-            domain = 'code.highcharts.com',
+            domain = chartkitSettings.highcharts.domain,
             version,
             modules = [],
         } = chartkitSettings.highcharts;
