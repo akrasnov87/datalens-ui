@@ -37,6 +37,7 @@
   "label_placeholder-name": "Name",
   "label_placeholder-label": "Label",
   "label_ql-auto-execution-chart": "Automatically apply changes",
+  "label_ql-info": "Chart info",
   "label_query": "Query",
   "label_run": "Run",
   "label_select-connection": "Select",

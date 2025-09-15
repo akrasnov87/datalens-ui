@@ -25,6 +25,7 @@ export function groupGalleryItemsByLabels(items: GalleryItemShort[]): GalleryIte
 const CATEGORY_TO_LABEL_TITLE: Record<GalleryItemCategory, string> = {
     [GALLERY_ITEM_CATEGORY.EDITOR]: galleryAllPageI18n('category_editor'),
     [GALLERY_ITEM_CATEGORY.EDUCATION]: galleryAllPageI18n('category_education'),
+    [GALLERY_ITEM_CATEGORY.ENTERTAINMENT]: galleryAllPageI18n('category_entertainment'),
     [GALLERY_ITEM_CATEGORY.FINANCE]: galleryAllPageI18n('category_finance'),
     [GALLERY_ITEM_CATEGORY.GEO]: galleryAllPageI18n('category_geo'),
     [GALLERY_ITEM_CATEGORY.HEALTHCARE]: galleryAllPageI18n('category_healthcare'),
@@ -40,6 +41,9 @@ const CATEGORY_TO_LABEL_TITLE: Record<GalleryItemCategory, string> = {
     [GALLERY_ITEM_CATEGORY.SERVICE]: galleryAllPageI18n('category_service'),
     [GALLERY_ITEM_CATEGORY.SOCIAL]: galleryAllPageI18n('category_social'),
     [GALLERY_ITEM_CATEGORY.SPORTS]: galleryAllPageI18n('category_sports'),
+    [GALLERY_ITEM_CATEGORY.HORECA]: galleryAllPageI18n('category_horeca'),
+    [GALLERY_ITEM_CATEGORY.ENGLISH]: galleryAllPageI18n('category_english'),
+    [GALLERY_ITEM_CATEGORY.TECH]: galleryAllPageI18n('category_tech'),
 };
 
 export function getCategoryLabelTitle(category = '') {

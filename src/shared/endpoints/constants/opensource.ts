@@ -7,7 +7,7 @@ export const opensourceEndpoints = {
             rpc: process.env.NODE_RPC_URL || 'http://localhost:5000',
             biConverter: process.env.BI_FILE_UPLOADER_ENDPOINT || 'http://localhost:8084',
             csvConverter: process.env.BI_FILE_UPLOADER_ENDPOINT || 'http://localhost:8084',
-            metaManager: process.env.META_MANAGER_ENDPOINT || 'http://localhost:3040',
+            metaManager: process.env.META_MANAGER_ENDPOINT || 'http://localhost:3050',
 
             charts: process.env.CHARTS_ENDPOINT || '/',
             uploader: process.env.UI_UPLOADER_ENDPOINT || '/uploader',

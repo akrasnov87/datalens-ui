@@ -25,7 +25,7 @@ npm ci
 npm run dev
 ```
 
-Now you can open datalens in dev mode at [http://localhost:3030](http://localhost:3030)
+Now you can open datalens in dev mode at [http://localhost:8080](http://localhost:8080)
 
 ### Credentials for postgres
 
@@ -135,6 +135,15 @@ git pull upstream main
 }
 </pre>
 
+## Дополнительные зависимости
+
+<pre>
+npm install mkdir-recursive@^0.4.0
+npm install path-to-regexp@^6.2.0
+npm install puppeteer@^23.4.0
+npm install express-openid-connect@^2.19.2
+</pre>
+
 ## Running Puppeteer
 
 На локальном компьютере должен быть установлен `google-chrome-stable`:
@@ -151,6 +160,28 @@ sudo apt-get update \
 Инструкция по запуску в контейнере [тут](https://github.com/puppeteer/puppeteer/blob/main/docs/troubleshooting.md#running-puppeteer-in-docker).
 
 В файле `src\server\controllers\print-entry.ts` указывается путь к `google-chrome-stable`. Для определения этого пути используется команда: `which google-chrome-stable`.
+
+## Ошибка в библиотеке express-openid-connect
+
+При добавлении библиотеки `npm install express-openid-connect` компилятор будет выдвавать ошибку `npm run dev`. Чтобы устранить её была выполнена инструкция:
+
+<pre>
+npm install --save-dev patch-package
+
+## Replace ResponseLike to ResponseLike.Options
+
+## Create a patch:
+
+npx patch-package @types/cacheable-request
+
+# Add to your package.json scripts:
+
+{
+  "scripts": {
+    "postinstall": "patch-package"
+  }
+}
+</pre>
 
 ## Авторы доработки
 

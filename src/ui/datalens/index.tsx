@@ -18,6 +18,7 @@ import {DL} from 'ui/constants';
 import {useClearReloadedQuery} from '../units/auth/hooks/useClearReloadedQuery';
 import {reducer} from 'ui/units/auth/store/reducers';
 import {useIframeRender} from './hooks';
+import {OPEN_SOURCE_INSTALLATION_INFO} from 'ui/constants/navigation';
 
 import {getSdk} from '../libs/schematic-sdk';
 import {
@@ -126,15 +127,25 @@ const DatalensPageView = (props: any) => {
                         />
                     )} */}
 
-                    <Route path="/preview" component={PreviewPage} />
-                    <Route
-                        path={[
-                            '/connections/:id',
-                            '/workbooks/:workbookId/connections/new/:type',
-                            '/workbooks/:workbookId/connections/new',
-                        ]}
-                        component={ConnectionsPage}
-                    />
+                <Route
+                    path={['/workbooks/:workbookId/datasets/new', '/datasets/:id']}
+                    component={DatasetPage}
+                />
+
+                <Route path="/preview" component={PreviewPage} />
+
+                {/* Prevent attempts to create a standalone (outside of workbook) connection */}
+                <Route path={['/connections/new/:type', '/connections/new']}>
+                    <Redirect to={`/collections${location.search}`} />
+                </Route>
+                <Route
+                    path={[
+                        '/connections/:id',
+                        '/workbooks/:workbookId/connections/new/:type',
+                        '/workbooks/:workbookId/connections/new',
+                    ]}
+                    component={ConnectionsPage}
+                />
 
                     <Route path="/settings" component={ServiceSettings} />
 
@@ -202,11 +213,22 @@ const DatalensPage: React.FC = () => {
     useIframeRender();
 
     if (token && showMobileHeader && superUser) {
-        return <MobileHeaderComponent renderContent={() => <DatalensPageView token={token} setToken={setToken} superUser={superUser} setSuperUser={setSuperUser} />} />;
+        return  (
+            <MobileHeaderComponent 
+                renderContent={() => <DatalensPageView token={token} setToken={setToken} superUser={superUser} setSuperUser={setSuperUser} />} 
+                installationInfo={OPEN_SOURCE_INSTALLATION_INFO} 
+            />
+        );
     }
 
     if (token && showAsideHeaderAdapter && superUser) {
-        return <AsideHeaderAdapter superUser={superUser} renderContent={() => <DatalensPageView token={token} setToken={setToken} superUser={superUser} setSuperUser={setSuperUser} />} />;
+        return ( 
+            <AsideHeaderAdapter 
+                superUser={superUser} 
+                renderContent={() => <DatalensPageView token={token} setToken={setToken} superUser={superUser} setSuperUser={setSuperUser} />} 
+                installationInfo={OPEN_SOURCE_INSTALLATION_INFO}
+            />
+        );
     }
 
     if (superUser) {

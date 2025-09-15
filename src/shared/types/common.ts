@@ -140,6 +140,10 @@ export interface DLUser extends DLUserAccount {
     idpType: string | null;
 }
 
+export type TenantSettings = {
+    defaultColorPaletteId?: string;
+};
+
 export type MainLayoutConfigData = {
     intLandingConfigEntryId?: string;
 };
@@ -179,6 +183,7 @@ export type DLGlobalData = {
         features?: Record<string, unknown>;
     };
     userIsOrgAdmin?: boolean;
+    tenantSettings?: TenantSettings;
     allowLanguages?: Language[];
     langRegion?: string;
     widgetMenuGroupConfig?: Array<Array<MenuItemsIds>>;
@@ -212,6 +217,7 @@ export type DLGlobalData = {
     apiPrefix?: string;
     docPathName?: DocPathName;
     chartkitSettings?: ChartkitGlobalSettings;
+    defaultColorPaletteId?: string;
     extraPalettes?: Record<string, Palette>;
     headersMap?: Record<string, string>;
     isZitadelEnabled?: boolean;
@@ -230,9 +236,11 @@ export type DLGlobalData = {
     hideNavigation?: boolean;
     connectorIcons?: ConnectorIconData[];
     releaseVersion?: string;
+    docsUrl?: string;
     isAuthEnabled?: boolean;
     exportDashExcel?: boolean;
     authManageLocalUsersDisabled?: boolean;
+    authSignupDisabled?: boolean;
 } & MainLayoutConfigData;
 
 export type ContactDialogSettings = {
@@ -275,6 +283,12 @@ export enum EntryScope {
     Connection = 'connection',
 }
 
+export interface EntryAnnotation {
+    description?: string;
+}
+
+export type EntryAnnotationArgs = Required<EntryAnnotation>;
+
 export interface Entry {
     entryId: string;
     key: string;
@@ -285,12 +299,17 @@ export interface Entry {
     meta: object;
     workbookId?: string;
     mode?: EntryUpdateMode;
+    annotation?: EntryAnnotation | null;
 }
 
-export type CreateEntryRequest<T = Entry> = Partial<Omit<T, 'entryId'>> &
-    Required<{key: string; data: EntryData}>;
+export type CreateEntryRequest<T = Entry> = Partial<Omit<T, 'entryId' | 'annotation'>> &
+    Required<{key: string; data: EntryData}> & {
+        description?: string;
+    };
 
-export type UpdateEntryRequest<T = Entry> = Omit<T, 'entryId' | 'scope' | 'type'>;
+export type UpdateEntryRequest<T = Entry> = Omit<T, 'entryId' | 'scope' | 'type' | 'annotation'> & {
+    description?: string;
+};
 
 export type EntryData = DashData; // | WidgetData | DatasetData | ConnectionData | FolderData
 
@@ -302,6 +321,7 @@ export interface EntryReadParams {
     includePermissions: string;
     includePermissionsInfo?: string;
     includeLinks: string;
+    includeFavorite?: boolean;
     branch?: string;
 }
 

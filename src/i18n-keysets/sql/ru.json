@@ -37,6 +37,7 @@
   "label_placeholder-name": "Имя",
   "label_placeholder-label": "Описание",
   "label_ql-auto-execution-chart": "Автоматически применять изменения",
+  "label_ql-info": "Информация о чарте",
   "label_query": "Запрос",
   "label_run": "Запустить",
   "label_select-connection": "Выбрать",
