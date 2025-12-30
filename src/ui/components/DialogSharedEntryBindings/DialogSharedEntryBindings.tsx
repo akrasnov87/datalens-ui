@@ -25,8 +25,10 @@ import './DialogSharedEntryBindings.scss';
 
 type DialogSharedEntryBindingsProps = {
     open: boolean;
-    entry: GetEntryResponse;
+    entry: SharedEntry;
     onClose: () => void;
+    isDeleteDialog?: boolean;
+    onDeleteSuccess?: () => void;
 };
 
 export const DIALOG_SHARED_ENTRY_BINDINGS = Symbol('DIALOG_SHARED_ENTRY_BINDINGS');

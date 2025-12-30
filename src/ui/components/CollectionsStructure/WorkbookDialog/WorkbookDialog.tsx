@@ -17,6 +17,16 @@ const b = block('dl-workbook-dialog');
 
 export type WorkbookDialogValues = {
     title: string;
+    project: string;
+    description: string;
+};
+
+type WorkbookDialogErrors = Partial<Record<keyof WorkbookDialogValues, string>>;
+
+export type Props = {
+    values: WorkbookDialogValues;
+    errors?: WorkbookDialogErrors;
+    title: string;
     project: string | undefined;
     description: string;
 };

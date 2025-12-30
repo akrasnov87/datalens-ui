@@ -75,6 +75,9 @@ export const Settings: React.FC<SettingsProps> = ({
     }, []);
 
     const onChangeTitle = (inputTitle: string) => {
+        updateTitleInputWidth(inputTitle);
+
+    const onChangeTitle = (inputTitle: string) => {
         const errorMessageKey = getErrorMessageKey([DUPLICATE_TITLE, EMPTY_TITLE], errors);
         let errorUpdates;
 

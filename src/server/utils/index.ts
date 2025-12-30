@@ -8,6 +8,7 @@ import axios from 'axios';
 import pick from 'lodash/pick';
 
 import {
+    AUDIT_MODE_HEADER,
     AuthHeader,
     DL_CONTEXT_HEADER,
     FORWARDED_FOR_HEADER,
@@ -121,6 +122,25 @@ class Utils {
                 AuthHeader.Authorization,
                 headersMap.subjectToken,
                 PUBLIC_API_VERSION_HEADER,
+            ]),
+            ...Utils.pickForwardHeaders(req.headers),
+            [TENANT_ID_HEADER]: tenantId,
+            [REQUEST_SOURCE_HEADER]: RequestSourceHeaderValue.PublicApi,
+        };
+    }
+
+    static pickPublicApiHeaders(req: Request) {
+        const headersMap = req.ctx.config.headersMap;
+
+        const orgId = req.headers[PUBLIC_API_ORG_ID_HEADER];
+        const tenantId = orgId && !Array.isArray(orgId) ? makeTenantIdFromOrgId(orgId) : undefined;
+
+        return {
+            ...pick(req.headers, [
+                AuthHeader.Authorization,
+                headersMap.subjectToken,
+                PUBLIC_API_VERSION_HEADER,
+                AUDIT_MODE_HEADER,
             ]),
             ...Utils.pickForwardHeaders(req.headers),
             [TENANT_ID_HEADER]: tenantId,

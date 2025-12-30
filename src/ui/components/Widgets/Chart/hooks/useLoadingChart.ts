@@ -22,7 +22,6 @@ import {START_PAGE} from '../../../../libs/DatalensChartkit/ChartKit/components/
 import type {
     ChartKitWrapperLoadError,
     ChartKitWrapperLoadStatusUnknown,
-    ChartKitWrapperLoadSuccess,
 } from '../../../../libs/DatalensChartkit/components/ChartKitBase/types';
 import type {ChartsProps} from '../../../../libs/DatalensChartkit/modules/data-provider/charts';
 import DatalensChartkitCustomError, {
@@ -436,6 +435,7 @@ export const useLoadingChart = (props: LoadingChartHookProps) => {
                     requestCancellationRef.current[requestId]?.requestCancellation ||
                     dataProvider.getRequestCancellation(),
                 ...(requestHeadersGetter ? {contextHeaders: requestHeadersGetter()} : {}),
+                widgetElement: rootNodeRef.current ?? undefined,
             });
 
             const isCanceled = requestCancellationRef.current?.[requestId]?.status === 'canceled';
@@ -474,7 +474,7 @@ export const useLoadingChart = (props: LoadingChartHookProps) => {
                 data: {
                     loadedData: loadedWidgetData,
                 },
-            } as ChartKitWrapperLoadSuccess);
+            });
 
             // order is important for updateHighchartsConfig from editor
             dispatch({type: WIDGET_CHART_SET_LOADED_DATA, payload: loadedWidgetData});
@@ -709,7 +709,7 @@ export const useLoadingChart = (props: LoadingChartHookProps) => {
                         widgetData: renderedData.widget || null,
                         loadedData, // for ChartStats
                     },
-                } as ChartKitWrapperLoadSuccess,
+                },
                 dataProvider,
             );
         },

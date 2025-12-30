@@ -1,9 +1,10 @@
 import {UserRole} from 'shared/components/auth/constants/role';
+import {isNotAuthenticatedError} from 'ui/utils/errorContentTypes';
+
 import type {LineShapeType} from '../../shared';
 import {
     AppEnvironment,
     DeviceType,
-    ErrorContentTypes,
     FALLBACK_LANGUAGES,
     GRADIENT_PALETTES,
     GradientType,
@@ -166,11 +167,7 @@ export const DL = {
         return window.DL.landingPageSettings;
     },
     get IS_NOT_AUTHENTICATED() {
-        return (
-            this.LANDING_PAGE_ERROR_TYPE === ErrorContentTypes.NOT_AUTHENTICATED ||
-            this.LANDING_PAGE_ERROR_TYPE === ErrorContentTypes.NOT_AUTHENTICATED_GALLERY ||
-            this.LANDING_PAGE_ERROR_TYPE === ErrorContentTypes.NOT_AUTHENTICATED_FESTIVAL
-        );
+        return isNotAuthenticatedError(this.LANDING_PAGE_ERROR_TYPE);
     },
     get PUSH_SERVICE_CONFIG() {
         return window.DL.push;
@@ -315,7 +312,9 @@ export const DATALENS_DARK_THEME_MONACO = 'vs-dark-datalens';
 export const DATALENS_DARK_HC_THEME_MONACO = 'vs-dark-hc-datalens';
 
 export const PRODUCT_NAME = 'DataLens';
+// TODO: remove CHARTS-11919
 export const REBRANDING_PRODUCT_NAME = `Yandex ${PRODUCT_NAME}`;
+export const FULL_PRODUCT_NAME = `Yandex ${PRODUCT_NAME}`;
 
 export const URL_OPTIONS = {
     THEME: '_theme',
@@ -382,6 +381,7 @@ export const URL_QUERY = {
     OPEN_DASH_INFO: '_opened_info',
     UNRELEASED: 'unreleased',
     LOCAL_CONFIG: '_use_local_config',
+    BINDED_WOKRBOOK: 'bindedWorkbookId',
 };
 
 const GRADIENT_ICONS = {

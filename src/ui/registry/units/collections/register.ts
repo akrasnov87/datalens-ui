@@ -1,3 +1,5 @@
+import {useCreateWorkbookDialogHandlers} from 'ui/units/collections/components/CollectionPage/hooks/useCreateWorkbookDialogHandlers';
+
 import {
     customizeCollectionsActions,
     customizeEmptyPlaceholder,
@@ -13,6 +15,6 @@ export const registerCollectionsPlugins = () => {
         customizeCollectionsActions,
         customizeEmptyPlaceholder,
         customizeNoCreatePermissionDialog,
-        getPublicGalleryEntry,
+        useCreateWorkbookDialogHandlers,
     });
 };

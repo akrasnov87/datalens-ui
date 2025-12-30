@@ -7,7 +7,8 @@ import type {
     StringParams,
     TenantSettings,
 } from '../../../../../shared';
-import {getServerFeatures} from '../../../../../shared';
+import {getFieldUISettings, getServerFeatures} from '../../../../../shared';
+import type {SourceRequests} from '../../../../modes/charts/plugins/datalens/url/types';
 import {addColorPaletteRequest} from '../../../../modes/charts/plugins/helpers/color-palettes';
 import {registry} from '../../../../registry';
 import {getDefaultColorPaletteId} from '../utils';
@@ -133,6 +134,32 @@ export const getWizardChartBuilder = async (
                 executionTiming: process.hrtime(timeStart),
                 name: 'Sources',
                 ...execResult,
+            };
+        },
+
+        buildPaletteSources: async (options) => {
+            const {sources = {}} = options;
+            const timeStart = process.hrtime();
+
+            const result: SourceRequests = {};
+
+            addColorPaletteRequest({result, colorPaletteId: defaultColorPaletteId, palettes});
+            Object.values(sources).forEach((s) => {
+                return (s.datasetFields ?? []).forEach((d) => {
+                    const uiSettings = getFieldUISettings({field: d});
+                    const palette = uiSettings?.palette;
+
+                    if (palette) {
+                        addColorPaletteRequest({result, colorPaletteId: palette, palettes});
+                    }
+                });
+            });
+
+            return {
+                exports: result,
+                executionTiming: process.hrtime(timeStart),
+                name: 'PaletteSources',
+                runtimeMetadata: {},
             };
         },
 

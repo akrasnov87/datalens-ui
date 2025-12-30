@@ -66,6 +66,8 @@ export interface SharedAppConfig {
                 editor: string;
                 viewer: string;
                 limitedViewer?: string;
+                entryBindingCreator?: string;
+                limitedEntryBindingCreator?: string;
             };
         };
         workbook: {
@@ -74,6 +76,16 @@ export interface SharedAppConfig {
                 editor: string;
                 viewer: string;
                 limitedViewer?: string;
+            };
+        };
+        sharedEntry: {
+            roles: {
+                admin: string;
+                editor: string;
+                viewer: string;
+                limitedViewer?: string;
+                entryBindingCreator?: string;
+                limitedEntryBindingCreator?: string;
             };
         };
     };

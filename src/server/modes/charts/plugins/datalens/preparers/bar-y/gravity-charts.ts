@@ -15,18 +15,21 @@ import {
 import type {ExtendedChartData} from '../../../../../../../shared/types/chartkit';
 import {getBaseChartConfig} from '../../gravity-charts/utils';
 import {getFieldFormatOptions} from '../../gravity-charts/utils/format';
-import type {ColorValue} from '../../utils/color-helpers';
 import {colorizeByColorValues} from '../../utils/color-helpers';
 import {getExportColumnSettings} from '../../utils/export-helpers';
 import {getAxisFormatting} from '../helpers/axis';
 import {getLegendColorScale, shouldUseGradientLegend} from '../helpers/legend';
 import type {PrepareFunctionArgs} from '../types';
-import {mapToGravityChartValueFormat} from '../utils';
+import {
+    mapChartkitFormatSettingsToGravityChartValueFormat,
+    mapToGravityChartValueFormat,
+} from '../utils';
 
 import {prepareBarYData} from './prepare-bar-y-data';
 
 type BarYPoint = {x: number; y: number} & Record<string, unknown>;
 
+// eslint-disable-next-line complexity
 export function prepareGravityChartsBarY(args: PrepareFunctionArgs): ChartData {
     const {shared, visualizationId, colors, colorsConfig, labels, placeholders} = args;
     const {graphs, categories} = prepareBarYData(args);
@@ -64,9 +67,15 @@ export function prepareGravityChartsBarY(args: PrepareFunctionArgs): ChartData {
         s.data.some((d: any) => !d.color && d.colorValue),
     );
     if (shouldSetColorByValues) {
-        const colorValues = graphs
-            .map((s) => s.data.map((point: any) => Number(point.colorValue) as ColorValue))
-            .flat(2);
+        const colorValues: number[] = [];
+        graphs.forEach((s) => {
+            s.data.forEach((d: any) => {
+                const colorValue = Number(d.colorValue);
+                if (Number.isFinite(colorValue)) {
+                    colorValues.push(colorValue);
+                }
+            });
+        });
 
         const gradientColors = colorizeByColorValues({colorsConfig, colorValues});
 
@@ -118,6 +127,13 @@ export function prepareGravityChartsBarY(args: PrepareFunctionArgs): ChartData {
                 html: shouldUseHtmlForLabels,
                 format: labelFormatting,
             },
+            tooltip: graph.tooltip?.chartKitFormatting
+                ? {
+                      valueFormat: mapChartkitFormatSettingsToGravityChartValueFormat({
+                          chartkitFormatSettings: graph.tooltip,
+                      }),
+                  }
+                : undefined,
             custom: {
                 ...graph.custom,
                 colorValue: graph.colorValue,
@@ -133,6 +149,7 @@ export function prepareGravityChartsBarY(args: PrepareFunctionArgs): ChartData {
               visualizationId,
           })
         : undefined;
+    const xAxisType = xPlaceholder?.settings?.type === 'logarithmic' ? 'logarithmic' : 'linear';
 
     const config: ExtendedChartData = {
         series: {
@@ -145,7 +162,7 @@ export function prepareGravityChartsBarY(args: PrepareFunctionArgs): ChartData {
             },
         },
         xAxis: {
-            type: 'linear',
+            type: xAxisType,
             labels: {
                 numberFormat: xAxisLabelNumberFormat ?? undefined,
             },
@@ -174,8 +191,13 @@ export function prepareGravityChartsBarY(args: PrepareFunctionArgs): ChartData {
             title: {text: getFakeTitleOrTitle(colorItem), style: {fontWeight: '500'}},
             colorScale,
         };
-    } else if (graphs.length <= 1) {
-        config.legend = {enabled: false};
+    } else {
+        const shouldUseHtmlForLegend = isHtmlField(colorItem);
+        config.legend = {html: shouldUseHtmlForLegend};
+
+        if (graphs.length <= 1) {
+            config.legend.enabled = false;
+        }
     }
 
     if (xField) {

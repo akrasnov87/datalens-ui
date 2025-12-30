@@ -5,6 +5,7 @@ import {Button, Icon, List, Loader, Select, TextInput} from '@gravity-ui/uikit';
 import block from 'bem-cn-lite';
 import debounce from 'lodash/debounce';
 import {useDispatch, useSelector} from 'react-redux';
+import type {BaseSource} from 'shared/schema';
 import {openDialogErrorWithTabs} from 'store/actions/dialog';
 import {usePrevious} from 'ui';
 
@@ -44,7 +45,7 @@ type ErrorViewProps = {
 };
 
 type SourcesTableProps = {
-    onEdit: (source: DatasetSource) => void;
+    onEdit: (source: BaseSource) => void;
     onAdd: () => void;
     onDelete: (props: {id: string}) => void;
     onRetry: () => void;
@@ -54,6 +55,7 @@ type SourcesTableProps = {
     dragDisabled?: boolean;
     dropDisabled?: boolean;
     allowAddSource?: boolean;
+    readonly: boolean;
 };
 
 const b = block('select-sources-prototypes');
@@ -123,6 +125,7 @@ export const SourcesTable: React.FC<SourcesTableProps> = ({
     onAdd,
     onDelete,
     onRetry,
+    readonly,
 }) => {
     const [search, setSearch] = React.useState('');
     const searchInputRef = React.useRef<HTMLInputElement>(null);
@@ -257,8 +260,9 @@ export const SourcesTable: React.FC<SourcesTableProps> = ({
                         loading={serverPagination && !sourcesPagination.isFinished && !sourcesError}
                         renderItem={(source) => (
                             <SourceWithDragging
-                                dragDisabled={dragDisabled}
-                                dropDisabled={dropDisabled}
+                                readonly={readonly}
+                                dragDisabled={dragDisabled || readonly}
+                                dropDisabled={dropDisabled || readonly}
                                 avatar={source}
                                 onClickEditBtn={onEdit}
                                 onDeleteSource={onDelete}

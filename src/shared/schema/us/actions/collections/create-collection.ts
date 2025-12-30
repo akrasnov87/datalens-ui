@@ -23,8 +23,8 @@ export const createCollection = createTypedAction(
     {
         method: 'POST',
         path: () => '/v1/collections',
-        params: ({title, project, description, parentId}, headers) => ({
-            body: {title, project, description, parentId},
+        params: ({title, description, parentId}, headers) => ({
+            body: {title, description, parentId},
             headers,
         }),
     },

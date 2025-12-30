@@ -92,7 +92,7 @@ docker build -t akrasnov87/datalens-ui:0.2864.1 .
 docker push akrasnov87/datalens-ui:0.2864.1
 </pre>
 
-Для сборки так же можно вызвать команду `npm run build:image` (предварительно проверить, что для файла `build.sh` есть права на выполнение `chmod +X build.sh`)
+Для сборки так же можно вызвать команду `npm run build:image` (предварительно проверить, что для файла `build.sh` есть права на выполнение `chmod +x build.sh`)
 
 ## Тестирование
 

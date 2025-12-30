@@ -120,7 +120,6 @@ export const useCreateConnectionHandler = (props: UseCreateConnectionHandlerProp
             hasCollectionIdInParams,
             openCreationDialog,
             openCreateEntryInWorkbookDialog,
-            openCreateEntryInCollectionDialog,
         ],
     );
 

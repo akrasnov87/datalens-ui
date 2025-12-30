@@ -25,16 +25,17 @@ import { DIALOG_ASSIGN_CLAIMS } from 'ui/components/OpenDialogAssignClaims/OpenD
 
 const i18n = I18n.keyset('new-workbooks');
 
-type RowProps = {
-    item: WorkbookEntry;
+type RowProps<T extends WorkbookEntry> = {
+    item: T;
     workbook: WorkbookWithPermissions;
     isOpen?: boolean;
-    onRenameEntry: (data: WorkbookEntry) => void;
-    onDeleteEntry: (data: WorkbookEntry) => void;
-    onDuplicateEntry: (data: WorkbookEntry) => void;
-    onCopyEntry: (data: WorkbookEntry) => void;
-    onShowRelatedClick: (data: WorkbookEntry) => void;
-    onCopyId?: (data: WorkbookEntry) => void;
+    onRenameEntry?: (data: T) => void;
+    onDeleteEntry?: (data: T) => void;
+    onDuplicateEntry?: (data: T) => void;
+    onCopyEntry?: (data: T) => void;
+    onShowRelatedClick?: (data: T) => void;
+    onCopyId?: (data: T) => void;
+    onUpdateSharedEntryBindings?: (data: T) => void;
 };
 
 const onClickStopPropogation: React.MouseEventHandler = (e) => {
@@ -44,7 +45,7 @@ const onClickStopPropogation: React.MouseEventHandler = (e) => {
 
 const b = block('dl-content-row');
 
-const Row: React.FC<RowProps> = ({
+const Row = <T extends WorkbookEntry>({
     item,
     workbook,
     onRenameEntry,
@@ -53,13 +54,15 @@ const Row: React.FC<RowProps> = ({
     onCopyEntry,
     onShowRelatedClick,
     onCopyId,
-}) => {
+    onUpdateSharedEntryBindings,
+}: RowProps<T>) => {
     const {getWorkbookEntryUrl} = registry.workbooks.functions.getAll();
+    const {WorkbookTableRowExtendedContent} = registry.workbooks.components.getAll();
     const {getLoginById} = registry.common.functions.getAll();
-
     const dispatch: AppDispatch = useDispatch();
+    const isSharedEntry = Boolean(item.collectionId);
 
-    const url = getWorkbookEntryUrl(item, workbook);
+    const url = getWorkbookEntryUrl(item, workbook, isSharedEntry);
 
     const LoginById = getLoginById();
 
@@ -135,6 +138,13 @@ const Row: React.FC<RowProps> = ({
                     >
                         {item.name}
                     </div>
+                    <WorkbookTableRowExtendedContent
+                        item={item}
+                        workbook={workbook}
+                        onUpdateSharedEntryBindings={
+                            onUpdateSharedEntryBindings && (() => onUpdateSharedEntryBindings(item))
+                        }
+                    />
                 </div>
             </div>
             <div className={b('content-cell', {author: true})}>
@@ -164,27 +174,21 @@ const Row: React.FC<RowProps> = ({
                             <EntryActions
                                 workbook={workbook}
                                 entry={item}
-                                onAssignClaims={() => {
-                                    onAssignClaims(item);
-                                }}
-                                onRenameClick={() => {
-                                    onRenameEntry(item);
-                                }}
-                                onDeleteClick={() => {
-                                    onDeleteEntry(item);
-                                }}
-                                onDuplicateEntry={() => {
-                                    onDuplicateEntry(item);
-                                }}
-                                onCopyEntry={() => {
-                                    onCopyEntry(item);
-                                }}
-                                onShowRelatedClick={() => {
-                                    onShowRelatedClick(item);
-                                }}
-                                onCopyId={() => {
-                                    onCopyId?.(item);
-                                }}
+                                onAssignClaims={onAssignClaims && (() => onAssignClaims(item))}
+                                onRenameClick={onRenameEntry && (() => onRenameEntry(item))}
+                                onDeleteClick={onDeleteEntry && (() => onDeleteEntry(item))}
+                                onDuplicateEntry={
+                                    onDuplicateEntry && (() => onDuplicateEntry(item))
+                                }
+                                onCopyEntry={onCopyEntry && (() => onCopyEntry(item))}
+                                onShowRelatedClick={
+                                    onShowRelatedClick && (() => onShowRelatedClick(item))
+                                }
+                                onCopyId={onCopyId && (() => onCopyId(item))}
+                                onUpdateSharedEntryBindings={
+                                    onUpdateSharedEntryBindings &&
+                                    (() => onUpdateSharedEntryBindings(item))
+                                }
                             />
                         </div>
                     )}

@@ -58,8 +58,7 @@ export function canUseStringAsMarkdown(
             ];
             return placeholderId && possiblePlaceholders.includes(placeholderId);
         }
-        case WizardVisualizationId.Treemap:
-        case WizardVisualizationId.TreemapD3: {
+        case WizardVisualizationId.Treemap: {
             const possiblePlaceholders: PlaceholderId[] = [PlaceholderId.Dimensions];
             return placeholderId && possiblePlaceholders.includes(placeholderId);
         }
@@ -94,10 +93,7 @@ export function canUseStringAsMarkdown(
 }
 
 // eslint-disable-next-line complexity
-export function canUseStringAsHtml(
-    visualizationId: WizardVisualizationId,
-    placeholderId?: PlaceholderId,
-) {
+export function canUseStringAsHtml(visualizationId: WizardVisualizationId) {
     switch (visualizationId) {
         case WizardVisualizationId.Scatter:
         case WizardVisualizationId.Treemap:

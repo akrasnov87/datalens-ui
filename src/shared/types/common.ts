@@ -196,6 +196,8 @@ export type DLGlobalData = {
                 editor: string;
                 viewer: string;
                 limitedViewer?: string;
+                entryBindingCreator?: string;
+                limitedEntryBindingCreator?: string;
             };
         };
         workbook: {
@@ -204,6 +206,16 @@ export type DLGlobalData = {
                 editor: string;
                 viewer: string;
                 limitedViewer?: string;
+            };
+        };
+        sharedEntry: {
+            roles: {
+                admin: string;
+                editor: string;
+                viewer: string;
+                limitedViewer?: string;
+                entryBindingCreator?: string;
+                limitedEntryBindingCreator?: string;
             };
         };
     };
@@ -282,6 +294,12 @@ export enum EntryScope {
     Folder = 'folder',
     Connection = 'connection',
 }
+export type SharedScope = EntryScope.Dataset | EntryScope.Connection;
+export interface EntryAnnotation {
+    description?: string;
+}
+
+export type EntryAnnotationArgs = Required<EntryAnnotation>;
 
 export interface EntryAnnotation {
     description?: string;

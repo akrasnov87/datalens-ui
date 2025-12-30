@@ -8,7 +8,6 @@ import {
     Icon,
     Loader,
     SegmentedRadioGroup as RadioButton,
-    Card
 } from '@gravity-ui/uikit';
 import block from 'bem-cn-lite';
 import {I18n} from 'i18n';
