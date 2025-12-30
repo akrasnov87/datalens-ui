@@ -57,29 +57,6 @@ const SORT_TYPE_VALUES: OrderByOptions<SortType, OrderWorkbookEntriesField, Orde
     },
 };
 
-const SORT_TYPE_VALUES: OrderByOptions<SortType, OrderWorkbookEntriesField, OrderDirection> = {
-    [SORT_TYPE.FIRST_NEW]: {
-        field: 'createdAt',
-        direction: 'desc',
-        content: i18n('new-workbooks.table-filters', 'label_sort-first-new'),
-    },
-    [SORT_TYPE.FIRST_OLD]: {
-        field: 'createdAt',
-        direction: 'asc',
-        content: i18n('new-workbooks.table-filters', 'label_sort-first-old'),
-    },
-    [SORT_TYPE.ALPHABET_ASC]: {
-        field: 'name',
-        direction: 'asc',
-        content: i18n('new-workbooks.table-filters', 'label_sort-first-alphabet-asc'),
-    },
-    [SORT_TYPE.ALPHABET_DESC]: {
-        field: 'name',
-        direction: 'desc',
-        content: i18n('new-workbooks.table-filters', 'label_sort-first-alphabet-desc'),
-    },
-};
-
 const ROW_HEIGHT = 40;
 
 type Props = {

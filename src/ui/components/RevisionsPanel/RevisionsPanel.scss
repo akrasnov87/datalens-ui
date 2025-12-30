@@ -29,10 +29,6 @@
         .gn-aside-header__pane-top_opened + div & {
             top: calc(var(--dl-revision-panel-top-offset) + var(--gn-aside-top-panel-height));
         }
-
-        .gn-aside-header__pane-top_opened + div & {
-            top: calc(#{$actionPanelHeight} + var(--gn-aside-top-panel-height));
-        }
     }
 
     &__text {

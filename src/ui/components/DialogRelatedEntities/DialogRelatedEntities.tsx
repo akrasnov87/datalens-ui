@@ -8,6 +8,7 @@ import {
     Icon,
     Loader,
     SegmentedRadioGroup as RadioButton,
+    Card
 } from '@gravity-ui/uikit';
 import block from 'bem-cn-lite';
 import {I18n} from 'i18n';
@@ -109,7 +110,7 @@ export const DialogRelatedEntities = ({onClose, visible, entry}: DialogRelatedEn
     const [accesses, setAccesses] = React.useState<any>([]);
     const {DialogRelatedEntitiesRadioHint} = registry.common.components.getAll();
     const {renderDialogRelatedEntitiesAlertHint} = registry.common.functions.getAll();
-
+    
     let selectedRelationCount = 0;
     for (const updatedEntry in updatedEntities) {
         if (updatedEntities[updatedEntry]) {
@@ -185,7 +186,7 @@ export const DialogRelatedEntities = ({onClose, visible, entry}: DialogRelatedEn
     const handleClose = () => {
         onClose({status: EntryDialogResolveStatus.Close});
     };
-    
+
     const handleApply = () => {
         const accessesObj:any = {};
         accesses.forEach((access: any) => {
@@ -336,7 +337,7 @@ export const DialogRelatedEntities = ({onClose, visible, entry}: DialogRelatedEn
                         />
                     </div>
                 )}
-                <div className={b('list')}>{renderRelations()}</div>
+                                <div className={b('list')}>{renderRelations()}</div>
                 {showRelationsCount && (<div>
                     <div
                         className={b('relations-count')}

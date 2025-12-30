@@ -64,7 +64,7 @@ export const EntryActions = ({
             text: <DropdownAction icon={FontCursor} text={i18n('action_rename')} />,
         });
     }
-
+    
     if(onAssignClaims) {
         items.push({
             action: onAssignClaims,

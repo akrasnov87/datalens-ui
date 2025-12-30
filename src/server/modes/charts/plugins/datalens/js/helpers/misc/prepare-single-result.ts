@@ -8,9 +8,7 @@ import type {
     ServerVisualization,
     ServerVisualizationLayer,
 } from '../../../../../../../../shared';
-
 import common from '../../../../../../../configs/common';
-
 import {WizardVisualizationId, isMonitoringOrPrometheusChart} from '../../../../../../../../shared';
 import {prepareGravityChartArea} from '../../../preparers/area';
 import prepareBackendPivotTableData from '../../../preparers/backend-pivot-table';

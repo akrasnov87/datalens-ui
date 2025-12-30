@@ -138,7 +138,6 @@ export function prepareGravityChartsBarY(args: PrepareFunctionArgs): ChartData {
                 ...graph.custom,
                 colorValue: graph.colorValue,
                 exportSettings,
-                oldDataLabels: graph.dataLabels,
             },
         } as BarYSeries;
     });

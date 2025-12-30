@@ -53,11 +53,7 @@ class ColorPaletteEditorContainer extends React.Component<ColorPaletteEditorProp
     }
 
     render() {
-        const {
-            colorPalettes,
-            condensed,
-            hasEditRights = true,
-        } = this.props;
+        const {colorPalettes, condensed, hasEditRights = true} = this.props;
 
         return (
             <div className={b()}>

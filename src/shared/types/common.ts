@@ -301,17 +301,11 @@ export interface EntryAnnotation {
 
 export type EntryAnnotationArgs = Required<EntryAnnotation>;
 
-export interface EntryAnnotation {
-    description?: string;
-}
-
-export type EntryAnnotationArgs = Required<EntryAnnotation>;
-
 export interface Entry {
     entryId: string;
     key: string;
     scope: EntryScope;
-    type: EntryType | string;
+    type: EntryType;
     data: EntryData;
     links: Dictionary<string>;
     meta: object;

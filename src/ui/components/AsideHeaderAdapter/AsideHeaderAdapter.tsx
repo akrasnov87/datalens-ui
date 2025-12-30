@@ -31,7 +31,6 @@ import {ASIDE_HEADER_LOGO_ICON_SIZE} from './constants';
 
 import iconCollection from '../../assets/icons/mono-collection.svg';
 import defaultLogoIcon from '../../assets/icons/os-logo.svg';
-import rebrandingLogoIcon from '../../assets/icons/os-logo.svg';
 
 import './AsideHeaderAdapter.scss';
 import { getSdk } from 'ui/libs/schematic-sdk';
@@ -217,9 +216,9 @@ export const AsideHeaderAdapter = ({
                 id: Panel.Settings,
                 content: <SettingsPanel />,
                 visible: visiblePanel === Panel.Settings,
-            }
+            },
         ],
-        [visiblePanel]
+        [visiblePanel],
     );
 
     const getReliaseVersionWrapper = React.useCallback(
@@ -252,8 +251,6 @@ export const AsideHeaderAdapter = ({
     const handleClosePopup = React.useCallback(() => {
         setCurrentPopup(null);
     }, []);
-
-    const isRebrandingEnabled = isEnabledFeature(Feature.EnableDLRebranding);
 
     const renderFooter = () => {
         return (
@@ -377,8 +374,6 @@ export const AsideHeaderAdapter = ({
             </React.Fragment>
         );
     };
-
-    const defaultLogo = isRebrandingEnabled ? rebrandingLogoIcon : defaultLogoIcon;
 
     return (
         <AsideHeader

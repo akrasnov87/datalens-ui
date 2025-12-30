@@ -17,7 +17,7 @@ import {getLegendColorScale} from '../helpers/legend';
 import type {PiePoint, PrepareFunctionArgs} from '../types';
 
 import preparePieData from './prepare-pie-data';
-import {getFormattedValue, isColoringByMeasure, isDonut} from './utils';
+import {getFormattedValue, isColoringByMeasure} from './utils';
 
 type ExtendedPieSeriesData = Omit<PieSeriesData, 'label'> & {
     drillDownFilterValue?: string;

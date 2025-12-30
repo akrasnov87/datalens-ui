@@ -117,9 +117,6 @@ class EntryPanel extends React.Component<Props, State> {
         } else if (collectionId) {
             this.props.actions.addCollectionBreadcrumbs({collectionId});
         }
-        if (collectionId) {
-            this.props.actions.getCollectionBreadcrumbs({collectionId});
-        }
     }
 
     componentDidUpdate(prevProps: Props) {
@@ -136,10 +133,6 @@ class EntryPanel extends React.Component<Props, State> {
 
         if (prevWorkbookId && !workbookId) {
             this.props.actions.resetWorkbookPermissions();
-        }
-
-        if (prevCollectionId !== collectionId && collectionId) {
-            this.props.actions.getCollectionBreadcrumbs({collectionId});
         }
     }
 

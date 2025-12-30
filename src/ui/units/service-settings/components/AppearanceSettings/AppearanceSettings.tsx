@@ -23,7 +23,6 @@ type AppearanceSettingsProps = {
 
 const AppearanceSettings = ({customSettings, disablePalettesEdit}: AppearanceSettingsProps) => {
     const isTabContent = DL.AUTH_ENABLED && DL.IS_NATIVE_AUTH_ADMIN;
-    const isDefaultPaletteControlAvailable = isEnabledFeature(Feature.EnableTenantSettingPalettes);
 
     return (
         <section className={b()}>
@@ -39,7 +38,6 @@ const AppearanceSettings = ({customSettings, disablePalettesEdit}: AppearanceSet
                     <ColorPaletteEditorContainer
                         condensed={true}
                         hasEditRights={!disablePalettesEdit}
-                        enableDefaultColorPalette={isDefaultPaletteControlAvailable}
                     />
                 </SectionGroup>
                 {customSettings}

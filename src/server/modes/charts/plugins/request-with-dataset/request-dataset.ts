@@ -65,8 +65,7 @@ const getDatasetFieldsById = async ({
             ? await requestDatasetFieldsByToken({
                   ctx,
                   headers,
-                  //requestId: headers['x-request-id'] ? headers['x-request-id']: req.id,
-                  requestId: headers['x-request-id']?.toString() || ctx.get(REQUEST_ID_PARAM_NAME) || '',
+                  requestId: ctx.get(REQUEST_ID_PARAM_NAME) || '',
                   args: {
                       dataSetId: datasetId,
                   },
@@ -74,8 +73,7 @@ const getDatasetFieldsById = async ({
             : await requestDatasetFields({
                   ctx: ctx,
                   headers,
-                  //requestId: headers['x-request-id'] ? headers['x-request-id']: req.id,
-                  requestId: headers['x-request-id']?.toString() || ctx.get(REQUEST_ID_PARAM_NAME) || '',
+                  requestId: ctx.get(REQUEST_ID_PARAM_NAME) || '',
                   authArgs: {iamToken},
                   args: {
                       dataSetId: datasetId,

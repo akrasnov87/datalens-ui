@@ -341,7 +341,7 @@ export const useActions = ({fetchStructureItems, onCloseMoveDialog}: UseActionsA
                 });
             }
 
-            if (item.permissions.listAccessBindings) {
+                        if (item.permissions.listAccessBindings) {
                 actions.push({
                     text: <DropdownAction icon={LockOpen} text={i18n('action_access')} />,
                     action: () => {

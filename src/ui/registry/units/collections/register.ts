@@ -5,7 +5,6 @@ import {
     customizeEmptyPlaceholder,
     customizeNoCreatePermissionDialog,
     customizeWorkbooksActions,
-    getPublicGalleryEntry,
 } from '../../../units/collections/components/CollectionContent/utils';
 import {registry} from '../../index';
 

@@ -281,4 +281,3 @@ export const sortDescriptionColumn = (
 export const isHiddenSupported = (row: DatasetField) => {
     return row.initial_data_type !== DATASET_FIELD_TYPES.UNSUPPORTED;
 };
-

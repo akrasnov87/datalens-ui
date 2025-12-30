@@ -25,13 +25,4 @@
             color: var(--g-color-text-link-hover);
         }
     }
-
-    &_rebranding {
-        background-color: unset;
-
-        #{$class}__form-container {
-            border-radius: 32px;
-            box-shadow: 0 30px 100px 0 rgba(0, 0, 0, 0.25);
-        }
-    }
 }

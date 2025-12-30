@@ -174,7 +174,7 @@ export default class Utils {
         window.sdk = getSdk().sdk;
     }
 
-    static setRpcAuthorization() {
+        static setRpcAuthorization() {
         var loc:any = document.location;
         let params = (new URL(loc)).searchParams;
         let token:any = params.get("x-rpc-authorization");

@@ -274,11 +274,6 @@ export const DL = {
     get OIDC_NAME_4() {
         return window.DL.oidc_name_4 || 'OIDC';
     },
-    // TODO: delete
-    // get RUN_ENDPOINT() {
-    //     return window.DL.runEndpoint || '/api/run';
-    // },
-    // TODO: add fallback
     get API_PREFIX() {
         return window.DL.apiPrefix || '/api';
     },

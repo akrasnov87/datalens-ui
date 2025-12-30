@@ -9,7 +9,6 @@ import type {GetChartkitMenuByType} from 'ui/registry/units/chart/types/function
 
 import {getChartkitMenuItems} from '../../menu/Menu';
 import URI from '../uri/uri';
-//import Utils from 'ui/utils';
 
 export function isChartkitMenuItemVisible() {
     const wizardNewChartPathnames = ['/wizard/new', '/wizard/', '/wizard'];
@@ -36,11 +35,6 @@ export const getChartkitMenuByType = (props?: GetChartkitMenuByType) => {
     const chartsDataProvider = dataProvider as ChartKitDataProvider;
 
     const isEditVisible = isEditAvaible === undefined ? {} : {isVisible: () => isEditAvaible};
-
-    /*const isEditVisible = isEditAvaible === undefined ? {} : {isVisible: () => { 
-        var decodedString = atob(Utils.getRpcAuthorization());
-        return 'manager' == decodedString.split(':')[0];
-    }};*/
 
     return getChartkitMenuItems({
         type,

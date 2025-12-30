@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {Dialog, Select, TextArea, TextInput} from '@gravity-ui/uikit';
+import {Dialog, TextArea, TextInput, Select} from '@gravity-ui/uikit';
 import block from 'bem-cn-lite';
 import {I18n} from 'i18n';
 

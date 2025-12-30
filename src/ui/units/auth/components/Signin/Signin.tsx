@@ -10,7 +10,6 @@ import {DL} from 'ui/constants';
 import type {SdkError} from 'ui/libs/schematic-sdk';
 import type {SigninProps} from 'ui/registry/units/auth/types/components/Signin';
 import {showToast} from 'ui/store/actions/toaster';
-import {isEnabledFeature} from 'ui/utils/isEnabledFeature';
 
 import {AUTH_ROUTE} from '../../constants/routes';
 import {submitSigninForm} from '../../store/actions/signin';
@@ -65,11 +64,7 @@ export const Signin = ({alternativeAuthOptions}: SigninProps) => {
     }, [errorMessage]);
 
     return (
-        <Flex
-            className={b({rebranding: isEnabledRebranding})}
-            justifyContent="center"
-            alignItems="center"
-        >
+        <Flex className={b()} justifyContent="center" alignItems="center">
             <Flex
                 className={b('form-container')}
                 direction="column"

@@ -1,10 +1,8 @@
 import React, { useEffect } from 'react';
 import {Route, Switch, Redirect, useLocation} from 'react-router-dom';
-// import {useSelector} from 'react-redux';
 import coreReducers from 'store/reducers';
 import {getIsAsideHeaderEnabled} from 'components/AsideHeaderAdapter';
 import LocationChange from '../components/LocationChange/LocationChange';
-// import {selectIsLanding} from 'store/selectors/landing';
 import FallbackPage from './pages/FallbackPage/FallbackPage';
 import DashAndWizardQLPages, {
     dashAndWizardQLRoutes,
@@ -19,7 +17,6 @@ import {useClearReloadedQuery} from '../units/auth/hooks/useClearReloadedQuery';
 import {reducer} from 'ui/units/auth/store/reducers';
 import {useIframeRender} from './hooks';
 import {OPEN_SOURCE_INSTALLATION_INFO} from 'ui/constants/navigation';
-
 import {getSdk} from '../libs/schematic-sdk';
 import {
     RPC_AUTHORIZATION
@@ -59,7 +56,6 @@ const ProjectsPage = React.lazy(
 const UsersPage = React.lazy(
     () => import('./pages/AdminPage/UsersPage'),
 );
-
 const ServiceSettings = React.lazy(() => import('./pages/ServiceSettingsPage/ServiceSettingsPage'));
 //const UserProfile = React.lazy(() => import('./pages/OwnUserProfilePage/OwnUserProfilePage'));
 
@@ -78,7 +74,6 @@ export const AuthContext = React.createContext({
         console.log(value);
     }
 });
-
 const DatalensPageView = (props: any) => {
     useClearReloadedQuery();
     var token = props.token;
@@ -87,9 +82,7 @@ const DatalensPageView = (props: any) => {
     var superUser = props.superUser;
     var setSuperUser = props.setSuperUser;
 
-    // const isLanding = useSelector(selectIsLanding);
     const location = useLocation();
-
     // if (isLanding) {
     //     return (
     //         <React.Suspense fallback={<FallbackPage />}>

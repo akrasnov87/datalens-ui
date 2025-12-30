@@ -48,7 +48,6 @@ export type HeaderProps = {
     showActionParamsFilter?: boolean;
     onFiltersClear?: () => void;
     title?: string;
-    warning?: string;
     noControls?: boolean;
     setIsExportLoading?: (arg: boolean) => void;
     extraMod?: string;

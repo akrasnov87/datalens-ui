@@ -1,12 +1,6 @@
 import {omit, uniqBy} from 'lodash';
 
-import {
-    DL_COMPONENT_HEADER,
-    DlComponentHeader,
-    TIMEOUT_60_SEC,
-    TIMEOUT_90_SEC,
-    WORKBOOK_ID_HEADER,
-} from '../../../../constants';
+import {TIMEOUT_60_SEC, TIMEOUT_90_SEC} from '../../../../constants';
 import {getEntryNameByKey, normalizeDestination} from '../../../../modules';
 import {Feature} from '../../../../types/feature';
 import {createAction} from '../../../gateway-utils';
@@ -18,8 +12,6 @@ import type {
     CopyEntryResponse,
     CopyWorkbookEntryArgs,
     CopyWorkbookEntryResponse,
-    CreateEntityBindingsArgs,
-    CreateEntityBindingsResponse,
     CreateFolderArgs,
     CreateFolderResponse,
     DeleteUSEntryArgs,
@@ -67,7 +59,7 @@ const PATH_PREFIX_V2 = '/v2';
 const PRIVATE_PATH_PREFIX = '/private';
 
 export const entriesActions = {
-    encodeId: createAction<any, any>({
+        encodeId: createAction<any, any>({
         method: 'GET',
         path: (data) => { return `/encodeId?id=${data.id}` },
         params: (_, headers) => ({

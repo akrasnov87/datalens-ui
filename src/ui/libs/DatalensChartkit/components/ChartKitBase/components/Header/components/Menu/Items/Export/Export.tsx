@@ -12,13 +12,10 @@ import type {MenuItemConfig, MenuItemModalProps} from 'ui/libs/DatalensChartkit/
 import {registry} from 'ui/registry';
 import {isEnabledFeature} from 'ui/utils/isEnabledFeature';
 
+import {ICONS_MENU_DEFAULT_SIZE, type MenuItemArgs} from '../../../../../../../../menu/MenuItems';
 import { DIALOG_EXPORT_PDF } from './ExportDialog';
 import { closeDialog, openDialog } from 'ui/store/actions/dialog';
 import {isExportPdfVisible} from './utils';
-import {
-    ICONS_MENU_DEFAULT_SIZE,
-    type MenuItemArgs,
-} from '../../../../../../../../menu/MenuItems';
 import type {ChartKitDataProvider} from '../../../../../../types';
 
 import {csvExportAction} from './CsvExport/CsvExport';
@@ -158,55 +155,6 @@ const getSubItems = ({
     return submenuItems;
 };
 
-export const getExportPDF = ({
-    showScreenshot,
-}: {
-    showWiki?: boolean;
-    showScreenshot?: boolean;
-    chartsDataProvider: ChartKitDataProvider;
-    customConfig?: Partial<MenuItemConfig>;
-}): MenuItemConfig => {
-    return {
-        id: MenuItemsIds.EXPORT_PDF,
-        title: ({loadedData, error}: MenuItemArgs) => {
-            return isExportPdfVisible({loadedData, error}) ? i18n('menu-export-pdf') : i18n('menu-screenshot');
-        },
-        icon: ({loadedData, error}: MenuItemArgs) => {
-            const iconData = isExportPdfVisible({loadedData, error}) && !error ? ArrowDownToLine : Picture;
-            return (
-                <Icon
-                    size={ICONS_MENU_DEFAULT_SIZE}
-                    data={iconData}
-                    //className={ICONS_MENU_DEFAULT_CLASSNAME}
-                />
-            );
-        },
-        items: [],
-        isVisible: ({loadedData, error}: MenuItemArgs) => {
-            const isExportAllowed = !loadedData?.extra.dataExportForbidden;
-            const isScreenshotVisible = loadedData?.data && showScreenshot;
-    
-            return Boolean(
-                isExportAllowed && (isExportPdfVisible({loadedData, error}) || isScreenshotVisible),
-            );
-        },
-        action: (data: ExportActionArgs) => {
-            const dispatch = data.dispatch;
-            if (dispatch) {
-                dispatch(
-                    openDialog({
-                        id: DIALOG_EXPORT_PDF,
-                        props: {
-                            entryId: data.propsData.id || "",
-                            onClose: ()=> dispatch(closeDialog()),
-                        },
-                    }),
-                );
-            }
-        }
-    }
-};
-
 export function isExportItemDisabled() {
     return ({loadedData}: MenuItemArgs) => {
         const forbiddenExportFromExtra = loadedData?.extra.dataExportForbidden
@@ -273,3 +221,52 @@ export const getExportItem = ({
         }
     },
 });
+
+export const getExportPDF = ({
+    showScreenshot,
+}: {
+    showWiki?: boolean;
+    showScreenshot?: boolean;
+    chartsDataProvider: ChartKitDataProvider;
+    customConfig?: Partial<MenuItemConfig>;
+}): MenuItemConfig => {
+    return {
+        id: MenuItemsIds.EXPORT_PDF,
+        title: ({loadedData, error}: MenuItemArgs) => {
+            return isExportPdfVisible({loadedData, error}) ? i18n('menu-export-pdf') : i18n('menu-screenshot');
+        },
+        icon: ({loadedData, error}: MenuItemArgs) => {
+            const iconData = isExportPdfVisible({loadedData, error}) && !error ? ArrowDownToLine : Picture;
+            return (
+                <Icon
+                    size={ICONS_MENU_DEFAULT_SIZE}
+                    data={iconData}
+                    //className={ICONS_MENU_DEFAULT_CLASSNAME}
+                />
+            );
+        },
+        items: [],
+        isVisible: ({loadedData, error}: MenuItemArgs) => {
+            const isExportAllowed = !loadedData?.extra.dataExportForbidden;
+            const isScreenshotVisible = loadedData?.data && showScreenshot;
+    
+            return Boolean(
+                isExportAllowed && (isExportPdfVisible({loadedData, error}) || isScreenshotVisible),
+            );
+        },
+        action: (data: ExportActionArgs) => {
+            const dispatch = data.dispatch;
+            if (dispatch) {
+                dispatch(
+                    openDialog({
+                        id: DIALOG_EXPORT_PDF,
+                        props: {
+                            entryId: data.propsData.id || "",
+                            onClose: ()=> dispatch(closeDialog()),
+                        },
+                    }),
+                );
+            }
+        }
+    }
+};

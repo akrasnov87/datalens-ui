@@ -45,7 +45,7 @@ export const EditWorkbookDialog: React.FC<Props> = (props) => {
     } = useCollectionEntityDialogState({
         title,
         description,
-        project
+        project    
     });
 
     const isLoading = useSelector(selectUpdateWorkbookIsLoading);

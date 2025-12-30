@@ -124,12 +124,6 @@ export const getWizardChartBuilder = async (
                 })
                 .timeout(timeouts.sources || ONE_SECOND);
 
-            addColorPaletteRequest({
-                result: execResult.exports,
-                colorPaletteId: defaultColorPaletteId,
-                palettes,
-            });
-
             return {
                 executionTiming: process.hrtime(timeStart),
                 name: 'Sources',

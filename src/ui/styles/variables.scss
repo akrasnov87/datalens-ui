@@ -131,10 +131,3 @@ $monospaceFontFamily: 'Consolas', 'Menlo', 'Ubuntu Mono', monospace;
         --dl-color-fixed-header-background: var(--g-color-base-background);
     }
 }
-
-.dl-root {
-    &_new-palette {
-        --dl-viz-icon-main-color: #3d97f2;
-        --dl-viz-icon-secondary-color: #ff6a59;
-    }
-}

@@ -121,38 +121,6 @@ const getPaths = (type: Routes) => {
     return routes;
 };
 
-type Routes = 'newList' | 'newType' | 'exist';
-const getPaths = (type: Routes) => {
-    const routes: string[] = [];
-    switch (type) {
-        case 'newList':
-            routes.push('/workbooks/:workbookId/connections/new', '/connections/new');
-            if (isEnabledFeature(Feature.EnableSharedEntries)) {
-                routes.push('/collections/:collectionId/connections/new');
-            }
-            break;
-        case 'newType':
-            routes.push(
-                '/workbooks/:workbookId/connections/new/:connectorType',
-                '/connections/new/:connectorType',
-            );
-            if (isEnabledFeature(Feature.EnableSharedEntries)) {
-                routes.push('/collections/:collectionId/connections/new/:connectorType');
-            }
-            break;
-        case 'exist':
-            routes.push(
-                '/workbooks/:workbookId/connections/:connectionId',
-                '/connections/:connectionId',
-            );
-            if (isEnabledFeature(Feature.EnableSharedEntries)) {
-                routes.push('/collections/:collectionId/connections/:connectionId');
-            }
-            break;
-    }
-    return routes;
-};
-
 export const Router = ({flattenConnectors, groupedConnectors, connectionData}: RouterProps) => {
     return (
         <React.Suspense fallback={<WrappedLoader />}>

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {ArrowRight, ChevronDown, CodeTrunk, LockOpen, TrashBin} from '@gravity-ui/icons';
+import {ArrowRight, ChevronDown, LockOpen, TrashBin} from '@gravity-ui/icons';
 import type {
     DropdownMenuItem,
     DropdownMenuItemAction,
@@ -10,16 +10,14 @@ import type {
 import {Button, DropdownMenu, Icon, Tooltip} from '@gravity-ui/uikit';
 import block from 'bem-cn-lite';
 import {I18n} from 'i18n';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {useHistory} from 'react-router-dom';
 import {DropdownAction} from 'ui/components/DropdownAction/DropdownAction';
-import {EntryIcon} from 'ui/components/EntryIcon/EntryIcon';
 import {isEnabledFeature} from 'ui/utils/isEnabledFeature';
 
 import {Feature} from '../../../../../shared';
 import {registry} from '../../../../registry';
 import {selectCollection} from '../../store/selectors';
-import {getSharedEntryMockText} from '../helpers';
 
 import {getSharedEntriesMenuItems} from './utils';
 
@@ -55,6 +53,7 @@ export const CollectionActions = React.memo<Props>(
         onDeleteClick,
     }) => {
         const collection = useSelector(selectCollection);
+        const dispatch: AppDispatch = useDispatch();
         const history = useHistory();
         const {CustomActionPanelCollectionActions} = registry.collections.components.getAll();
 

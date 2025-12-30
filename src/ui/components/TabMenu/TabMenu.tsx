@@ -24,7 +24,6 @@ const b = block('tab-menu');
 const ADD_BUTTON_DEFAULT_SIZE = 16;
 
 export const TabMenu = <T extends unknown>({
-    view,
     canPasteItems,
     enableActionMenu,
     items,

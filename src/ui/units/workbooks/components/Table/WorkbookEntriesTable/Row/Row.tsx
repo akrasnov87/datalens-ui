@@ -80,7 +80,7 @@ const Row = <T extends WorkbookEntry>({
         );
     };
 
-    const onAssignClaims = (item: WorkbookEntry) => {
+        const onAssignClaims = (item: WorkbookEntry) => {
         dispatch(
             openDialog({
                 id: DIALOG_ASSIGN_CLAIMS,

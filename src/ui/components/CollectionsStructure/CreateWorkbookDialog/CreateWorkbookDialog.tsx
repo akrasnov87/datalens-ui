@@ -262,7 +262,14 @@ export const CreateWorkbookDialog: React.FC<CreateWorkbookDialogProps> = ({
                 }
             }
         },
-        [dispatch, handleDialogError, importFiles, pollImportStatus, publicGalleryState, onImportAttempt],
+        [
+            dispatch,
+            handleDialogError,
+            importFiles,
+            pollImportStatus,
+            publicGalleryState,
+            onImportAttempt,
+        ],
     );
 
     const handleApply = React.useCallback(

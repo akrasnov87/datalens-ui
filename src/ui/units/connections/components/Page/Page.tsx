@@ -1,6 +1,5 @@
 import React from 'react';
 
-import {CodeTrunk} from '@gravity-ui/icons';
 import {Button, spacing} from '@gravity-ui/uikit';
 import block from 'bem-cn-lite';
 import {I18n} from 'i18n';
@@ -32,7 +31,6 @@ import type {ErrorViewProps} from '../';
 import {ErrorView, Router, WrappedLoader} from '../';
 import {AccessRightsUrlOpen} from '../../../../components/AccessRights/AccessRightsUrlOpen';
 import {ActionPanel} from '../../../../components/ActionPanel';
-import {DIALOG_SHARED_ENTRY_BINDINGS} from '../../../../components/DialogSharedEntryBindings/DialogSharedEntryBindings';
 import withErrorPage from '../../../../components/ErrorPage/withErrorPage';
 import {FieldKey} from '../../constants';
 import {
@@ -171,19 +169,10 @@ const PageComponent = (props: PageProps) => {
     const type = (connector?.conn_type || queryType) as ConnectorType;
     const listPageOpened = isListPageOpened(location.pathname);
     const s3BasedFormOpened = isS3BasedConnForm(connectionData, type);
-    const currentSearchParams = new URLSearchParams(location.search);
-
-    const isFakeEntry = entry && (entry as {fake?: boolean}).fake;
 
     const isFakeEntry = entry && (entry as {fake?: boolean}).fake;
 
     const isExportSettingsFeatureEnabled = isEnabledFeature(Feature.EnableExportSettings);
-    const isDescriptionEnabled = isEnabledFeature(Feature.EnableConnectionDescription);
-
-    const revisionsSupported = connector?.history;
-    const revId = currentSearchParams.get(URL_QUERY.REV_ID) ?? undefined;
-
-    const isSharedConnection = Boolean(entry?.collectionId);
 
     const revisionsSupported = connector?.history;
     const revId = currentSearchParams.get(URL_QUERY.REV_ID) ?? undefined;

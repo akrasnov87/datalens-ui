@@ -19,7 +19,6 @@ import {registry} from 'ui/registry';
 import {isEnabledFeature} from 'ui/utils/isEnabledFeature';
 
 import type {ChartWidgetDataRef} from '../../../components/Widgets/Chart/types';
-import {CHARTKIT_WIDGET_TYPE} from '../ChartKit/components/Widget/Widget';
 import {
     getExportPDF,
     getExportItem,
@@ -135,7 +134,7 @@ export const getNewWindowMenuItem = ({
     icon: customConfig?.icon || (
         <Icon data={ArrowUpRightFromSquare} size={ICONS_MENU_DEFAULT_SIZE} />
     ),
-    isVisible: () => { return customConfig?.isVisible ? customConfig.isVisible() : true },
+    isVisible: () => true,
     action:
         customConfig?.action ||
         (({loadedData, propsData, chartsDataProvider: dataProvider}) => {
@@ -226,7 +225,7 @@ export const getLinkMenuItem = (customConfig?: Partial<MenuItemConfig>): MenuIte
     icon: customConfig?.icon || (
         <Icon data={ArrowShapeTurnUpRight} size={ICONS_MENU_DEFAULT_SIZE} />
     ),
-    isVisible: ({loadedData}: MenuItemArgs) => { return customConfig?.isVisible ? customConfig?.isVisible() : Boolean(loadedData?.type) },
+    isVisible: ({loadedData}: MenuItemArgs) => Boolean(loadedData?.type),
     action:
         customConfig?.action ||
         function action({loadedData, propsData}) {

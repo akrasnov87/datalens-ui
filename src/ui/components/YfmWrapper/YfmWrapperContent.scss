@@ -88,13 +88,6 @@ $rootClass: '.app-root.g-root';
     .yfm .yfm-term_dfn.open {
         display: block;
     }
-
-    .yfm .yfm-term_dfn {
-        display: none;
-    }
-    .yfm .yfm-term_dfn.open {
-        display: block;
-    }
 }
 
 #{$rootClass} .yfm:not(.yfm_only-light) {

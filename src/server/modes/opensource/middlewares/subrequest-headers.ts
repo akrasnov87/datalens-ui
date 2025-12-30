@@ -37,7 +37,7 @@ export function setSubrequestHeaders(req: Request, res: Response, next: NextFunc
     if(req.headers[RPC_AUTHORIZATION]) {
         subrequestHeaders[RPC_AUTHORIZATION] = req.headers[RPC_AUTHORIZATION];
     }
-    
+
     if (req.headers[subjectTokenHeader]) {
         subrequestHeaders[subjectTokenHeader] = req.headers[subjectTokenHeader];
     }

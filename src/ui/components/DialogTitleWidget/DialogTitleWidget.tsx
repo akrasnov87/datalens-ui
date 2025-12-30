@@ -355,10 +355,6 @@ function DialogTitleWidget(props: DialogTitleWidgetProps) {
         setState((prevState) => ({...prevState, borderRadius: value}));
     }, []);
 
-    const handleTextColorChanged = React.useCallback((color: string) => {
-        setState((prevState) => ({...prevState, textColor: color}));
-    }, []);
-
     const inputRef: React.Ref<HTMLInputElement> = React.useRef(null);
 
     const {MarkdownControl} = registry.common.components.getAll();

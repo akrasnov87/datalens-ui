@@ -10,7 +10,6 @@ import {
     SERVICE_USER_ACCESS_TOKEN_HEADER,
     SuperuserHeader,
     TENANT_ID_HEADER,
-    RPC_AUTHORIZATION
 } from '../../shared';
 import {docsUrl, releaseVersion} from '../app-env';
 import {SERVICE_NAME_DATALENS} from '../components';
@@ -27,16 +26,12 @@ export default {
     },
     expressTrustProxyNumber: 2,
     workers: process.env.WORKERS ? parseInt(process.env.WORKERS, 10) : 1,
-    python: process.env.PYTHON || 'python3',
-    fetchingTimeout: ((process.env.DATA_FETCHING_TIMEOUT_MS && parseInt(process.env.DATA_FETCHING_TIMEOUT_MS)) || 95) * 1000,
-    singleFetchingTimeout: ((process.env.DATA_SINGLE_FETCHING_TIMEOUT_MS && parseInt(process.env.DATA_SINGLE_FETCHING_TIMEOUT_MS)) || 95) * 1000,
-    flatTableRowsLimit: ((process.env.FLAT_TABLE_ROWS_LIMIT && parseInt(process.env.FLAT_TABLE_ROWS_LIMIT)) || 100000),
-    // fetchingTimeout: process.env.DATA_FETCHING_TIMEOUT_MS
-    //     ? parseInt(process.env.DATA_FETCHING_TIMEOUT_MS, 10)
-    //     : undefined,
-    // singleFetchingTimeout: process.env.DATA_SINGLE_FETCHING_TIMEOUT_MS
-    //     ? parseInt(process.env.DATA_SINGLE_FETCHING_TIMEOUT_MS, 10)
-    //     : undefined,
+    fetchingTimeout: process.env.DATA_FETCHING_TIMEOUT_MS
+        ? parseInt(process.env.DATA_FETCHING_TIMEOUT_MS, 10)
+        : undefined,
+    singleFetchingTimeout: process.env.DATA_SINGLE_FETCHING_TIMEOUT_MS
+        ? parseInt(process.env.DATA_SINGLE_FETCHING_TIMEOUT_MS, 10)
+        : undefined,
     faviconUrl: '/os-favicon.ico',
     appMode: process.env.APP_MODE,
     serviceName: SERVICE_NAME_DATALENS,
@@ -44,7 +39,6 @@ export default {
         ...DEFAULT_PROXY_HEADERS,
         PROJECT_ID_HEADER,
         TENANT_ID_HEADER,
-        RPC_AUTHORIZATION,
         SuperuserHeader.XDlAllowSuperuser,
         SuperuserHeader.XDlSudo,
         AuthHeader.Authorization,

@@ -110,14 +110,6 @@ const MainPage = ({
         history.push(`/settings/${tabId}`);
     };
 
-    const tabs = [
-        {
-            id: 'general',
-            title: i18n('section_general'),
-        },
-        {id: 'users', title: i18n('section_users')},
-    ];
-
     return (
         <div className={b({new: newServiceSettingsEnabled})}>
             <PageTitle title={i18n('label_header')} />

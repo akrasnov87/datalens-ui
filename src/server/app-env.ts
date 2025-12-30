@@ -13,5 +13,4 @@ export const isApiMode = mode === AppMode.Api;
 export const isPublicApiMode = mode === AppMode.PublicApi;
 
 export const isOpensourceInstallation = appInstallation === AppInstallation.Opensource;
-
 export const unitedStorageConfigLoadedTimeout = parseInt(process.env.UNITED_STORAGE_CONFIG_LOADED_TIMEOUT || '10000'); 

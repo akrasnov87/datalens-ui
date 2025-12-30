@@ -6,8 +6,7 @@ import {Dialog, Select, Text} from '@gravity-ui/uikit';
 import block from 'bem-cn-lite';
 import {I18n} from 'i18n';
 import {ChartkitMenuDialogsQA, EXPORT_FORMATS, type ExportParams} from 'shared';
-
-import type {ExportActionArgs, ExportChartArgs} from '../Export/types';
+import type {ExportActionArgs} from '../Export/types';
 
 import './DownloadCsv.scss';
 
@@ -99,7 +98,7 @@ export const DownloadCsv = ({
             delNumbers: delNumber,
             encoding,
         };
-
+        //  TODO: Кирилл, тут нужно исправить
         onSubmit(params);
         onClose();
     }, [delNumber, delValue, encoding, onSubmit, onClose]);

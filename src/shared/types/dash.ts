@@ -152,7 +152,7 @@ export type ColorByTheme = Partial<Record<ThemeType, string | undefined>>;
 
 export type OldBackgroundSettings = {
     enabled?: boolean;
-    color: ColorSettings;
+    color: string;
 };
 
 export type ColorSettings = ColorByTheme | string;

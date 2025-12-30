@@ -29,15 +29,6 @@ export type Props = {
     title: string;
     project: string | undefined;
     description: string;
-};
-
-type WorkbookDialogErrors = Partial<Record<keyof WorkbookDialogValues, string>>;
-
-export type Props = {
-    values: WorkbookDialogValues;
-    errors?: WorkbookDialogErrors;
-    title: string;
-    project?: string;
     textButtonApply: string;
     open: boolean;
     isLoading: boolean;
@@ -71,7 +62,6 @@ export const WorkbookDialog = React.memo<Props>(
     }) => {
         var [projects, setProjects] = React.useState([]);
         var [projectDefault, setProjectDefault] = React.useState("");
-
 
         React.useEffect(() => {
             Utils.projects({}).then((values)=>{

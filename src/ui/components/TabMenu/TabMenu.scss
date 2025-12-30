@@ -20,19 +20,6 @@ $class: '.tab-menu';
         justify-content: flex-start;
     }
 
-    &_view_new {
-        --_--tab-button-outlined-padding: 0;
-
-        display: grid;
-        grid-template-rows: 1fr auto;
-        row-gap: var(--g-spacing-1);
-        margin-inline-end: calc(var(--_--scroll-compensation) * -1);
-
-        #{$class}__action-button {
-            justify-content: flex-start;
-        }
-    }
-
     &__list-item {
         padding: 0 var(--g-spacing-4);
         border-radius: var(--g-border-radius-m);
@@ -53,10 +40,6 @@ $class: '.tab-menu';
         width: 100%;
         cursor: pointer;
         justify-content: space-between;
-
-        &_view_new {
-            height: 36px;
-        }
     }
 
     &__item-star {
@@ -98,9 +81,5 @@ $class: '.tab-menu';
         display: flex;
         padding-inline: 0 var(--_--scroll-compensation);
         gap: var(--g-spacing-2);
-
-        #{$class}_view_new & {
-            padding-inline: 0 var(--_--scroll-compensation);
-        }
     }
 }

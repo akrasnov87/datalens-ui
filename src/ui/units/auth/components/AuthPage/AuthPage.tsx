@@ -6,7 +6,6 @@ import {useDispatch, useSelector} from 'react-redux';
 import {Redirect, Route, Switch, useLocation} from 'react-router-dom';
 import {DL} from 'ui/constants';
 import {registry} from 'ui/registry';
-import {isEnabledFeature} from 'ui/utils/isEnabledFeature';
 
 import {AUTH_ROUTE} from '../../constants/routes';
 import {resetAuthState} from '../../store/actions/common';

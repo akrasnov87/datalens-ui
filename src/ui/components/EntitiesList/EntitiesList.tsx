@@ -89,7 +89,6 @@ export const EntitiesList = ({
                     key={entity.entryId}
                     entry={entity}
                     nonInteractive={isCurrent}
-                    disableHover={true}
                     rightSectionSlot={isCurrent || !updatedEntities ? null : 
                         <Switch size="m" 
                             className={b('switch')}

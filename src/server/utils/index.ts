@@ -94,38 +94,6 @@ class Utils {
             ...(req.ctx.config.isZitadelEnabled ? {...Utils.pickZitadelHeaders(req)} : {}),
             ...(req.ctx.config.isAuthEnabled ? {...Utils.pickAuthHeaders(req)} : {}),
             [REQUEST_ID_HEADER]: req.id,
-            ...(req.ctx.config.isZitadelEnabled ? {...Utils.pickZitadelHeaders(req)} : {})
-        };
-    }
-
-    static pickRpcHeaders(req: Request) {
-        const headersMap = req.ctx.config.headersMap;
-
-        const orgId = req.headers[PUBLIC_API_ORG_ID_HEADER];
-        const tenantId = orgId && !Array.isArray(orgId) ? makeTenantIdFromOrgId(orgId) : undefined;
-
-        return {
-            ...pick(req.headers, [AuthHeader.Authorization, headersMap.subjectToken]),
-            ...Utils.pickForwardHeaders(req.headers),
-            [TENANT_ID_HEADER]: tenantId,
-        };
-    }
-
-    static pickPublicApiHeaders(req: Request) {
-        const headersMap = req.ctx.config.headersMap;
-
-        const orgId = req.headers[PUBLIC_API_ORG_ID_HEADER];
-        const tenantId = orgId && !Array.isArray(orgId) ? makeTenantIdFromOrgId(orgId) : undefined;
-
-        return {
-            ...pick(req.headers, [
-                AuthHeader.Authorization,
-                headersMap.subjectToken,
-                PUBLIC_API_VERSION_HEADER,
-            ]),
-            ...Utils.pickForwardHeaders(req.headers),
-            [TENANT_ID_HEADER]: tenantId,
-            [REQUEST_SOURCE_HEADER]: RequestSourceHeaderValue.PublicApi,
         };
     }
 

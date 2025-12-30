@@ -15,7 +15,6 @@ import {
     getOpenAsTableMenuItem,
     getLinkMenuItem,
     getExportMenuPDF,
-    //getEmbeddedMenuItem
 } from './MenuItems';
 
 /**
@@ -74,7 +73,7 @@ export const getWizardChartMenu = ({chartsDataProvider, customOptions}: GetWizar
         }),
         getOpenAsTableMenuItem({
             chartsDataProvider,
-            customConfig: customOptions[MenuItemsIds.OPEN_AS_TABLE]
+            customConfig: customOptions[MenuItemsIds.OPEN_AS_TABLE],
         }),
         getInspectorMenuItem(),
     ];

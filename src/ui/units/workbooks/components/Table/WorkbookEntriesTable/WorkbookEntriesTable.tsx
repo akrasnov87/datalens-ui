@@ -12,7 +12,7 @@ import {EntryDialogName, EntryDialogues} from 'ui/components/EntryDialogues';
 import {DL} from 'ui/constants/common';
 import {getSdk} from 'ui/libs/schematic-sdk';
 import {showToast} from 'ui/store/actions/toaster';
-import {getResolveUsersByIdsAction} from 'ui/store/actions/usersByIds';
+//import {getResolveUsersByIdsAction} from 'ui/store/actions/usersByIds';
 import {copyTextWithToast} from 'ui/utils/copyText';
 
 import type {GetEntryResponse} from '../../../../../../shared/schema';
@@ -79,9 +79,6 @@ export const WorkbookEntriesTable = React.memo<WorkbookEntriesTableProps>(
     }) => {
         const dispatch: AppDispatch = useDispatch();
         const entryDialoguesRef = React.useRef<EntryDialogues>(null);
-        entries.forEach((_) => {
-            
-        });
 
         // React.useEffect(() => {
         //     const resolveUsersByIds = getResolveUsersByIdsAction();
