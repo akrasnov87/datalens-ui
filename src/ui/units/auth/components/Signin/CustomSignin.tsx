@@ -5,19 +5,16 @@ import block from 'bem-cn-lite';
 import {I18n} from 'i18n';
 import {useDispatch, useSelector} from 'react-redux';
 import {SignInQa} from 'shared/constants';
-import {Feature} from 'shared/types';
 import {DL} from 'ui/constants';
 import type {CustomSigninProps} from 'ui/registry/units/auth/types/components/CustomSignin';
 import {showToast} from 'ui/store/actions/toaster';
 import Utils from 'ui/utils';
-import {isEnabledFeature} from 'ui/utils/isEnabledFeature';
 
 import {selectFormData} from '../../store/selectors/signin';
 
 import {Login} from './components/Login';
 import {Password} from './components/Password';
 
-import defaultLogoIcon from 'ui/assets/icons/logo.svg';
 import rebrandingLogoIcon from 'ui/assets/icons/os-logo.svg';
 
 import './Signin.scss';
@@ -106,10 +103,6 @@ export const CustomSignin = ({setToken}: CustomSigninProps) => {
         }
     }, [errorMessage]);
 
-    const defaultLogo = isEnabledFeature(Feature.EnableDLRebranding)
-        ? rebrandingLogoIcon
-        : defaultLogoIcon;
-
     return (
         <Flex className={b()} justifyContent="center" alignItems="center">
             <Flex
@@ -122,7 +115,7 @@ export const CustomSignin = ({setToken}: CustomSigninProps) => {
                 onSubmit={handleSubmit}
             >
                 <Flex direction="column" gap="2" alignItems="center">
-                    <Icon size={32} data={defaultLogo} />
+                    <Icon size={32} data={rebrandingLogoIcon} />
                     <Text variant="subheader-3">{i18n('title_product')}</Text>
                 </Flex>
                 <Flex direction="column" gap="4">
