@@ -11,7 +11,7 @@ import * as path from 'path';
 
 import type {Graph} from '../components/charts-engine/components/processor/comments-fetcher';
 
-const XLS_DATA_LIMIT = 1024 * 1024 * 50; // 50MB
+const XLS_DATA_LIMIT = 1024 * 1024 * 500; // 500MB
 const MAX_EXCEL_CELL_LENGTH = 32767;
 
 type Cell = {x: number; t: string; v: Date};

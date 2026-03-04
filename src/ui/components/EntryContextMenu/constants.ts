@@ -130,7 +130,7 @@ const isVisibleEntryContextShareItem = ({entry, showSpecificItems}: ContextMenuP
             icon: LockOpen,
             text: 'value_access',
             qa: 'value_access',
-            enable: (entry: any) => { return !entry || entry.permissions.edit },
+            enable: (entry: any) => { return entry && entry.permissions && entry.permissions.edit },
             scopes: getAllEntryScopes(),
             // isSpecific: true,
             // isOnEditMode: false,
