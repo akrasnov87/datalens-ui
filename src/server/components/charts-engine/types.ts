@@ -5,6 +5,7 @@ import type {HttpMethod} from '@gravity-ui/expresskit/dist/types';
 import type {AppContext} from '@gravity-ui/nodekit';
 
 import type {EDITOR_TYPE_CONFIG_TABS} from '../../../shared';
+import type {PartialDatasetField} from '../../../shared/schema/types';
 import type {SourcesArgs} from '../../modes/charts/plugins/datalens/url/types';
 import type {MiddlewareSourceAdapterArgs, MiddlewareUrl} from '../../modes/charts/plugins/types';
 
@@ -126,6 +127,7 @@ export type Source<T = string | Record<string, string>> = {
     apiConnectionId?: string;
     qlConnectionId?: string;
     datasetId?: string;
+    datasetFields?: PartialDatasetField[];
     body?: Record<string, unknown>;
     path?: string;
     _original?: unknown;
@@ -161,6 +163,11 @@ export type HooksContext = {
         cookie: IncomingHttpHeaders['cookie'];
         authorization: IncomingHttpHeaders['authorization'];
     };
+};
+
+export type SourceAliasConfig = {
+    apiConnectionId: string;
+    unwrapResponse?: boolean; // If true, unwrap {data: {body: {result: X}}} -> X
 };
 
 export type SourceConfig = {
@@ -201,6 +208,7 @@ export type SourceConfig = {
     args?: Record<string, string | number | (string | number)[]>;
     maxRedirects?: number;
     isExternal?: boolean;
+    aliasTo?: SourceAliasConfig;
 };
 
 export enum MiddlewareStage {

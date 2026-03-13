@@ -4,24 +4,29 @@ import {Dialog} from '@gravity-ui/uikit';
 import block from 'bem-cn-lite';
 import ChartKit from 'libs/DatalensChartkit';
 import {batch, useDispatch, useSelector} from 'react-redux';
+import {Feature} from 'shared';
 import {DashboardDialogSettingsQa} from 'shared/constants/qa/dash';
-import {DEFAULT_DASH_MARGINS} from 'ui/components/DashKit/constants';
+import {
+    DEFAULT_DASH_MARGINS,
+    OLD_DEFAULT_WIDGET_BORDER_RADIUS,
+} from 'ui/components/DashKit/constants';
 import {registry} from 'ui/registry';
 import {openDialog} from 'ui/store/actions/dialog';
+import {isEnabledFeature} from 'ui/utils/isEnabledFeature';
 
 import type {DatalensGlobalState} from '../../../../..';
 import {i18n} from '../../../../../../i18n';
-import type {DashSettings, DashSettingsGlobalParams} from '../../../../../../shared';
+import type {DashSettings} from '../../../../../../shared';
 import {DashLoadPriority} from '../../../../../../shared';
 import {DIALOG_ENTRY_DESCRIPTION} from '../../../../../components/DialogEntryDescription';
 import EntryDialogues from '../../../../../components/EntryDialogues/EntryDialogues';
 import {DIALOG_TYPE} from '../../../../../constants/dialogs';
-import {validateParamTitle} from '../../../components/ParamsSettings/helpers';
 import {toggleTableOfContent, updateAllDashSettings} from '../../../store/actions/dashTyped';
 import {closeDialog} from '../../../store/actions/dialogs/actions';
 import {
     selectDashAccessDescription,
     selectDashSupportDescription,
+    selectEntryId,
     selectIsDialogVisible,
     selectSettings,
 } from '../../../store/selectors/dashTypedSelectors';
@@ -30,6 +35,7 @@ import {AutoRefresh} from './components/AutoRefresh';
 import {Display} from './components/Display';
 import {OtherSettings} from './components/OtherSettings';
 import {Params} from './components/Params';
+import {useGlobalParams} from './useGlobalParams';
 
 import './Settings.scss';
 
@@ -38,6 +44,7 @@ const b = block('dialog-settings');
 const Settings = () => {
     const dispatch = useDispatch();
 
+    const isNew = !useSelector(selectEntryId);
     const settings = useSelector(selectSettings);
     const visible = useSelector((state: DatalensGlobalState) =>
         selectIsDialogVisible(state, DIALOG_TYPE.SETTINGS),
@@ -65,14 +72,39 @@ const Settings = () => {
     const [loadOnlyVisibleCharts, setLoadOnlyVisibleCharts] = React.useState(
         settings.loadOnlyVisibleCharts ?? true,
     );
-    const [globalParams, setGlobalParams] = React.useState(settings.globalParams || {});
-    const [isGlobalParamsError, setIsGlobalParamsError] = React.useState(false);
+    const {
+        globalParams,
+        isGlobalParamsError,
+        localParams,
+        handleEditParamTitle,
+        handleEditParamValue,
+        handleRemoveParam,
+        handleRemoveAllParams,
+        handleValidateParamTitle,
+    } = useGlobalParams({
+        initialParams: settings.globalParams || {},
+    });
     const [hideTabs, setHideTabs] = React.useState(settings.hideTabs);
     const [hideDashTitle, setHideTitle] = React.useState(Boolean(settings.hideDashTitle));
     const [expandTOC, setExpandTOC] = React.useState(settings.expandTOC);
     const [accessDescription, setAccessDesc] = React.useState(accessDesc);
     const [supportDescription, setSupportDesc] = React.useState(supportDesc);
     const [margins, setMargins] = React.useState(settings.margins || DEFAULT_DASH_MARGINS);
+    const [internalMarginsEnabled, setInternalMarginsEnabled] = React.useState(
+        settings.widgetsSettings?.internalMarginsEnabled ?? true,
+    );
+    const [borderRadius, setBorderRadius] = React.useState(
+        settings.widgetsSettings?.borderRadius ??
+            (!isNew && isEnabledFeature(Feature.EnableNewDashSettings)
+                ? OLD_DEFAULT_WIDGET_BORDER_RADIUS
+                : undefined),
+    );
+    const [backgroundColorSettings, setBackgroundColorSettings] = React.useState(
+        settings.backgroundSettings?.color || undefined,
+    );
+    const [widgetsBackgroundColorSettings, setWidgetsBackgroundColorSettings] = React.useState(
+        settings.widgetsSettings?.backgroundSettings?.color || undefined,
+    );
     const [otherSettinsState, setOtherSettingsState] = React.useState<Partial<DashSettings>>({});
 
     const entryDialoguesRef = React.useRef<EntryDialogues>(null);
@@ -120,7 +152,7 @@ const Settings = () => {
             !dependentSelectors ||
             confirm(i18n('dash.settings-dialog.edit', 'context_dependent-selectors'))
         ) {
-            const newSettings = {
+            const newSettings: DashSettings = {
                 ...settings,
                 autoupdateInterval:
                     (typeof autoupdateInterval === 'string'
@@ -135,6 +167,21 @@ const Settings = () => {
                 hideDashTitle,
                 expandTOC,
                 loadPriority,
+                widgetsSettings: {
+                    ...settings.widgetsSettings,
+                    borderRadius,
+                    internalMarginsEnabled,
+                    backgroundSettings: widgetsBackgroundColorSettings
+                        ? {
+                              color: widgetsBackgroundColorSettings,
+                          }
+                        : undefined,
+                },
+                backgroundSettings: backgroundColorSettings
+                    ? {
+                          color: backgroundColorSettings,
+                      }
+                    : undefined,
                 ...otherSettinsState,
             };
 
@@ -203,13 +250,6 @@ const Settings = () => {
         );
     }, [dispatch, supportDescription]);
 
-    const handleChangeGlobalParams = React.useCallback((params: DashSettingsGlobalParams) => {
-        setIsGlobalParamsError(
-            Object.keys(params).some((param) => Boolean(validateParamTitle(param))),
-        );
-        setGlobalParams(params);
-    }, []);
-
     const handleMarginsChange = React.useCallback((margins: number | [number, number]) => {
         if (Array.isArray(margins)) {
             setMargins(margins);
@@ -250,12 +290,20 @@ const Settings = () => {
                 <Display
                     margins={margins}
                     onChangeMargins={handleMarginsChange}
+                    internalMarginsEnabled={internalMarginsEnabled}
+                    onChangeInternalMarginsEnabled={setInternalMarginsEnabled}
                     hideTabsValue={hideTabs}
                     onChangeHideTabs={() => setHideTabs(!hideTabs)}
                     hideDashTitleValue={hideDashTitle}
                     onChangeHideDashTitle={() => setHideTitle(!hideDashTitle)}
                     expandTOCValue={expandTOC}
                     onChangeExpandTOC={() => setExpandTOC(!expandTOC)}
+                    borderRadius={borderRadius}
+                    onChangeBorderRadius={setBorderRadius}
+                    backgroundSettings={backgroundColorSettings}
+                    onChangeBackgroundSettings={setBackgroundColorSettings}
+                    widgetsBackgroundSettings={widgetsBackgroundColorSettings}
+                    onChangeWidgetsBackgroundSettings={setWidgetsBackgroundColorSettings}
                 />
                 <OtherSettings
                     showDependentSelectors={showDependentSelectors}
@@ -273,7 +321,14 @@ const Settings = () => {
                     settings={otherSettinsState}
                     onChange={setOtherSettingsState}
                 />
-                <Params paramsValue={globalParams} onChangeParamsValue={handleChangeGlobalParams} />
+                <Params
+                    paramsData={localParams}
+                    onEditParamTitle={handleEditParamTitle}
+                    onEditParamValue={handleEditParamValue}
+                    onRemoveParam={handleRemoveParam}
+                    onRemoveAllParams={handleRemoveAllParams}
+                    validateParamTitle={handleValidateParamTitle}
+                />
                 <EntryDialogues ref={entryDialoguesRef} />
             </Dialog.Body>
             <Dialog.Footer

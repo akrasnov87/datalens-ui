@@ -1,7 +1,8 @@
-import React, {useState} from 'react';
+import React from 'react';
 
-import type {ConfigLayout} from '@gravity-ui/dashkit';
+import type {ConfigItem, ConfigLayout, DashKitGroup, DashKitProps} from '@gravity-ui/dashkit';
 import {DashKitDnDWrapper, ActionPanel as DashkitActionPanel} from '@gravity-ui/dashkit';
+import {useThemeType} from '@gravity-ui/uikit';
 import block from 'bem-cn-lite';
 import {useDispatch, useSelector} from 'react-redux';
 import {
@@ -12,6 +13,8 @@ import {
     Feature,
     LOADED_DASH_CLASS,
 } from 'shared';
+import type {DashTabLayout} from 'shared';
+import {registry} from 'ui/registry';
 import {selectAsideHeaderIsCompact} from 'ui/store/selectors/asideHeader';
 import {selectUserSettings} from 'ui/store/selectors/user';
 import {isEnabledFeature} from 'ui/utils/isEnabledFeature';
@@ -32,53 +35,89 @@ import {
     selectTabs,
 } from '../../../../store/selectors/dashTypedSelectors';
 import {DashError} from '../../../DashError/DashError';
-import {i18n} from 'i18n';
-import {showToast} from 'ui/store/actions/toaster';
 import TableOfContent from '../../../TableOfContent/TableOfContent';
 import {Tabs} from '../../../Tabs/Tabs';
-import {Button} from '@gravity-ui/uikit';
-import {getSdk} from 'ui/libs/schematic-sdk';
+import {DashkitWrapper} from '../DashkitWrapper/DashkitWrapper';
+
+import {useCopiedData} from './hooks/useCopiedData';
 
 const b = block('dash-body');
 
 const isMobileFixedHeaderEnabled = isEnabledFeature(Feature.EnableMobileFixedHeader);
 
+type DashKitWrapperProps = {
+    dashEl: HTMLDivElement | null;
+    dashkitSettings: DashKitProps['settings'];
+    disableUrlState?: boolean;
+    globalParams: DashKitProps['globalParams'];
+    groupsRenderers: DashKitGroup[];
+    hasFixedHeaderContainerElements: boolean;
+    hasFixedHeaderControlsElements: boolean;
+    isEditModeLoading?: boolean;
+    isFixedHeaderCollapsed: boolean; // getFixedHeaderCollapsedState()
+    isPublicMode?: boolean;
+    isSplitPaneLayout?: boolean;
+    isGlobalDragging: boolean;
+    getGroupsInsertCoords: (forSingleInsert?: boolean) => Record<string, {x: number; y: number}>;
+    getWidgetLayoutById: (widgetId: string) => DashTabLayout;
+    handleEditClick?: () => void;
+    onItemMountChange: (item: ConfigItem, data: {isMounted: boolean}) => void;
+    onItemRender: (item: ConfigItem) => void;
+    onWidgetMountChange: (isMounted: boolean, id: string, domElement: HTMLElement) => void;
+};
+
 type Props = {
-    copiedData: CopiedConfigData | null;
     dashEntryKey?: string;
     disableHashNavigation?: boolean;
     hideErrorDetails?: boolean;
     isCondensed: boolean;
     loaded: boolean;
     mode: Mode;
-    showEditActionPanel: boolean;
-    renderDashkit: () => void;
     onDragEnd: () => void;
     onDragStart: () => void;
     onItemClick: (itemTitle: string) => void;
     onRetry: () => void;
 } & (
-    | {onlyView: true}
+    | {onlyView: true; onPasteItem: undefined}
     | {
           onlyView?: boolean;
           onPasteItem: (data: CopiedConfigData, newLayout?: ConfigLayout[]) => void;
       }
-);
+) &
+    DashKitWrapperProps;
 
 const Content = ({
-    copiedData,
     dashEntryKey,
     disableHashNavigation,
     hideErrorDetails,
     isCondensed,
     loaded,
     mode,
-    showEditActionPanel,
-    renderDashkit,
     onDragEnd,
     onDragStart,
     onItemClick,
     onRetry,
+
+    // DashkitWrapperProps
+    dashEl,
+    dashkitSettings,
+    disableUrlState,
+    globalParams,
+    groupsRenderers,
+    hasFixedHeaderContainerElements,
+    hasFixedHeaderControlsElements,
+    isEditModeLoading,
+    isFixedHeaderCollapsed,
+    isPublicMode,
+    isSplitPaneLayout,
+    isGlobalDragging,
+    getGroupsInsertCoords,
+    getWidgetLayoutById,
+    handleEditClick,
+    onItemMountChange,
+    onItemRender,
+    onWidgetMountChange,
+
     ...restProps
 }: Props) => {
     const dispatch = useDispatch();
@@ -89,7 +128,28 @@ const Content = ({
     const showTableOfContent = useSelector(selectShowTableOfContent);
     const tabs = useSelector(selectTabs);
     const userSettings = useSelector(selectUserSettings);
-    const [isExportLoading, setIsExportLoading] = useState(false);
+
+    const theme = useThemeType();
+
+    const dashBgColors = React.useMemo(() => {
+        const backgroundSettings = settings.backgroundSettings;
+        const dashBgColor =
+            typeof backgroundSettings?.color === 'string'
+                ? backgroundSettings?.color
+                : backgroundSettings?.color?.[theme];
+        if (dashBgColor) {
+            const {getFixedHeaderBackgroundColor} = registry.dash.functions.getAll();
+            const fixedHeaderBgColor = getFixedHeaderBackgroundColor(dashBgColor, theme);
+
+            return {
+                dashBgColor,
+                fixedHeaderBgColor,
+            };
+        }
+        return undefined;
+    }, [settings.backgroundSettings, theme]);
+
+    const {copiedData, setCopiedDataToStore} = useCopiedData();
 
     const handleOpenDialog = React.useCallback<(...args: Parameters<typeof openDialog>) => void>(
         (dialogType, dragOperationProps) => {
@@ -97,6 +157,8 @@ const Content = ({
         },
         [dispatch],
     );
+
+    const isEditMode = mode === Mode.Edit;
 
     switch (mode) {
         case Mode.Loading:
@@ -114,76 +176,6 @@ const Content = ({
 
     const hideDashTitle = settings.hideDashTitle || (DL.IS_MOBILE && !isMobileFixedHeaderEnabled);
 
-    const exportDashboard = async () => {
-        const links = tabs
-            .map((item: any) => { item?.items[0]?.data?.tabs[0]?.chartId || '' })
-            .filter(item=>item);
-        const result = await Promise.allSettled(
-            links.map((id: any) =>
-                getSdk().sdk.us.getEntry({
-                    entryId: id,
-                    includePermissionsInfo: true,
-                }),
-            ),
-        );
-        const entries = result
-            .filter(({status}: any) => status === 'fulfilled')
-            .filter(
-                (item: any) => ['table_ql_node', 'table_wizard_node'].indexOf(item.value.type) >= 0
-            );
-
-        setIsExportLoading(true);
-        const body = JSON.stringify({
-            "links": entries.map((item: any)=>item.value.entryId),
-            "host": window.location.origin, //getConfig().REPORTS_URL,
-            "formSettings": {
-                "delNumbers": null,
-                "delValues": null,
-                "encoding": null,
-                "format": "csv"
-            },
-            "lang": "ru",
-            "outputFormat": "xlsx",
-            "exportFilename": "excel",
-            "params": {}
-        });
-        fetch("/export-entries", {
-            method: 'POST',
-            headers: { 
-                'Content-Type': 'application/json',
-                'x-rpc-authorization': Utils.getRpcAuthorization() 
-            },
-            body: body
-        }).then(res => {
-            if (res.status === 200) {
-                return res.blob();
-            } else {
-                return null;
-            }
-        }).then(blob => {
-            if (blob) {
-                var url = window.URL.createObjectURL(blob);
-                const anchorElement = document.createElement('a');
-                document.body.appendChild(anchorElement);
-                anchorElement.style.display = 'none';
-                anchorElement.href = url;
-                anchorElement.download = `${url.split('/').pop()}.xlsx`;
-                anchorElement.click();
-                
-                window.URL.revokeObjectURL(url);
-            } else {
-                dispatch(
-                    showToast({
-                        title: i18n("dash.main.view", "export_error"),
-                        error: Error(body),
-                    }),
-                );
-            }
-        }).finally(()=>{
-            setIsExportLoading(false);
-        });
-    };
-
     return (
         <DashKitDnDWrapper onDragStart={onDragStart} onDragEnd={onDragEnd}>
             <div
@@ -191,6 +183,11 @@ const Content = ({
                 className={b('content-wrapper', {mobile: DL.IS_MOBILE, mode}, loadedMixin)}
             >
                 <div
+                    style={
+                        dashBgColors?.dashBgColor
+                            ? {backgroundColor: dashBgColors.dashBgColor}
+                            : undefined
+                    }
                     className={b('content-container', {
                         mobile: DL.IS_MOBILE,
                         'no-title':
@@ -201,6 +198,7 @@ const Content = ({
                 >
                     <TableOfContent
                         disableHashNavigation={disableHashNavigation}
+                        dashEl={dashEl}
                         onItemClick={onItemClick}
                     />
                     <div
@@ -209,34 +207,51 @@ const Content = ({
                             'with-table-of-content': showTableOfContent && hasTableOfContentForTab,
                             mobile: DL.IS_MOBILE,
                             aside: getIsAsideHeaderEnabled(),
-                            'with-edit-panel': showEditActionPanel,
+                            'with-edit-panel': isEditMode,
                             'with-footer': isEnabledFeature(Feature.EnableFooter),
                         })}
                     >
                         {!hideDashTitle && dashEntryKey && (
-                            <>
-                                <div className={b('entry-name')} data-qa={DashEntryQa.EntryName}>
-                                    {Utils.getEntryNameFromKey(dashEntryKey)}
-                                    {(!DL.EXPORT_DASH_EXCEL || showEditActionPanel) ? null : 
-                                        <Button
-                                            className={b('export-button')}
-                                            onClick={exportDashboard}
-                                            loading={isExportLoading}
-                                            view="action"
-                                            size="m"
-                                        >
-                                            {i18n('dash.main.view', 'export')}
-                                        </Button>
-                                    }
-                                </div>
-                            </>
+                            <div className={b('entry-name')} data-qa={DashEntryQa.EntryName}>
+                                {Utils.getEntryNameFromKey(dashEntryKey)}
+                            </div>
                         )}
                         {!settings.hideTabs && <Tabs className={b('tabs')} />}
-                        {renderDashkit()}
+
+                        <DashkitWrapper
+                            {...{
+                                dashEl,
+                                dashkitSettings,
+                                disableHashNavigation,
+                                disableUrlState,
+                                globalParams,
+                                groupsRenderers,
+                                hasFixedHeaderContainerElements,
+                                hasFixedHeaderControlsElements,
+                                hideErrorDetails,
+                                isEditMode,
+                                isEditModeLoading,
+                                isFixedHeaderCollapsed,
+                                isPublicMode,
+                                isSplitPaneLayout,
+                                isGlobalDragging,
+                                onlyView: restProps.onlyView,
+                                getGroupsInsertCoords,
+                                getWidgetLayoutById,
+                                handleEditClick,
+                                onItemMountChange,
+                                onItemRender,
+                                onWidgetMountChange,
+                                onPasteItem: restProps.onPasteItem,
+                                setCopiedDataToStore,
+                                fixedHeaderBgColor: dashBgColors?.fixedHeaderBgColor,
+                            }}
+                        />
+
                         {!restProps.onlyView && (
                             <DashkitActionPanel
                                 toggleAnimation={true}
-                                disable={!showEditActionPanel}
+                                disable={!isEditMode}
                                 items={getActionPanelItems({
                                     copiedData,
                                     onPasteItem: restProps.onPasteItem,

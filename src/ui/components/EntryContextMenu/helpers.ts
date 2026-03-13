@@ -93,11 +93,14 @@ export async function deleteEntry(entryDialoguesRef: EntryDialoguesRef, entry: M
         });
         if (response.status === EntryDialogResolveStatus.Success) {
             const pathname = navigateHelper.getRedirectLocation(entry);
+            const unblock = history.block(true);
 
             history.replace({
                 ...history.location,
                 pathname,
             });
+
+            unblock();
         }
     }
 }
@@ -220,7 +223,7 @@ export type EntryContextMenuIDType<T = unknown> = unknown extends T
     ? EntryContextMenuIDTypeBase
     : EntryContextMenuIDTypeBase | T;
 
-export type MenuGroupConfigIds<T = unknown> = EntryContextMenuIDType<T> | MenuItemsIds | string;
+export type MenuGroupConfigIds<T = unknown> = EntryContextMenuIDType<T> | MenuItemsIds;
 
 export type MenuGroup<T = unknown> = Array<MenuGroupConfigIds<T>>;
 
@@ -242,19 +245,19 @@ export type EntryContextMenuItem<T = unknown> = {
     icon: IconData | JSX.Element;
     text: string;
     action: (args?: unknown) => void;
-    id: MenuGroupConfigIds<T> | string; // it is necessary to identify and group menu items (using separators)
+    id: MenuGroupConfigIds<T>; // it is necessary to identify and group menu items (using separators)
     hidden?: boolean;
     wrapper?: ({entry, children}: WrapperParams) => JSX.Element;
     qa?: string;
 };
 
 // In the Dropdown component, menu groups are formed as Array<Array<Item>>, so the config has the same structure
-// Widget config only (on dashboard, preview, visard, etc.)
+// Widget config only (on dashboard, preview, wizard, etc.)
 const MENU_GROUP_CONFIG: Array<Array<MenuItemsIds>> = [
     [MenuItemsIds.FULLSCREEEN, MenuItemsIds.EXPORT, MenuItemsIds.EXPORT_PDF, MenuItemsIds.OPEN_AS_TABLE],
     [MenuItemsIds.MOVE, MenuItemsIds.DUPLICATE, MenuItemsIds.COPY],
     [MenuItemsIds.NEW_WINDOW, MenuItemsIds.GET_LINK],
-    [MenuItemsIds.SOURCE, MenuItemsIds.INSPECTOR, MenuItemsIds.ALERTS],
+    [MenuItemsIds.SOURCE, MenuItemsIds.CHART_MODELING, MenuItemsIds.INSPECTOR, MenuItemsIds.ALERTS],
     [MenuItemsIds.COMMENTS, MenuItemsIds.SHOW_COMMENTS, MenuItemsIds.HIDE_COMMENTS],
     [MenuItemsIds.EDIT, MenuItemsIds.SETTINGS],
     [MenuItemsIds.EMBEDDED],

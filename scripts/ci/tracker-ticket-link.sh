@@ -18,6 +18,7 @@ if [ -z "${GH_REPO}" ] || [ -z "${BUILD_PR_NUMBER}" ] || [ -z "${ST_SERVER_ENDPO
 fi
 
 TRACKER_TICKET=$(echo "${BRANCH_NAME}" | { grep -oE "^[a-zA-Z]+-[0-9]+(-|$)" || true; } | sed 's|-$||' | head -n1)
+
 # check pr body
 if [ -z "${TRACKER_TICKET}" ]; then
   TRACKER_TICKET=$(echo "${PR_BODY}" | { grep -oE "/link [a-zA-Z]+-[0-9]+" || true; } | { grep -oE "[a-zA-Z]+-[0-9]+" || true; } | head -n1)

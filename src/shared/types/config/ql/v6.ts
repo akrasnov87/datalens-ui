@@ -40,7 +40,7 @@ export interface QLParamIntervalV6 {
 export interface QLParamV6 {
     name: string;
     type: string;
-    label: string,
+    label: string;
     defaultValue: string | string[] | QLParamIntervalV6 | undefined;
     overridenValue?: string | string[] | QLParamIntervalV6;
 }

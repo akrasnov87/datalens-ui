@@ -87,7 +87,7 @@ class EntryContextMenu extends React.PureComponent<Props> {
     };
 
     entryDialoguesRef = this.props.entryDialogsRef || React.createRef<EntryDialogues>();
-    
+
     render() {
         return (
             Boolean(this.props.anchorElement) && (
@@ -206,11 +206,11 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     return {
         actions: {
             ...bindActionCreators(
-                {
-                    toggleRevisionsMode,
-                },
-                dispatch,
-            ), 
+            {
+                toggleRevisionsMode,
+            },
+            dispatch,
+        ),
             openDialog: (entryId:string, workbookId:WorkbookId) => {
                 dispatch(
                     openDialog({

@@ -8,6 +8,7 @@ import type {
     IChartEditor,
     StringParams,
 } from '../../../../../shared';
+import type {Source} from '../../types';
 
 import type {
     CommentsFetcherFetchResult,
@@ -165,6 +166,7 @@ export type ChartBuilder = {
         actionParams: StringParams;
         hooks: ProcessorHooks;
     }) => Promise<ChartBuilderResult>;
+    buildPaletteSources?: (args: {sources?: Record<string, Source>}) => Promise<ChartBuilderResult>;
     buildChartLibraryConfig: (args: {
         data?: unknown;
         params: StringParams;

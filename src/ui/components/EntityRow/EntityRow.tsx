@@ -4,11 +4,11 @@ import {CodeTrunk, ShieldCheck, ShieldKeyhole} from '@gravity-ui/icons';
 import type {DropdownMenuItem} from '@gravity-ui/uikit';
 import {Button, DropdownMenu, Icon, Link, Text, Tooltip} from '@gravity-ui/uikit';
 import block from 'bem-cn-lite';
+import {I18n} from 'i18n';
 import {CollectionItemEntities} from 'shared';
 import {getEntryNameByKey} from 'shared/modules';
 import type {SharedEntryBindingsItem} from 'shared/schema';
 import navigateHelper from 'ui/libs/navigateHelper';
-import {getSharedEntryMockText} from 'ui/units/collections/components/helpers';
 import {COLLECTIONS_PATH, WORKBOOKS_PATH} from 'ui/units/collections-navigation/constants';
 
 import {CollectionIcon} from '../CollectionIcon/CollectionIcon';
@@ -17,13 +17,14 @@ import {WorkbookIcon} from '../WorkbookIcon/WorkbookIcon';
 
 import './EntityRow.scss';
 
+const i18n = I18n.keyset('component.entity-row.view');
 const b = block('entity-row');
 
 export type EntryRowProps = {
     className?: string;
     actions?: DropdownMenuItem[];
     entity: SharedEntryBindingsItem;
-    showRelationButton?: boolean;
+    onClickRelationButton?: () => void;
     showRightSide?: boolean;
 };
 
@@ -46,16 +47,10 @@ const getHref = (entity: SharedEntryBindingsItem) => {
 };
 
 export const EntityRow = React.memo(
-    ({
-        entity,
-        className,
-        actions,
-        showRelationButton = true,
-        showRightSide = true,
-    }: EntryRowProps) => {
+    ({entity, className, actions, onClickRelationButton, showRightSide = true}: EntryRowProps) => {
         const entryName = getName(entity);
         const renderRelationBtn =
-            showRelationButton && entity.entity === CollectionItemEntities.WORKBOOK;
+            onClickRelationButton && entity.entity === CollectionItemEntities.WORKBOOK;
 
         const renderIcon = () => {
             switch (entity.entity) {
@@ -83,9 +78,9 @@ export const EntityRow = React.memo(
                         <div className={b('workbook-relations')}>
                             <Tooltip
                                 className={b('notice')}
-                                content={getSharedEntryMockText('entity-row-relation-tooltip-text')}
+                                content={i18n('relation-tooltip-text')}
                             >
-                                <Button view="flat" size="s">
+                                <Button view="flat" size="s" onClick={onClickRelationButton}>
                                     <Icon data={CodeTrunk} width={16} height={16} />
                                 </Button>
                             </Tooltip>
@@ -113,9 +108,7 @@ export const EntityRow = React.memo(
                                 className={b('delegation-status-icon')}
                             />
                             <Text variant="body-1">
-                                {entity.isDelegated
-                                    ? getSharedEntryMockText('entity-row-delegated')
-                                    : getSharedEntryMockText('entity-row-not-delegated')}
+                                {entity.isDelegated ? i18n('delegated') : i18n('not-delegated')}
                             </Text>
                         </div>
                         {actions && <DropdownMenu items={actions} />}

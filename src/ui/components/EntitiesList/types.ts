@@ -9,8 +9,6 @@ export type EntitiesListProps = {
     rightSectionSlot?: React.FC<RightSectionProps>;
     className?: string;
     rowClassName?: string;
-    updatedEntities?: any;
-    setUpdatedEntities?: any;
 } & (CurrentEntity | ScopeEntities | CustomTitle);
 
 export type CurrentEntity = {

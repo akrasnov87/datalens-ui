@@ -18,6 +18,6 @@
   "label_export-forbidden.PROHIBITED_EXPORT_TENANT": "Экспорт данных недоступен в данной организации",
   "label_export-forbidden.PROHIBITED_EXPORT_TYPED_QUERY": "Экспорт данных недоступен для данного типа чарта",
   "menu-export": "Сохранить как",
-  "menu-export-pdf": "Сохранить как PDF",
-  "menu-screenshot": "Сохранить как изображение"
+  "menu-screenshot": "Сохранить как изображение",
+  "menu-export-pdf": "Сохранить как PDF"
 }

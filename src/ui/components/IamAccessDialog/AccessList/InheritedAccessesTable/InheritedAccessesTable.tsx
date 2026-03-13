@@ -76,7 +76,7 @@ export const InheritedAccessesTable = ({data}: Props) => {
                         return role;
                     }
 
-                    const {collection, workbook} = iamResources;
+                    const {collection, workbook, sharedEntry} = iamResources;
 
                     switch (role) {
                         case collection.roles.admin:
@@ -91,6 +91,18 @@ export const InheritedAccessesTable = ({data}: Props) => {
                         case collection.roles.limitedViewer:
                         case workbook.roles.limitedViewer:
                             return <Label theme="normal">{i18n('role_limited-viewer')}</Label>;
+                        case collection.roles.entryBindingCreator:
+                        case sharedEntry.roles.entryBindingCreator:
+                            return (
+                                <Label theme="normal">{i18n('role-entry-binding-creator')}</Label>
+                            );
+                        case collection.roles.limitedEntryBindingCreator:
+                        case sharedEntry.roles.limitedEntryBindingCreator:
+                            return (
+                                <Label theme="normal">
+                                    {i18n('role-limited-entry-binding-creator')}
+                                </Label>
+                            );
                         default:
                             return role;
                     }

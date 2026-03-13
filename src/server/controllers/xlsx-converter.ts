@@ -129,6 +129,7 @@ export function xlsxConverter(
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Chart data');
     ctx.log('EXPORT_XLS_FINISH_ADD_WORKBOOK_SHEET');
+    // XLSX.utils.sheet_add_aoa(worksheet, [titleRows], {origin: 'A1'});
     worksheet['!cols'] = [...columns];
 
     const mimeType = mime.lookup('.xlsx');

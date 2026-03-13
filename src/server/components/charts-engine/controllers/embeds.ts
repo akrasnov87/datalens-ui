@@ -21,11 +21,14 @@ import {
     EntryScope,
     ErrorCode,
     Feature,
+    getAllTabItems,
 } from '../../../../shared';
+import {registry} from '../../../registry';
 import {resolveEmbedConfig} from '../components/storage';
 import type {EmbedResolveConfigProps, ResolveConfigError} from '../components/storage/base';
 import type {EmbeddingInfo, ReducedResolvedConfig} from '../components/storage/types';
 import {getDuration, isDashEntry} from '../components/utils';
+import type {RunnerLocals} from '../runners';
 
 const isControlDisabled = (
     controlData: DashTabItemControlData,
@@ -80,7 +83,6 @@ function validateEmbedToken(
             extra: {
                 message: 'You must provide embedToken',
                 hideRetry: true,
-                hideDebugInfo: true,
             },
         });
         return null;
@@ -92,7 +94,7 @@ function validateEmbedToken(
         ctx.log('CHARTS_ENGINE_WRONG_TOKEN');
         res.status(400).send({
             code: ErrorCode.InvalidToken,
-            extra: {message: 'Wrong token format', hideRetry: true, hideDebugInfo: true},
+            extra: {message: 'Wrong token format', hideRetry: true},
         });
         return null;
     }
@@ -126,7 +128,6 @@ function handleError(
             extra: {
                 message: 'Dependencies of embed are outdated',
                 hideRetry: true,
-                hideDebugInfo: true,
             },
         });
         return;
@@ -151,7 +152,6 @@ function handleError(
             },
             extra: {
                 hideRetry: false,
-                hideDebugInfo: true,
             },
         },
     });
@@ -177,7 +177,7 @@ function processControlWidget(
     // Support group and old single selectors
     const controlWidgetId = controlData.widgetId || controlData.id;
 
-    const controlWidgetConfig = controlTab?.items.find(
+    const controlWidgetConfig = getAllTabItems(controlTab).find(
         ({id}: {id: string}) => id === controlWidgetId,
     );
 
@@ -239,7 +239,6 @@ function processEntry(
         extra: {
             message: 'Invalid token',
             hideRetry: true,
-            hideDebugInfo: true,
         },
     });
     return null;
@@ -321,16 +320,25 @@ async function filterParams({
     };
 }
 
-async function findAndExecuteRunner(
-    entry: ReducedResolvedConfig,
-    chartsEngine: ChartsEngine,
-    ctx: AppContext,
-    req: Request,
-    res: Response,
-    configResolving: number,
-    embeddingInfo: EmbeddingInfo,
-    privateParams?: Set<string>,
-) {
+async function findAndExecuteRunner({
+    entry,
+    chartsEngine,
+    ctx,
+    req,
+    res,
+    configResolving,
+    embeddingInfo,
+    privateParams,
+}: {
+    entry: ReducedResolvedConfig;
+    chartsEngine: ChartsEngine;
+    ctx: AppContext;
+    req: Request;
+    res: Response;
+    configResolving: number;
+    embeddingInfo: EmbeddingInfo;
+    privateParams?: Set<string>;
+}) {
     const configType = entry?.meta?.stype;
 
     ctx.log('CHARTS_ENGINE_CONFIG_TYPE', {configType});
@@ -344,7 +352,7 @@ async function findAndExecuteRunner(
         res.status(400).send({
             error: `Unknown config type ${configType}`,
         });
-        return null;
+        return;
     }
 
     const isEnabledServerFeature = ctx.get('isEnabledServerFeature');
@@ -353,7 +361,7 @@ async function findAndExecuteRunner(
         res.status(400).send({
             error: 'Editor is disabled',
         });
-        return null;
+        return;
     }
 
     req.body.config = entry;
@@ -364,10 +372,17 @@ async function findAndExecuteRunner(
         enableExport: embeddingInfo.embed.settings?.enableExport === true,
     };
 
-    return await runnerFound.handler(ctx, {
+    const runnerLocals: RunnerLocals = {
+        subrequestHeaders: res.locals.subrequestHeaders,
+        editMode: Boolean(res.locals.editMode),
+        login: res.locals.login ?? null,
+        iamToken: res.locals.iamToken ?? null,
+    };
+
+    const runnerHandlerResult = await runnerFound.handler(ctx, {
         chartsEngine,
         req,
-        res,
+        runnerLocals,
         config: {
             ...entry,
             data: {
@@ -382,10 +397,28 @@ async function findAndExecuteRunner(
         secureConfig: {privateParams: privateParams ? Array.from(privateParams) : undefined},
         forbiddenFields: ['_confStorageConfig', 'timings', 'key'],
     });
+
+    const onEmbedsControllerBeforeResponse = registry.common.functions.get(
+        'onEmbedsControllerBeforeResponse',
+    );
+
+    await onEmbedsControllerBeforeResponse({
+        req,
+        res,
+        runnerName: runnerFound.name,
+        runnerHandlerResult,
+    });
+
+    if (res.headersSent) {
+        // If response sent in onEmbedsControllerBeforeResponse
+        return;
+    } else {
+        res.status(runnerHandlerResult.status).send(runnerHandlerResult.payload);
+    }
 }
 
 export const embedsController = (chartsEngine: ChartsEngine) => {
-    return function chartsRunController(req: Request, res: Response) {
+    return async function chartsRunController(req: Request, res: Response) {
         const {ctx} = req;
 
         // We need it because of timeout error after 120 seconds
@@ -402,6 +435,16 @@ export const embedsController = (chartsEngine: ChartsEngine) => {
         }
 
         const {embedToken, embedId} = tokenData;
+
+        const onEmbedsControllerStart = registry.common.functions.get('onEmbedsControllerStart');
+
+        await onEmbedsControllerStart({req, res}).catch((error) => {
+            handleError(error, ctx, res);
+        });
+        // If response sent in onEmbedsControllerStart
+        if (res.headersSent) {
+            return;
+        }
 
         const configResolveArgs: EmbedResolveConfigProps = {
             id,
@@ -461,7 +504,7 @@ export const embedsController = (chartsEngine: ChartsEngine) => {
 
                 const configResolving = getDuration(hrStart);
 
-                return findAndExecuteRunner(
+                return findAndExecuteRunner({
                     entry,
                     chartsEngine,
                     ctx,
@@ -470,7 +513,7 @@ export const embedsController = (chartsEngine: ChartsEngine) => {
                     configResolving,
                     embeddingInfo,
                     privateParams,
-                );
+                });
             })
             .catch((error) => {
                 handleError(error, ctx, res, 'ERR.CHARTS.CHARTS_ENGINE_RUNNER_ERROR');

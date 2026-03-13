@@ -32,6 +32,7 @@ export interface LandingLayoutPageError {
     pageTitle?: RenderParams<{DL: DLGlobalData}>['title'];
     pageMeta?: RenderParams<{DL: DLGlobalData}>['meta'];
     pageLinks?: RenderParams<{DL: DLGlobalData}>['links'];
+    showDebugInfo?: boolean;
 }
 
 export interface LandingPageEntryMeta {
@@ -151,6 +152,11 @@ export type MainLayoutConfigData = {
 type DocPathNameKey = 'datasetSubsql' | 'qlCreateChart' | 'functionsPath';
 export type DocPathName = Partial<Record<DocPathNameKey, string>>;
 
+export type AIConfig = {
+    defaultModel: string;
+    availableModels: string[];
+};
+
 export type DLGlobalData = {
     deviceType: DeviceType;
     requestId: string;
@@ -196,6 +202,8 @@ export type DLGlobalData = {
                 editor: string;
                 viewer: string;
                 limitedViewer?: string;
+                entryBindingCreator?: string;
+                limitedEntryBindingCreator?: string;
             };
         };
         workbook: {
@@ -204,6 +212,16 @@ export type DLGlobalData = {
                 editor: string;
                 viewer: string;
                 limitedViewer?: string;
+            };
+        };
+        sharedEntry: {
+            roles: {
+                admin: string;
+                editor: string;
+                viewer: string;
+                limitedViewer?: string;
+                entryBindingCreator?: string;
+                limitedEntryBindingCreator?: string;
             };
         };
     };
@@ -220,7 +238,6 @@ export type DLGlobalData = {
     defaultColorPaletteId?: string;
     extraPalettes?: Record<string, Palette>;
     headersMap?: Record<string, string>;
-    isZitadelEnabled?: boolean;
     oidc?: boolean;
     oidc_name?: string;
     oidc_base_url?: string;
@@ -241,6 +258,8 @@ export type DLGlobalData = {
     exportDashExcel?: boolean;
     authManageLocalUsersDisabled?: boolean;
     authSignupDisabled?: boolean;
+    authCookieName?: string;
+    aiConfig?: AIConfig;
 } & MainLayoutConfigData;
 
 export type ContactDialogSettings = {
@@ -282,7 +301,7 @@ export enum EntryScope {
     Folder = 'folder',
     Connection = 'connection',
 }
-
+export type SharedScope = EntryScope.Dataset | EntryScope.Connection;
 export interface EntryAnnotation {
     description?: string;
 }
@@ -293,7 +312,7 @@ export interface Entry {
     entryId: string;
     key: string;
     scope: EntryScope;
-    type: EntryType | string;
+    type: EntryType;
     data: EntryData;
     links: Dictionary<string>;
     meta: object;

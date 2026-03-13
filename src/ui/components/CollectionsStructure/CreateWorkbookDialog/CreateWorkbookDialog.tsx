@@ -61,6 +61,7 @@ export type CreateWorkbookDialogProps = {
     // TODO: remove and use onCreateWorkbook
     onApply?: (result: {workbookId?: string}) => void | Promise<void>;
     onCreateWorkbook?: ({workbookId}: {workbookId?: string}) => void | Promise<void>;
+    onImportAttempt?: (publicGalleryImport: boolean) => void;
     defaultView?: 'default' | 'import';
     importId?: string;
     showImport?: boolean;
@@ -81,6 +82,7 @@ export const CreateWorkbookDialog: React.FC<CreateWorkbookDialogProps> = ({
     importId,
     showImport,
     publicGallery,
+    onImportAttempt,
 }) => {
     const dispatch: AppDispatch = useDispatch();
     const [publicGalleryState, setPublicGalleryState] = React.useState<PublicGalleryData | null>(
@@ -94,7 +96,7 @@ export const CreateWorkbookDialog: React.FC<CreateWorkbookDialogProps> = ({
     } = useCollectionEntityDialogState({
         title: publicGalleryState?.title || defaultWorkbookTitle || '',
         description: publicGalleryState?.description || '',
-        project: '',
+        project: publicGalleryState?.project || '',
     });
 
     const isCreatingLoading = useSelector(selectCreateWorkbookIsLoading);
@@ -251,6 +253,7 @@ export const CreateWorkbookDialog: React.FC<CreateWorkbookDialogProps> = ({
                 if (importResult && importResult.importId) {
                     setView('import');
                     pollImportStatus(importResult.importId);
+                    onImportAttempt?.(Boolean(publicGalleryState));
                 }
             } catch (error) {
                 if (error.code === ErrorCode.MetaManagerWorkbookAlreadyExists) {
@@ -259,7 +262,14 @@ export const CreateWorkbookDialog: React.FC<CreateWorkbookDialogProps> = ({
                 }
             }
         },
-        [dispatch, handleDialogError, importFiles, pollImportStatus, publicGalleryState],
+        [
+            dispatch,
+            handleDialogError,
+            importFiles,
+            pollImportStatus,
+            publicGalleryState,
+            onImportAttempt,
+        ],
     );
 
     const handleApply = React.useCallback(
@@ -281,8 +291,8 @@ export const CreateWorkbookDialog: React.FC<CreateWorkbookDialogProps> = ({
 
             const workbookData = {
                 title,
-                description: description ?? '',
                 project,
+                description: description ?? '',
                 collectionId,
             };
 

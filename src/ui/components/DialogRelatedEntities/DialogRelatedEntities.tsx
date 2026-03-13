@@ -186,7 +186,7 @@ export const DialogRelatedEntities = ({onClose, visible, entry}: DialogRelatedEn
     const handleClose = () => {
         onClose({status: EntryDialogResolveStatus.Close});
     };
-    
+
     const handleApply = () => {
         const accessesObj:any = {};
         accesses.forEach((access: any) => {
@@ -341,7 +341,7 @@ export const DialogRelatedEntities = ({onClose, visible, entry}: DialogRelatedEn
                 {showRelationsCount && (<div>
                     <div
                         className={b('relations-count')}
-                        >{`${i18n('label_entities-count')} ${relationsCount}`}</div>
+                    >{`${i18n('label_entities-count')} ${relationsCount}`}</div>
                     <div
                         className={b('relations-count')}
                         >{`${i18n('label_selected-entities-count')} ${selectedRelationCount}`}</div>

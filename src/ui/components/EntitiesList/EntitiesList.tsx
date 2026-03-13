@@ -68,7 +68,6 @@ export const EntitiesList = ({
     }
 
     const RightSectionSlot = rightSectionSlot;
-    console.log(RightSectionSlot);
 
     return (
         <div className={b(null, className)}>

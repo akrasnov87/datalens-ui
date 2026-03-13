@@ -17,4 +17,5 @@ export type PublicGalleryData = {
     id: string;
     description?: string;
     data: string;
+    project?: string;
 };

@@ -11,10 +11,12 @@ import {withRouter} from 'react-router-dom';
 import {compose} from 'recompose';
 import {EntryScope, PLACE} from 'shared';
 import type {DatalensGlobalState, EntryDialogues, MonacoTypes} from 'ui';
-import {DL, NavigationMinimal, sdk} from 'ui';
+import {DL, NavigationMinimal, URL_QUERY, sdk} from 'ui';
+import {SharedEntryIcon} from 'ui/components/SharedEntryIcon/SharedEntryIcon';
 import WorkbookNavigationMinimal from 'ui/components/WorkbookNavigationMinimal/WorkbookNavigationMinimal';
 import {DL_ADAPTIVE_TABS_BREAK_POINT_CONFIG} from 'ui/constants/misc';
 import {ConnectionStatus} from 'ui/units/ql/constants';
+import {getIsSharedEntry} from 'ui/utils';
 
 import {ScreenEditorQA, TabQueryQA} from '../../../../../../shared';
 import {registry} from '../../../../../registry';
@@ -86,13 +88,9 @@ class ScreenEditor extends React.PureComponent<ScreenEditorInnerProps, ScreenEdi
     }
 
     render() {
-        var {chartType, defaultPath, paneSize, entryDialoguesRef, valid, entry} = this.props;
+        const {chartType, defaultPath, paneSize, entryDialoguesRef, valid, entry} = this.props;
 
         const workbookId = entry?.workbookId || null;
-
-        valid = (entry?.permissions || { execute: true }).execute
-
-        const edit = (entry?.permissions || { edit: false }).edit
 
         const {getPlaceSelectParameters} = registry.common.functions.getAll();
         const {getConnectionsByChartType} = registry.ql.functions.getAll();
@@ -140,15 +138,14 @@ class ScreenEditor extends React.PureComponent<ScreenEditorInnerProps, ScreenEdi
                             />
                         )}
                     </div>
-                    {edit == true && this.state.activeTab === 'queryTab' && (
+                    {this.state.activeTab === 'queryTab' && (
                         <TabQuery
                             paneSize={paneSize}
                             entryDialoguesRef={entryDialoguesRef}
                         ></TabQuery>
                     )}
-                    {edit == true && this.state.activeTab === 'paramsTab' && <TabParams></TabParams>}
+                    {this.state.activeTab === 'paramsTab' && <TabParams></TabParams>}
                     <div className={b('action-bar-bottom')}>
-                    { edit == true && 
                         <Button
                             disabled={!valid}
                             view="action"
@@ -159,8 +156,7 @@ class ScreenEditor extends React.PureComponent<ScreenEditorInnerProps, ScreenEdi
                             qa="run-ql-script"
                         >
                             {i18n('sql', 'label_run')}
-                        </Button> 
-                    }
+                        </Button>
                     </div>
                 </div>
             )
@@ -168,9 +164,10 @@ class ScreenEditor extends React.PureComponent<ScreenEditorInnerProps, ScreenEdi
     }
 
     private renderConnectionBlock() {
-        const {connection, connectionStatus} = this.props;
+        const {connection, connectionStatus, entry} = this.props;
 
         if (connection) {
+            const isSharedConnection = getIsSharedEntry(connection);
             return (
                 <DropdownMenu
                     size="s"
@@ -189,6 +186,9 @@ class ScreenEditor extends React.PureComponent<ScreenEditorInnerProps, ScreenEdi
                             <span className={b('action-bar-top_connection-select-btn-text')}>
                                 {connection.name}
                             </span>
+                            {isSharedConnection && (
+                                <SharedEntryIcon isDelegated={connection.isDelegated} />
+                            )}
                         </Button>
                     )}
                     items={[
@@ -200,8 +200,19 @@ class ScreenEditor extends React.PureComponent<ScreenEditorInnerProps, ScreenEdi
                         },
                         {
                             action: () => {
-                                window.open(`${DL.ENDPOINTS.connections}/${connection?.entryId}`);
+                                const url = new URL(
+                                    `${DL.ENDPOINTS.connections}/${connection?.entryId}`,
+                                    window.location.origin,
+                                );
+                                if (isSharedConnection && entry?.workbookId) {
+                                    url.searchParams.set(
+                                        URL_QUERY.BINDED_WORKBOOK,
+                                        entry?.workbookId,
+                                    );
+                                }
+                                window.open(url);
                             },
+                            qa: TabQueryQA.GoToConnectionContextMenuBtn,
                             text: i18n('sql', 'button_to-connection'),
                         },
                     ]}
@@ -274,6 +285,7 @@ class ScreenEditor extends React.PureComponent<ScreenEditorInnerProps, ScreenEdi
     };
 
     private onNavigationEntryClick = async (newConnection: {entryId: string}) => {
+        const {entry} = this.props;
         const connection = {
             ...newConnection,
             data: null,
@@ -283,7 +295,7 @@ class ScreenEditor extends React.PureComponent<ScreenEditorInnerProps, ScreenEdi
             unversionedData: null,
         } as QLConnectionEntry;
 
-        this.props.performManualConfiguration({connection});
+        this.props.performManualConfiguration({connection, workbookId: entry?.workbookId || null});
 
         this.toggleNavigation(false);
     };

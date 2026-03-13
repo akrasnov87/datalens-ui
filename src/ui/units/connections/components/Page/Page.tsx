@@ -1,6 +1,5 @@
 import React from 'react';
 
-import {CodeTrunk} from '@gravity-ui/icons';
 import {Button, spacing} from '@gravity-ui/uikit';
 import block from 'bem-cn-lite';
 import {I18n} from 'i18n';
@@ -12,11 +11,11 @@ import {withRouter} from 'react-router-dom';
 import {compose} from 'recompose';
 import type {Dispatch} from 'redux';
 import {bindActionCreators} from 'redux';
-import {type ConnectorType, Feature} from 'shared';
+import {type ConnectorType, Feature, SharedEntriesBaseQa} from 'shared';
 import type {DatalensGlobalState} from 'ui';
 import {PageTitle, SlugifyUrl, URL_QUERY, Utils} from 'ui';
 import type {FilterEntryContextMenuItems} from 'ui/components/EntryContextMenu';
-import {ENTRY_CONTEXT_MENU_ACTION} from 'ui/components/EntryContextMenu';
+import {SharedEntryIcon} from 'ui/components/SharedEntryIcon/SharedEntryIcon';
 import {registry} from 'ui/registry';
 import {
     closeDialog,
@@ -25,14 +24,12 @@ import {
     openDialogSaveDraftChartAsActualConfirm,
 } from 'ui/store/actions/dialog';
 import type {DataLensApiError} from 'ui/typings';
-import {getSharedEntryMockText} from 'ui/units/collections/components/helpers';
 import {isEnabledFeature} from 'ui/utils/isEnabledFeature';
 
 import type {ErrorViewProps} from '../';
 import {ErrorView, Router, WrappedLoader} from '../';
 import {AccessRightsUrlOpen} from '../../../../components/AccessRights/AccessRightsUrlOpen';
 import {ActionPanel} from '../../../../components/ActionPanel';
-import {DIALOG_SHARED_ENTRY_BINDINGS} from '../../../../components/DialogSharedEntryBindings/DialogSharedEntryBindings';
 import withErrorPage from '../../../../components/ErrorPage/withErrorPage';
 import {FieldKey} from '../../constants';
 import {
@@ -48,13 +45,16 @@ import {getConnItemByType} from '../../utils';
 import ConnPanelActions from './ConnPanelActions';
 import {DescriptionButton, UnloadConfirmation} from './components';
 import {ConnSettings} from './components/ConnSettings';
+import {filterMenuItems} from './filterContextMenuItems';
+import {useAdditionalContextMenuItems} from './useAdditionalContextMenuItems';
 import {useApiErrors} from './useApiErrors';
-import {isListPageOpened, isS3BasedConnForm} from './utils';
+import {getIsSharedConnection, isListPageOpened, isS3BasedConnForm} from './utils';
 
 import './Page.scss';
 
 const b = block('conn-page');
 const i18n = I18n.keyset('connections.form');
+const i18nSharedEntry = I18n.keyset('shared-entry');
 
 type DispatchState = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
@@ -147,7 +147,7 @@ const PageComponent = (props: PageProps) => {
         apiErrors,
         flattenConnectors,
         groupedConnectors,
-        entry,
+        entry: originalEntry,
         connectionData,
         loading,
     } = props;
@@ -157,28 +157,42 @@ const PageComponent = (props: PageProps) => {
     const workbookId = get(props.match?.params, 'workbookId');
     const collectionId = get(props.match?.params, 'collectionId');
     const queryType = get(props.match?.params, 'type', '');
+    const currentSearchParams = new URLSearchParams(location.search);
+    const bindedWorkbookId = currentSearchParams.get(URL_QUERY.BINDED_WORKBOOK);
+    const bindedDatasetId = currentSearchParams.get(URL_QUERY.BINDED_DATASET);
+    const isSharedConnection = getIsSharedConnection(originalEntry);
+    const isWorkbookSharedEntry = isSharedConnection && bindedWorkbookId && !bindedDatasetId;
+    const isReadonly = Boolean(isSharedConnection && (bindedWorkbookId || bindedDatasetId));
+
+    const entry = isWorkbookSharedEntry
+        ? {...originalEntry, workbookId: bindedWorkbookId, collectionId: null}
+        : originalEntry;
     const connectorType = entry?.type || queryType;
     const connector = getConnItemByType({connectors: flattenConnectors, type: connectorType});
     const type = (connector?.conn_type || queryType) as ConnectorType;
     const listPageOpened = isListPageOpened(location.pathname);
     const s3BasedFormOpened = isS3BasedConnForm(connectionData, type);
-    const currentSearchParams = new URLSearchParams(location.search);
 
     const isFakeEntry = entry && (entry as {fake?: boolean}).fake;
 
     const isExportSettingsFeatureEnabled = isEnabledFeature(Feature.EnableExportSettings);
-    const isDescriptionEnabled = isEnabledFeature(Feature.EnableConnectionDescription);
 
     const revisionsSupported = connector?.history;
     const revId = currentSearchParams.get(URL_QUERY.REV_ID) ?? undefined;
-
-    const isSharedConnection = Boolean(entry?.collectionId);
 
     const showSettings = !connector?.backend_driven_form;
     let isShowCreateButtons = true;
 
     if (entry?.workbookId && !isFakeEntry) {
         isShowCreateButtons = Boolean(entry.permissions?.edit);
+    }
+
+    if (entry?.collectionId && !isFakeEntry) {
+        isShowCreateButtons = Boolean(entry.permissions?.edit);
+    }
+
+    if (isReadonly || (!entry?.entryId && !isFakeEntry) || apiErrors.entry) {
+        isShowCreateButtons = false;
     }
 
     React.useEffect(() => {
@@ -199,8 +213,18 @@ const PageComponent = (props: PageProps) => {
             workbookId,
             collectionId,
             rev_id: revId,
+            bindedWorkbookId,
+            bindedDatasetId,
         });
-    }, [actions, extractedEntryId, workbookId, revId, collectionId]);
+    }, [
+        actions,
+        extractedEntryId,
+        workbookId,
+        revId,
+        collectionId,
+        bindedWorkbookId,
+        bindedDatasetId,
+    ]);
 
     const setActualVersion = React.useMemo(
         () =>
@@ -217,45 +241,48 @@ const PageComponent = (props: PageProps) => {
     );
 
     const filterEntryContextMenuItems: FilterEntryContextMenuItems = React.useCallback(
-        ({items}) => {
-            return items.filter((item) => {
-                if (
-                    isSharedConnection &&
-                    item.id === ENTRY_CONTEXT_MENU_ACTION.SHOW_RELATED_ENTITIES
-                ) {
-                    return false;
-                }
-                if (!revisionsSupported && item.id === ENTRY_CONTEXT_MENU_ACTION.REVISIONS) {
-                    return false;
-                }
-                return true;
-            });
-        },
-        [revisionsSupported, isSharedConnection],
+        ({items}) =>
+            filterMenuItems({
+                items,
+                revisionsSupported,
+                isSharedConnection,
+                isWorkbookSharedEntry: Boolean(isWorkbookSharedEntry),
+            }),
+        [revisionsSupported, isSharedConnection, isWorkbookSharedEntry],
     );
 
-    const additionalEntryItems = React.useMemo(
+    const additionalEntryContextMenuItems = useAdditionalContextMenuItems({
+        entry: originalEntry,
+        isFakeEntry,
+        bindedWorkbookId,
+        bindedDatasetId,
+    });
+
+    const lastCrumbAdditionalContent = React.useMemo(
         () =>
-            isSharedConnection && entry && !isFakeEntry
+            isWorkbookSharedEntry ? (
+                <SharedEntryIcon className={spacing({ml: 2})} isDelegated={entry?.isDelegated} />
+            ) : undefined,
+        [isWorkbookSharedEntry, entry],
+    );
+
+    const actionPanelCenterItems = React.useMemo(
+        () =>
+            isReadonly
                 ? [
-                      {
-                          id: ENTRY_CONTEXT_MENU_ACTION.SHOW_RELATED_ENTITIES,
-                          action: () => {
-                              actions.openDialog({
-                                  id: DIALOG_SHARED_ENTRY_BINDINGS,
-                                  props: {
-                                      onClose: actions.closeDialog,
-                                      open: true,
-                                      entry,
-                                  },
-                              });
-                          },
-                          icon: <CodeTrunk />,
-                          text: getSharedEntryMockText('shared-entry-bindings-dropdown-menu-title'),
-                      },
+                      <Button
+                          key="workbook-shared-entry-original-link"
+                          view="normal-contrast"
+                          onClick={() => {
+                              history.push(location.pathname);
+                          }}
+                          qa={SharedEntriesBaseQa.OpenOriginalBtn}
+                      >
+                          {i18nSharedEntry('workbook-shared-entry-original-link')}
+                      </Button>,
                   ]
                 : undefined,
-        [isSharedConnection, entry, isFakeEntry, actions],
+        [isReadonly, history],
     );
 
     return (
@@ -270,34 +297,37 @@ const PageComponent = (props: PageProps) => {
             <div className={b()}>
                 {entry && (
                     <ActionPanel
+                        className={b('action-panel', {readonly: isReadonly})}
                         entry={entry}
+                        lastCrumbAdditionalContent={lastCrumbAdditionalContent}
+                        centerItems={actionPanelCenterItems}
                         rightItems={[
                             showSettings && isExportSettingsFeatureEnabled && (
                                 <ConnSettings
                                     className={spacing({mr: 2})}
                                     key="additional-actions"
                                     connectionId={extractedEntryId}
+                                    disabled={!isShowCreateButtons}
                                 />
                             ),
-                            isDescriptionEnabled && (
-                                <DescriptionButton
-                                    key="connection-description"
-                                    isS3BasedConnForm={s3BasedFormOpened}
-                                />
-                            ),
+                            <DescriptionButton
+                                key="connection-description"
+                                isS3BasedConnForm={s3BasedFormOpened}
+                            />,
                             isShowCreateButtons && (
                                 <ConnPanelActions
                                     key="conn-panel-actions"
                                     entryId={extractedEntryId}
                                     entryKey={(connectionData[FieldKey.Key] as string) || ''}
                                     s3BasedFormOpened={s3BasedFormOpened}
-                                    workbookId={workbookId || entry?.workbookId}
+                                    isSharedConnection={isSharedConnection}
+                                    workbookId={workbookId || entry?.workbookId || bindedWorkbookId}
                                 />
                             ),
                         ]}
                         setActualVersion={setActualVersion}
                         filterEntryContextMenuItems={filterEntryContextMenuItems}
-                        additionalEntryItems={additionalEntryItems}
+                        additionalEntryItems={additionalEntryContextMenuItems}
                     />
                 )}
                 {loading || !entry ? (

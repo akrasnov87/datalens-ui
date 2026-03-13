@@ -61,7 +61,7 @@ const UsersPage = React.lazy(
 );
 
 const ServiceSettings = React.lazy(() => import('./pages/ServiceSettingsPage/ServiceSettingsPage'));
-//const UserProfile = React.lazy(() => import('./pages/OwnUserProfilePage/OwnUserProfilePage'));
+const UserProfile = React.lazy(() => import('./pages/OwnUserProfilePage/OwnUserProfilePage'));
 
 //const LandingPage = React.lazy(() => import('./pages/LandingPage/LandingPage'));
 const AuthPage = React.lazy(
@@ -109,8 +109,8 @@ const DatalensPageView = (props: any) => {
 
     return (
         <AuthContext.Provider value={{token, setToken, superUser, setSuperUser}}>
-            <React.Suspense fallback={<FallbackPage />}>
-                <Switch>
+        <React.Suspense fallback={<FallbackPage />}>
+            <Switch>
                     {!token && location?.pathname !== "/auth" && <Redirect from="*" to="/auth"/>}
                     {token && <Redirect from="/auth" to="/"/>}
                     <Route
@@ -151,28 +151,28 @@ const DatalensPageView = (props: any) => {
                     component={ConnectionsPage}
                 />
 
-                    <Route path="/settings" component={ServiceSettings} />
+                {DL.AUTH_ENABLED && <Route path="/profile" component={UserProfile} />}
 
-                    <Route path={['/collections']} component={CollectionsNavigtaionPage} />
+                <Route path="/settings" component={ServiceSettings} />
 
-                    <Route exact path={dashAndWizardQLRoutes} component={DashAndWizardQLPages} />
+                <Route path={['/collections']} component={CollectionsNavigtaionPage} />
 
-                    <Route
-                        path={['/collections/:collectionId', '/workbooks/:workbookId']}
-                        component={CollectionsNavigtaionPage}
-                    />
+                <Route exact path={dashAndWizardQLRoutes} component={DashAndWizardQLPages} />
 
-                    {DL.AUTH_ENABLED && <Route path="/auth" component={AuthPage} />}
+                <Route
+                    path={['/collections/:collectionId', '/workbooks/:workbookId']}
+                    component={CollectionsNavigtaionPage}
+                />
 
-                    <Route path="/">
-                        <Redirect to={`/collections${location.search}`} />
-                    </Route>
+                <Route path="/">
+                    <Redirect to={`/collections${location.search}`} />
+                </Route>
 
-                    {/* comment till we have main page */}
-                    {/*<Route path="/" component={MainPage} />*/}
-                </Switch>
-                <LocationChange onLocationChanged={locationChangeHandler} />
-            </React.Suspense>
+                {/* comment till we have main page */}
+                {/*<Route path="/" component={MainPage} />*/}
+            </Switch>
+            <LocationChange onLocationChanged={locationChangeHandler} />
+        </React.Suspense>
         </AuthContext.Provider>
     );
 };
@@ -214,16 +214,16 @@ const DatalensPage: React.FC = () => {
 
     if (token && showMobileHeader && superUser) {
         return (
-            <MobileHeaderComponent 
+            <MobileHeaderComponent
                 renderContent={() => <DatalensPageView token={token} setToken={setToken} superUser={superUser} setSuperUser={setSuperUser} /> }
                 logoTextProps={{installationInfo: OPEN_SOURCE_INSTALLATION_INFO}}
-            /> 
+            />
         );
     }
 
     if (token && showAsideHeaderAdapter && superUser) {
-        return ( 
-            <AsideHeaderAdapter 
+        return (
+            <AsideHeaderAdapter
                 superUser={superUser} 
                 renderContent={() => <DatalensPageView token={token} setToken={setToken} superUser={superUser} setSuperUser={setSuperUser} />} 
                 logoTextProps={{installationInfo: OPEN_SOURCE_INSTALLATION_INFO}}
