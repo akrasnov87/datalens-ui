@@ -5,7 +5,7 @@ import {registry} from '../../../registry';
 
 import {csvConverter} from './csvConverter';
 
-const DATA_LIMIT = 1024 * 1024 * 100; // 100MB
+const DATA_LIMIT = 1024 * 1024 * 1000; // 1000MB
 
 export const exportController = () => {
     return async (req: Request, res: Response) => {

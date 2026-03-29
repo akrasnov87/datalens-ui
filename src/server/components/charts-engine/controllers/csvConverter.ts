@@ -11,7 +11,7 @@ import moment from 'moment/moment';
 import type {Graph} from '../components/processor/comments-fetcher';
 
 const DAY_MS = 1000 * 60 * 60 * 24;
-const CSV_DATA_LIMIT = 1024 * 1024 * 50; // 50MB
+const CSV_DATA_LIMIT = 1024 * 1024 * 500; // 500MB
 
 export function csvConverter(
     req: Request,
