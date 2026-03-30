@@ -19,10 +19,10 @@ export default {
     appName: `datalens-${process.env.APP_MODE}`,
     appSocket: 'dist/run/server.sock',
     expressBodyParserJSONConfig: {
-        limit: '50mb',
+        limit: '2000mb',
     },
     expressBodyParserURLEncodedConfig: {
-        limit: '50mb',
+        limit: '2000mb',
         extended: false,
     },
     expressTrustProxyNumber: 2,
