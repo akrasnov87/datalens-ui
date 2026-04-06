@@ -3,6 +3,7 @@ import type {LogoTextProps} from 'ui/components/AsideHeaderAdapter/LogoText/Logo
 
 export type MobileHeaderComponentProps = {
     renderContent?: () => React.ReactNode;
+    superUser?: any;
     logoIcon?: IconData;
     logoTextProps?: LogoTextProps;
 };
