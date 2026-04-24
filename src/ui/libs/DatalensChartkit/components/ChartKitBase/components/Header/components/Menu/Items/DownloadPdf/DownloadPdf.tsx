@@ -10,7 +10,7 @@ import {Button, Select, SelectOption, SelectOptions} from '@gravity-ui/uikit';
 import {MOBILE_SIZE} from 'ui/utils/mobile';
 import {LowerCasePaperFormat} from 'puppeteer';
 
-import './ExportDialog.scss';
+import './DownloadPdf.scss';
 import Utils from 'ui/utils';
 import { useDispatch } from 'react-redux';
 import { showToast } from 'ui/store/actions/toaster';
@@ -24,12 +24,12 @@ type Props = {
 
 export const DIALOG_EXPORT_PDF = Symbol('DIALOG_EXPORT_PDF');
 
-export type OpenDialogExportPdfArgs = {
+export type OpenDialogDownloadPdfArgs = {
     id: typeof DIALOG_EXPORT_PDF;
     props: Props;
 };
 
-export const ExportDialog: React.FC<Props> = (props) => {
+export const DownloadPdf: React.FC<Props> = (props) => {
     const [format, setFormat] = useState<LowerCasePaperFormat>('letter');
     const [landscape, setLandscape] = useState<string>("false");
 
@@ -151,4 +151,4 @@ export const ExportDialog: React.FC<Props> = (props) => {
     );
 };
 
-DialogManager.registerDialog(DIALOG_EXPORT_PDF, ExportDialog);
+DialogManager.registerDialog(DIALOG_EXPORT_PDF, DownloadPdf);

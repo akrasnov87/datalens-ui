@@ -11,21 +11,16 @@ import {URL_OPTIONS} from 'ui/constants/common';
 import type {MenuItemConfig, MenuItemModalProps} from 'ui/libs/DatalensChartkit/menu/Menu';
 import {registry} from 'ui/registry';
 import {isEnabledFeature} from 'ui/utils/isEnabledFeature';
-import { DIALOG_EXPORT_PDF } from './ExportDialog';
-import { closeDialog, openDialog } from 'ui/store/actions/dialog';
 import {isExportPdfVisible} from './utils';
-import {
-    ICONS_MENU_DEFAULT_SIZE,
-    type MenuItemArgs,
-} from '../../../../../../../../menu/MenuItems';
+import {ICONS_MENU_DEFAULT_SIZE, type MenuItemArgs} from '../../../../../../../../menu/MenuItems';
 import type {ChartKitDataProvider} from '../../../../../../types';
 
 import {csvExportAction} from './CsvExport/CsvExport';
 import type {ExportActionArgs, ExportChartArgs} from './types';
 import {copyData, downloadData, isExportVisible} from './utils';
+import { pdfExportAction } from './PdfExport/PdfExport';
 
 const i18n = I18n.keyset('chartkit.menu.export');
-
 
 const directExportAction = (
     format: ExportFormatsType,
@@ -162,13 +157,18 @@ export const getExportPDF = ({
     chartsDataProvider: ChartKitDataProvider;
     customConfig?: Partial<MenuItemConfig>;
 }): MenuItemConfig => {
+    const pdfAction = pdfExportAction();
+
     return {
         id: MenuItemsIds.EXPORT_PDF,
         title: ({loadedData, error}: MenuItemArgs) => {
-            return isExportPdfVisible({loadedData, error}) ? i18n('menu-export-pdf') : i18n('menu-screenshot');
+            return isExportPdfVisible({loadedData, error})
+                ? i18n('menu-export-pdf')
+                : i18n('menu-screenshot');
         },
         icon: ({loadedData, error}: MenuItemArgs) => {
-            const iconData = isExportPdfVisible({loadedData, error}) && !error ? ArrowDownToLine : Picture;
+            const iconData =
+                isExportPdfVisible({loadedData, error}) && !error ? ArrowDownToLine : Picture;
             return (
                 <Icon
                     size={ICONS_MENU_DEFAULT_SIZE}
@@ -181,26 +181,13 @@ export const getExportPDF = ({
         isVisible: ({loadedData, error}: MenuItemArgs) => {
             const isExportAllowed = !loadedData?.extra.dataExportForbidden;
             const isScreenshotVisible = loadedData?.data && showScreenshot;
-    
+
             return Boolean(
                 isExportAllowed && (isExportPdfVisible({loadedData, error}) || isScreenshotVisible),
             );
         },
-        action: (data: ExportActionArgs) => {
-            const dispatch = data.dispatch;
-            if (dispatch) {
-                dispatch(
-                    openDialog({
-                        id: DIALOG_EXPORT_PDF,
-                        props: {
-                            entryId: data.propsData.id || "",
-                            onClose: ()=> dispatch(closeDialog()),
-                        },
-                    }),
-                );
-            }
-        }
-    }
+        action: pdfAction,
+    };
 };
 
 export function isExportItemDisabled() {
