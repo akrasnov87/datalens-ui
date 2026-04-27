@@ -167,6 +167,7 @@
   "label_header": "Заголовок",
   "label_hide": "Скрыть",
   "label_hint": "Подсказка",
+  "label_override_title": "Переименовать заголовок",
   "label_holidays": "Выходные на графике",
   "label_horizontal": "Горизонтальные",
   "label_hour": "Час",

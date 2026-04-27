@@ -738,6 +738,7 @@ class VisualizationItem extends React.Component<Props, State> {
             backgroundSettings,
             subTotalsSettings,
             hintSettings,
+            overrideTitleSettings,
             markupType,
         }: DialogFieldState,
     ) => {
@@ -750,6 +751,7 @@ class VisualizationItem extends React.Component<Props, State> {
             backgroundSettings,
             subTotalsSettings,
             hintSettings,
+            overrideTitleSettings,
             markupType,
         };
 
@@ -892,6 +894,7 @@ class VisualizationItem extends React.Component<Props, State> {
             target.subTotalsSettings = subTotalsSettings;
         }
 
+        target.overrideTitleSettings = overrideTitleSettings;
         target.hintSettings = hintSettings;
         target.markupType =
             target.data_type === DATASET_FIELD_TYPES.STRING ? markupType : undefined;

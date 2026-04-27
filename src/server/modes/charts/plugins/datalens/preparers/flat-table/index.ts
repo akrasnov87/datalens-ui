@@ -107,6 +107,10 @@ function prepareFlatTable({
             headCell.hint = item.hintSettings.text;
         }
 
+        if (item.overrideTitleSettings?.enabled) {
+            headCell.name = item.overrideTitleSettings.text;
+        }
+
         if (!isLastColumn && index < pinnedColumns) {
             headCell.pinned = true;
         }

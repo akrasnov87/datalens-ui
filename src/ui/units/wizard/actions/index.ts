@@ -613,6 +613,7 @@ export function removeDataset({
                             'columnSettings',
                             'barsSettings',
                             'hintSettings',
+                            'overrideTitleSettings',
                         ];
 
                         if (item.filter) {

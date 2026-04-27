@@ -39,6 +39,7 @@ import type {
     DatasetFieldAggregation,
     DatasetOptions,
     NestedPartial,
+    OverrideTitleSettings,
     Field as TField,
     TableBarsSettings,
 } from '../../../../../../shared/types';
@@ -113,6 +114,7 @@ export type DialogFieldState = Optional<FieldStateExtend> & {
     visualizationId?: string;
     currentPlaceholder?: Placeholder;
     hintSettings?: HintSettings;
+    overrideTitleSettings?: OverrideTitleSettings;
     markupType?: MarkupType;
 };
 
@@ -142,6 +144,7 @@ class DialogField extends React.PureComponent<DialogFieldInnerProps, DialogField
         const initialState: DialogFieldState = {
             formatting: props.item?.formatting || ({} as CommonNumberFormattingOptions),
             hintSettings: props.item?.hintSettings,
+            overrideTitleSettings: props.item?.overrideTitleSettings,
             isBarsSettingsEnabled:
                 !isPivotFallbackTurnedOn &&
                 showBarsInDialogField(visualizationId, props.placeholderId, props.item),
@@ -330,6 +333,7 @@ class DialogField extends React.PureComponent<DialogFieldInnerProps, DialogField
             this.renderFormattingItem(),
             this.renderSubTotalsSettings(),
             this.renderBarsSettings(),
+            this.renderTitleSettings(),
             this.renderBackgroundSettings(),
         ];
 
@@ -536,6 +540,50 @@ class DialogField extends React.PureComponent<DialogFieldInnerProps, DialogField
                     onUpdate={this.handleSubTotalsSettingsUpdate}
                 />
             </>
+        );
+    }
+
+    private renderTitleSettings() {
+        const {item} = this.props;
+
+        if (!item) {
+            return null;
+        }
+
+        const overrideTitleSettings = this.state.overrideTitleSettings;
+        const enabled = overrideTitleSettings?.enabled;
+        const text = overrideTitleSettings?.text || item?.description || '';
+
+        const {MarkdownControl} = registry.common.components.getAll();
+
+        return (
+            <React.Fragment>
+                <DialogFieldRow
+                    title={i18n('wizard', 'label_override_title')}
+                    setting={
+                        <Switch
+                            onUpdate={(checked) =>
+                                this.setState({overrideTitleSettings: {enabled: checked, text}})
+                            }
+                            checked={enabled}
+                        />
+                    }
+                />
+                {enabled && (
+                    <DialogFieldRow
+                        title={''}
+                        setting={
+                            <MarkdownControl
+                                value={text}
+                                onChange={(value) =>
+                                    this.setState({overrideTitleSettings: {enabled, text: value}})
+                                }
+                                disabled={!enabled}
+                            />
+                        }
+                    />
+                )}
+            </React.Fragment>
         );
     }
 

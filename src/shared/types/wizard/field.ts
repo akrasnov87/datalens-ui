@@ -45,10 +45,16 @@ export interface WizardDatasetField extends DatasetField {
     backgroundSettings?: TableFieldBackgroundSettings;
     distincts?: string[];
     hintSettings?: HintSettings;
+    overrideTitleSettings?: OverrideTitleSettings;
     markupType?: MarkupType;
 }
 
 export type HintSettings = {
+    enabled?: boolean;
+    text?: string;
+};
+
+export type OverrideTitleSettings = {
     enabled?: boolean;
     text?: string;
 };
