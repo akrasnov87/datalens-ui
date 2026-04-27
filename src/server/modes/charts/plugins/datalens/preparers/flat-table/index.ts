@@ -108,7 +108,7 @@ function prepareFlatTable({
         }
 
         if (item.overrideTitleSettings?.enabled) {
-            headCell.name = item.overrideTitleSettings.text;
+            headCell.name = item.overrideTitleSettings.text || '';
         }
 
         if (!isLastColumn && index < pinnedColumns) {

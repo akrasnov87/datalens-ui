@@ -31,4 +31,6 @@ export enum ChartsConfigVersion {
     V13 = '13',
     // rename the palette id (remove the word "palette" from the value)
     V14 = '14',
+    // маппинг тайтла
+    V14p1 = '14p1',
 }
