@@ -614,6 +614,7 @@ export function removeDataset({
                             'barsSettings',
                             'hintSettings',
                             'overrideTitleSettings',
+                            'bandTitleSettings',
                         ];
 
                         if (item.filter) {

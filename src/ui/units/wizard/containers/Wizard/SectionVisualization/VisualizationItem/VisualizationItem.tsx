@@ -739,6 +739,7 @@ class VisualizationItem extends React.Component<Props, State> {
             subTotalsSettings,
             hintSettings,
             overrideTitleSettings,
+            bandTitleSettings,
             markupType,
         }: DialogFieldState,
     ) => {
@@ -752,6 +753,7 @@ class VisualizationItem extends React.Component<Props, State> {
             subTotalsSettings,
             hintSettings,
             overrideTitleSettings,
+            bandTitleSettings,
             markupType,
         };
 
@@ -894,6 +896,7 @@ class VisualizationItem extends React.Component<Props, State> {
             target.subTotalsSettings = subTotalsSettings;
         }
 
+        target.bandTitleSettings = bandTitleSettings;
         target.overrideTitleSettings = overrideTitleSettings;
         target.hintSettings = hintSettings;
         target.markupType =

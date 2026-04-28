@@ -329,6 +329,10 @@ export const generateTableHead = ({
             if (field.overrideTitleSettings?.enabled) {
                 head[index].name = field.overrideTitleSettings?.text;
             }
+
+            if (field.bandTitleSettings?.enabled) {
+                head[index].band = field.bandTitleSettings?.text;
+            }
         }
 
         head[index].name = fieldName;

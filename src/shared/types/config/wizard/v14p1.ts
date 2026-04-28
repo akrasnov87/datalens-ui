@@ -1,4 +1,5 @@
 import type {
+    BandTitleSettings,
     GradientNullMode,
     MapCenterModes,
     MarkupType,
@@ -330,5 +331,6 @@ export type V14p1Field = {
     columnSettings?: ColumnSettings;
     hintSettings?: HintSettings;
     overrideTitleSettings?: OverrideTitleSettings;
+    bandTitleSettings?: BandTitleSettings;
     ui_settings?: string;
 } & V14p1ClientOnlyFields;

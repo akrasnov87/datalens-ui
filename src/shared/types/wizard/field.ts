@@ -46,6 +46,7 @@ export interface WizardDatasetField extends DatasetField {
     distincts?: string[];
     hintSettings?: HintSettings;
     overrideTitleSettings?: OverrideTitleSettings;
+    bandTitleSettings?: BandTitleSettings;
     markupType?: MarkupType;
 }
 
@@ -55,6 +56,11 @@ export type HintSettings = {
 };
 
 export type OverrideTitleSettings = {
+    enabled?: boolean;
+    text?: string;
+};
+
+export type BandTitleSettings = {
     enabled?: boolean;
     text?: string;
 };

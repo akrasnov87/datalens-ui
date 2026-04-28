@@ -111,6 +111,10 @@ function prepareFlatTable({
             headCell.name = item.overrideTitleSettings.text || '';
         }
 
+        if (item.bandTitleSettings?.enabled) {
+            headCell.band = item.bandTitleSettings.text || '';
+        }
+
         if (!isLastColumn && index < pinnedColumns) {
             headCell.pinned = true;
         }
