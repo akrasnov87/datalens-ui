@@ -21,8 +21,8 @@ import {isEnabledFeature} from 'ui/utils/isEnabledFeature';
 import type {ChartWidgetDataRef} from '../../../components/Widgets/Chart/types';
 import {CHARTKIT_WIDGET_TYPE} from '../ChartKit/components/Widget/Widget';
 import {
-    getExportPDF,
     getExportItem,
+    getExportPDF,
     isExportItemDisabled,
 } from '../components/ChartKitBase/components/Header/components/Menu/Items/Export/Export';
 import Inspector from '../components/ChartKitBase/components/Header/components/Menu/Items/Inspector/Inspector';

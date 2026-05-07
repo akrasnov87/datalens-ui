@@ -117,6 +117,35 @@ type LoadingStateType = {
     isInit: boolean;
 };
 
+function bandHeaders(data: any) {
+    const map = new Map();
+    // Создаем Map со всеми объектами
+    data.forEach((item: any) => {
+        const newItem = {...item};
+        map.set(item.id, newItem);
+    });
+
+    // Обрабатываем связи
+    data.forEach((item: any) => {
+        if (item.band && map.has(item.band)) {
+            const parent = map.get(item.band);
+
+            if (!parent.sub) {
+                parent.sub = [];
+            }
+
+            const {...childItem} = item;
+            parent.sub.push(childItem);
+
+            // Удаляем из корневого результата
+            map.delete(item.id);
+        }
+    });
+
+    // Возвращаем только корневые элементы (у которых нет band или чей band не найден)
+    return Array.from(map.values());
+}
+
 const loadingStateReducer = (state: LoadingStateType, newState: Partial<LoadingStateType>) => {
     const hasChanges = Object.entries(newState).find(
         ([key, value]) => state[key as keyof LoadingStateType] !== value,
@@ -437,6 +466,12 @@ export const useLoadingChart = (props: LoadingChartHookProps) => {
                     dataProvider.getRequestCancellation(),
                 ...(requestHeadersGetter ? {contextHeaders: requestHeadersGetter()} : {}),
             });
+
+            if (loadedWidgetData && (loadedWidgetData as any).data) {
+                const widgetData = loadedWidgetData as any;
+                widgetData.data = widgetData.data || {head: []};
+                widgetData.data.head = bandHeaders(widgetData.data.head);
+            }
 
             const isCanceled = requestCancellationRef.current?.[requestId]?.status === 'canceled';
 

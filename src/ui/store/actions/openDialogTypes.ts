@@ -53,8 +53,8 @@ import type {OpenDialogCreateEntryInWorkbookArgs} from '../../components/Collect
 import type {OpenDialogCreateEntryInCollectionArgs} from '../../components/CollectionsStructure/CreateEntryInCollectionDialog';
 import type {OpenDialogIamAccessArgs} from '../../components/IamAccessDialog';
 import type {OpenDialogAssignClaimsArgs} from '../../components/OpenDialogAssignClaims/OpenDialogAssignClaims';
-import { OpenDialogShareArgs } from 'ui/components/OpenDialogShare/OpenDialogShare';
-import { OpenDialogExportPdfArgs } from 'ui/libs/DatalensChartkit/components/ChartKitBase/components/Header/components/Menu/Items/Export/ExportDialog';
+import type {OpenDialogShareArgs} from 'ui/components/OpenDialogShare/OpenDialogShare';
+// import type {OpenDialogExportPdfArgs} from 'ui/libs/DatalensChartkit/components/ChartKitBase/components/Header/components/Menu/Items/Export/PdfExport/PdfExport';
 import type {OpenDialogTooltipSettingsArgs} from '../../units/wizard/components/Dialogs/DialogTooltipSettings/DialogTooltipSettings';
 import type {OpenDialogChangeDatasetFieldsArgs} from '../../units/datasets/components/DatasetTable/components/BatchActionPanel/components/DialogChangeDatasetFields/DialogChangeDatasetFields';
 import type {OpenDialogCollectionNoCreatePermissionArgs} from 'ui/components/CollectionsStructure/CollectionNoCreatePermissionDialog';
@@ -134,5 +134,5 @@ export type OpenDialogArgs<T = unknown> =
     | OpenDialogSelectSharedEntryArgs
     | OpenDialogAssignClaimsArgs
     | OpenDialogShareArgs
-    | OpenDialogExportPdfArgs
+    // | OpenDialogExportPdfArgs
     | OpenDialogEntryDescriptionArgs;

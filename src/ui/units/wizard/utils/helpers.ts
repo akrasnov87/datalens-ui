@@ -277,6 +277,9 @@ export function versionExtractor(this: any, key: string, value: any) {
                 const backgroundSettings = item.backgroundSettings || {};
                 const subTotalsSettings = item.subTotalsSettings || {};
                 const hintSettings = item.hintSettings || {};
+                const overrideTitleSettings = item.overrideTitleSettings || {};
+                const bandTitleSettings = item.bandTitleSettings || {};
+                
                 const {fakeTitle, format, hideLabelMode} = item;
                 return {
                     guid: item.guid,
@@ -289,6 +292,8 @@ export function versionExtractor(this: any, key: string, value: any) {
                     backgroundSettings,
                     subTotalsSettings,
                     hintSettings,
+                    overrideTitleSettings,
+                    bandTitleSettings,
                     markupType: item.markupType,
                 };
             }),

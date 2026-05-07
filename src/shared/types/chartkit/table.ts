@@ -65,6 +65,7 @@ export type CommonTableColumn = {
     formattedName?: ReactElement | WrappedHTML | string;
     type: TableCommonCellType;
     group?: boolean;
+    band?: string;
     autogroup?: boolean;
     markup?: MarkupItem;
     css?: ChartKitCss;
