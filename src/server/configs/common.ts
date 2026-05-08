@@ -28,15 +28,13 @@ export default {
     expressTrustProxyNumber: 2,
     workers: process.env.WORKERS ? parseInt(process.env.WORKERS, 10) : 1,
     python: process.env.PYTHON || 'python3',
-    fetchingTimeout: ((process.env.DATA_FETCHING_TIMEOUT_MS && parseInt(process.env.DATA_FETCHING_TIMEOUT_MS)) || 95) * 1000,
-    singleFetchingTimeout: ((process.env.DATA_SINGLE_FETCHING_TIMEOUT_MS && parseInt(process.env.DATA_SINGLE_FETCHING_TIMEOUT_MS)) || 95) * 1000,
+    fetchingTimeout: process.env.DATA_FETCHING_TIMEOUT_MS
+        ? parseInt(process.env.DATA_FETCHING_TIMEOUT_MS, 95000)
+        : undefined,
+    singleFetchingTimeout: process.env.DATA_SINGLE_FETCHING_TIMEOUT_MS
+        ? parseInt(process.env.DATA_SINGLE_FETCHING_TIMEOUT_MS, 95000)
+        : undefined,
     flatTableRowsLimit: ((process.env.FLAT_TABLE_ROWS_LIMIT && parseInt(process.env.FLAT_TABLE_ROWS_LIMIT)) || 100000),
-    // fetchingTimeout: process.env.DATA_FETCHING_TIMEOUT_MS
-    //     ? parseInt(process.env.DATA_FETCHING_TIMEOUT_MS, 10)
-    //     : undefined,
-    // singleFetchingTimeout: process.env.DATA_SINGLE_FETCHING_TIMEOUT_MS
-    //     ? parseInt(process.env.DATA_SINGLE_FETCHING_TIMEOUT_MS, 10)
-    //     : undefined,
     faviconUrl: '/favicon.ico',
     appMode: process.env.APP_MODE,
     serviceName: SERVICE_NAME_DATALENS,

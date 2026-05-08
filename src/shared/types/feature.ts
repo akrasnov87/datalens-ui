@@ -104,7 +104,6 @@ export enum Feature {
     EnableNewDashSettings = 'EnableNewDashSettings',
     /** Shows updated settings page */
     EnableNewServiceSettings = 'EnableNewServiceSettings',
-    EnableTenantSettingPalettes = 'EnableTenantSettingPalettes',
 }
 
 export type FeatureConfig = Record<string, boolean>;

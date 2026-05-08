@@ -3,7 +3,6 @@ import React from 'react';
 import {ActionBar} from '@gravity-ui/navigation';
 import {Skeleton} from '@gravity-ui/uikit';
 import block from 'bem-cn-lite';
-
 import {Feature} from 'shared';
 import {DL} from 'ui/constants/common';
 import {registry} from 'ui/registry';
@@ -58,7 +57,7 @@ export const CollectionsNavigationLayout = React.memo<Props>(
         const showDescription = !DL.IS_MOBILE && layout.description;
 
         const title = typeof layout.title?.content === 'string' ? layout.title.content : '';
-        
+
         return (
             <div className={b({mobile: DL.IS_MOBILE})}>
                 {(layout.actionsPanelLeftBlock || layout.actionsPanelRightBlock) &&

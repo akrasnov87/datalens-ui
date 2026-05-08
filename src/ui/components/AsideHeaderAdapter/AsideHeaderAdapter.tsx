@@ -217,9 +217,9 @@ export const AsideHeaderAdapter = ({
                 id: Panel.Settings,
                 content: <SettingsPanel />,
                 visible: visiblePanel === Panel.Settings,
-            }
+            },
         ],
-        [visiblePanel]
+        [visiblePanel],
     );
 
     const getReliaseVersionWrapper = React.useCallback(

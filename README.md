@@ -88,8 +88,8 @@ demo
 ## Сборка
 <pre>
 docker login -u [username]
-docker build -t akrasnov87/datalens-ui:0.2864.1 .
-docker push akrasnov87/datalens-ui:0.2864.1
+docker build -t akrasnov87/datalens-ui:0.3831.0 .
+docker push akrasnov87/datalens-ui:0.3831.0
 </pre>
 
 Для сборки так же можно вызвать команду `npm run build:image` (предварительно проверить, что для файла `build.sh` есть права на выполнение `chmod +X build.sh`)

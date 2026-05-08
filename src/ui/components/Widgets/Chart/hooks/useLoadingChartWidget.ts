@@ -369,6 +369,7 @@ export const useLoadingChartWidget = (props: LoadingChartWidgetHookProps) => {
     const debouncedChartReflow = React.useCallback(
         debounce(() => {
             handleChartkitReflow();
+
             // Triggering update after chart changed it size
             if (isReadyToReflowRef.current && handleUpdate) {
                 requestAnimationFrame(() => handleUpdate());

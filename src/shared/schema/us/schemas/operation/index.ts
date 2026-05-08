@@ -8,7 +8,6 @@ const timeSchema = z.object({
 export const datalensOperationSchema = z.object({
     id: z.string(),
     description: z.string(),
-    //project: z.string(),
     createdBy: z.string(),
     createdAt: timeSchema,
     modifiedAt: timeSchema,

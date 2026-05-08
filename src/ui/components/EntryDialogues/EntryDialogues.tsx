@@ -67,7 +67,7 @@ export enum EntryDialogName {
     SaveAsNew = 'save-as-new',
     MigrateToWorkbook = 'migrate-to-workbook',
     ShowRelatedEntities = 'show-related-entities',
-    Share = 'share'
+    Share = 'share',
 }
 
 const getMapDialogues = (): Record<string, any> => {

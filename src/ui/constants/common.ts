@@ -1,4 +1,5 @@
 import {UserRole} from 'shared/components/auth/constants/role';
+
 import type {LineShapeType} from '../../shared';
 import {
     AppEnvironment,

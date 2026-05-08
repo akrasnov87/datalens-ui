@@ -220,7 +220,7 @@ export type EntryContextMenuIDType<T = unknown> = unknown extends T
     ? EntryContextMenuIDTypeBase
     : EntryContextMenuIDTypeBase | T;
 
-export type MenuGroupConfigIds<T = unknown> = EntryContextMenuIDType<T> | MenuItemsIds | string;
+export type MenuGroupConfigIds<T = unknown> = EntryContextMenuIDType<T> | MenuItemsIds;
 
 export type MenuGroup<T = unknown> = Array<MenuGroupConfigIds<T>>;
 
@@ -242,7 +242,7 @@ export type EntryContextMenuItem<T = unknown> = {
     icon: IconData | JSX.Element;
     text: string;
     action: (args?: unknown) => void;
-    id: MenuGroupConfigIds<T> | string; // it is necessary to identify and group menu items (using separators)
+    id: MenuGroupConfigIds<T>; // it is necessary to identify and group menu items (using separators)
     hidden?: boolean;
     wrapper?: ({entry, children}: WrapperParams) => JSX.Element;
     qa?: string;

@@ -61,9 +61,6 @@ export const WorkbookEntriesTable = React.memo<WorkbookEntriesTableProps>(
     }) => {
         const dispatch: AppDispatch = useDispatch();
         const entryDialoguesRef = React.useRef<EntryDialogues>(null);
-        entries.forEach((_) => {
-            
-        });
 
         // React.useEffect(() => {
         //     const resolveUsersByIds = getResolveUsersByIdsAction();

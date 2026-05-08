@@ -37,24 +37,6 @@ import type {
 } from '../types';
 
 export const dashActions = {
-    // WIP
-    __deleteDashboard__: createTypedAction(
-        {
-            paramsSchema: deleteDashArgsSchema,
-            resultSchema: deleteDashResultSchema,
-        },
-        async (api, {lockToken, dashboardId}) => {
-            const typedApi = getTypedApi(api);
-
-            await typedApi.us._deleteUSEntry({
-                entryId: dashboardId,
-                lockToken,
-            });
-
-            return {};
-        },
-    ),
-
     collectDashStats: createAction<CollectDashStatsResponse, CollectDashStatsArgs>(
         async (_, args, {ctx}) => {
             ctx.stats('dashStats', {

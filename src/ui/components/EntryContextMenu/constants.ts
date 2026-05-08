@@ -102,11 +102,11 @@ const isVisibleEntryContextShareItem = ({entry, showSpecificItems}: ContextMenuP
     showSpecificItems &&
     isEnabledFeature(Feature.EnableEntryMenuItemShare);
 
-    export const getEntryContextMenu = (): ContextMenuItem[] => {
-        const {getTopLevelEntryScopes, getAllEntryScopes, getEntryScopesWithRevisionsList} =
-            registry.common.functions.getAll();
+export const getEntryContextMenu = (): ContextMenuItem[] => {
+    const {getTopLevelEntryScopes, getAllEntryScopes, getEntryScopesWithRevisionsList} =
+        registry.common.functions.getAll();
 
-        return [
+    return [
         {
             id: ENTRY_CONTEXT_MENU_ACTION.REVISIONS,
             action: ENTRY_CONTEXT_MENU_ACTION.REVISIONS,
@@ -233,7 +233,7 @@ const isVisibleEntryContextShareItem = ({entry, showSpecificItems}: ContextMenuP
                 }
 
                 return CONTEXT_MENU_COPY.isVisible(args);
-            }
+            },
         },
         {
             ...CONTEXT_MENU_COPY,
@@ -282,14 +282,6 @@ const isVisibleEntryContextShareItem = ({entry, showSpecificItems}: ContextMenuP
             scopes: getAllEntryScopes(),
             isVisible: isVisibleEntryContextShareItem,
         },
-        // {
-        //     id: ENTRY_CONTEXT_MENU_ACTION.SHOW_RELATED_ENTITIES,
-        //     action: ENTRY_CONTEXT_MENU_ACTION.SHOW_RELATED_ENTITIES,
-        //     icon: CodeTrunk,
-        //     text: 'value_show-related-entities',
-        //     enable: () => Utils.isEnabledFeature(Feature.RelatedEntitiesList),
-        //     scopes: OBJECT_SCOPES,
-        // },
         {
             id: ENTRY_CONTEXT_MENU_ACTION.SHOW_RELATED_ENTITIES,
             action: ENTRY_CONTEXT_MENU_ACTION.SHOW_RELATED_ENTITIES,
@@ -304,6 +296,6 @@ const isVisibleEntryContextShareItem = ({entry, showSpecificItems}: ContextMenuP
             ],
         },
         ...getAdditionalEntryContextMenuItems(),
-        getContextMenuMoveToWorkbooks()
+        getContextMenuMoveToWorkbooks(),
     ];
 };

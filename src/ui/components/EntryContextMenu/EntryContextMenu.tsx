@@ -87,7 +87,7 @@ class EntryContextMenu extends React.PureComponent<Props> {
     };
 
     entryDialoguesRef = this.props.entryDialogsRef || React.createRef<EntryDialogues>();
-    
+
     render() {
         return (
             Boolean(this.props.anchorElement) && (

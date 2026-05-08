@@ -41,6 +41,7 @@ export const getFilteredEntryContextMenu = ({
         return (
             entry &&
             // check availability
+	    // аргумент entry не удалять
             menuItem.enable(entry) &&
             // check the scope/object from which we call the menu
             entry.scope &&
