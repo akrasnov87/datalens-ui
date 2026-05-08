@@ -1,14 +1,12 @@
 import type {AppMiddleware, Request, Response} from '@gravity-ui/expresskit';
 import {AuthPolicy} from '@gravity-ui/expresskit';
 import type {AppContext} from '@gravity-ui/nodekit';
-import type {PassportStatic} from 'passport';
 
 import {AppEnvironment} from '../../../shared';
 import {getAuthArgs} from '../../../shared/schema/gateway-utils';
 import {appEnv, isApiMode, isChartsMode, isDatalensMode, isFullMode} from '../../app-env';
 import {getAuthRoutes} from '../../components/auth/routes';
 import type {ChartsEngine} from '../../components/charts-engine';
-import {getZitadelRoutes} from '../../components/zitadel/routes';
 import {ping} from '../../controllers/ping';
 import {exportEntries} from '../../controllers/export-entries';
 import {printEntry} from '../../controllers/print-entry';
@@ -22,13 +20,11 @@ import {applyPluginRoutes} from '../charts/init-charts-engine';
 export function getRoutes({
     ctx,
     chartsEngine,
-    passport,
     beforeAuth,
     afterAuth,
 }: {
     ctx: AppContext;
     chartsEngine?: ChartsEngine;
-    passport: PassportStatic;
     beforeAuth: AppMiddleware[];
     afterAuth: AppMiddleware[];
 }) {
@@ -53,10 +49,6 @@ export function getRoutes({
             handler: printEntry
         },
     };
-
-    if (ctx.config.isZitadelEnabled) {
-        routes = {...routes, ...getZitadelRoutes({passport, beforeAuth, afterAuth})};
-    }
 
     if (appEnv === AppEnvironment.Development || isApiMode) {
         routes = {

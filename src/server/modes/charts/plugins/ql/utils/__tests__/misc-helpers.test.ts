@@ -17,12 +17,12 @@ const mockedBuildSourceArgsSet = {
     query: 'select built_year, iznos from public.sample where built_year in {{years}} limit 10',
     params: {years: '1995'},
     paramsDescription: [
-        {type: 'string', label: '', name: 'years', defaultValue: ['1990', '1995'], overridenValue: '1995'},
+        {type: 'string', name: 'years', defaultValue: ['1990', '1995'], overridenValue: '1995'},
     ],
 };
 
 const expectedBuildSourceResultSet = {
-    url: `/_bi_connections/${MOCK_ID}/dashsql?with_export_info=true`,
+    url: `/_bi_connections/${MOCK_ID}/dashsql`,
     method: 'post',
     data: {
         sql_query:
@@ -36,12 +36,12 @@ const mockedBuildSourceArgsSingle = {
     query: 'select built_year, iznos from public.sample where built_year = {{years}} limit 10',
     params: {years: '1995'},
     paramsDescription: [
-        {type: 'string', label: '', name: 'years', defaultValue: ['1990', '1995'], overridenValue: '1995'},
+        {type: 'string', name: 'years', defaultValue: ['1990', '1995'], overridenValue: '1995'},
     ],
 };
 
 const expectedBuildSourceResultSingle = {
-    url: `/_bi_connections/${MOCK_ID}/dashsql?with_export_info=true`,
+    url: `/_bi_connections/${MOCK_ID}/dashsql`,
     method: 'post',
     data: {
         sql_query:
@@ -55,12 +55,12 @@ const mockedBuildSourceArgsPrewrapped = {
     query: 'select built_year, iznos from public.sample where built_year in ({{years}}) limit 10',
     params: {years: '1995'},
     paramsDescription: [
-        {type: 'string', label: '', name: 'years', defaultValue: ['1990', '1995'], overridenValue: '1995'},
+        {type: 'string', name: 'years', defaultValue: ['1990', '1995'], overridenValue: '1995'},
     ],
 };
 
 const expectedBuildSourceResultPrewrapped = {
-    url: `/_bi_connections/${MOCK_ID}/dashsql?with_export_info=true`,
+    url: `/_bi_connections/${MOCK_ID}/dashsql`,
     method: 'post',
     data: {
         sql_query:

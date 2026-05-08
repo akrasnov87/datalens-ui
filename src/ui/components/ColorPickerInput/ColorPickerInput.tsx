@@ -45,6 +45,7 @@ export interface ColorPickerInputProps extends Pick<TextInputProps, 'qa' | 'onFo
     hasOpacityInput?: boolean;
     autoFocus?: boolean;
     onUpdate: (value: string | null) => void;
+    onBlur?: () => void;
     onValidChange?: (isValid: boolean) => void;
     theme?: RealTheme;
     className?: string;
@@ -67,6 +68,7 @@ export const ColorPickerInput = React.forwardRef<HTMLElement, ColorPickerInputPr
             hasOpacityInput,
             autoFocus,
             onFocus,
+            onBlur,
             onUpdate,
             onValidChange,
             theme,

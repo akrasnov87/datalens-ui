@@ -5,6 +5,7 @@ import type {HttpMethod} from '@gravity-ui/expresskit/dist/types';
 import type {AppContext} from '@gravity-ui/nodekit';
 
 import type {EDITOR_TYPE_CONFIG_TABS} from '../../../shared';
+import type {PartialDatasetField} from '../../../shared/schema/types';
 import type {SourcesArgs} from '../../modes/charts/plugins/datalens/url/types';
 import type {MiddlewareSourceAdapterArgs, MiddlewareUrl} from '../../modes/charts/plugins/types';
 
@@ -201,6 +202,7 @@ export type SourceConfig = {
     args?: Record<string, string | number | (string | number)[]>;
     maxRedirects?: number;
     isExternal?: boolean;
+    aliasTo?: SourceAliasConfig;
 };
 
 export enum MiddlewareStage {

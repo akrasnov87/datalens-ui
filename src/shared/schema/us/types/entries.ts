@@ -1,6 +1,12 @@
 import type z from 'zod';
 
-import type {CollectionItemEntities, EntryScope, WorkbookId} from '../../..';
+import type {
+    CollectionItemEntities,
+    EntryAnnotationArgs,
+    EntryScope,
+    EntryUpdateMode,
+    WorkbookId,
+} from '../../..';
 import type {Permissions} from '../../../types';
 import type {
     getEntriesEntryResponseSchema,
@@ -16,20 +22,45 @@ import type {EntriesCommonArgs} from './common';
 import type {
     EntryFieldData,
     EntryFieldLinks,
+    EntryFieldMeta,
     EntryFields,
     EntryMetaFields,
     EntryNavigationFields,
     EntryRelationFields,
+    SharedEntryPermissions,
+    SharedEntryRelationFields,
 } from './fields';
 
 export interface GetEntryResponse extends EntryFields {
     isFavorite: boolean;
     permissions?: Permissions;
+    fullPermissions?: SharedEntryPermissions;
     isLocked?: boolean;
     links?: EntryFieldLinks;
     parentDashEntryId?: string;
     parentDashName?: string;
 }
+export interface GetSharedEntryResponse extends GetEntryResponse {
+    isDelegated: boolean;
+    isRestricted?: false;
+}
+
+export interface RestrictedSharedEntry
+    extends Pick<
+        GetSharedEntryResponse,
+        | 'entryId'
+        | 'collectionId'
+        | 'isDelegated'
+        | 'isLocked'
+        | 'scope'
+        | 'type'
+        | 'workbookId'
+        | 'permissions'
+        | 'fullPermissions'
+    > {
+    isRestricted: true;
+}
+
 export interface GetEntryArgs {
     entryId: string;
     workbookId?: WorkbookId;
@@ -39,6 +70,7 @@ export interface GetEntryArgs {
     includeLinks?: boolean;
     includeFavorite?: boolean;
     includeDlComponentUiData?: boolean;
+    bindedDatasetId?: string | null;
 }
 
 export interface PrivateGetEntryArgs extends GetEntryArgs {
@@ -68,6 +100,8 @@ export interface GetEntryByKeyArgs extends Omit<GetEntryArgs, 'entryId'> {
 export interface GetEntryMetaResponse extends EntryMetaFields {}
 export interface GetEntryMetaArgs {
     entryId: string;
+    bindedWorkbookId?: string | null;
+    bindedDatasetId?: string | null;
 }
 
 export interface GetRevisionsEntry extends EntryNavigationFields {
@@ -122,10 +156,45 @@ export type GetEntriesArgs = EntriesCommonArgs & {
 
 export type MoveEntryResponse = EntryFields[];
 
+export type GetSharedEntryInfoResponse = Pick<
+    GetEntryResponse,
+    'permissions' | 'fullPermissions' | 'entryId' | 'workbookId' | 'key' | 'type'
+> & {
+    scope: EntryScope.Connection | EntryScope.Dataset;
+    collectionId: string;
+};
+
+export type DeleteSharedEntriesResponse = {
+    entries: EntryFields[];
+};
+export type MoveSharedEntriesResponse = {
+    entries: EntryFields[];
+};
+
 export interface MoveEntryArgs {
     entryId: string;
     destination: string;
     name?: string;
+}
+
+export interface MoveSharedEntryArgs {
+    entryId: string;
+    collectionId: string;
+    name?: string;
+}
+
+export interface DeleteSharedEntriesArgs {
+    entryIds: string[];
+}
+
+export interface GetSharedEntryInfoArgs {
+    entryId: string;
+    includePermissionsInfo: boolean;
+}
+
+export interface MoveSharedEntriesArgs {
+    entryIds: string[];
+    collectionId: string;
 }
 
 export interface CopyEntry extends EntryFields {
@@ -263,16 +332,51 @@ export interface GetEntriesAnnotationArgs {
     type?: string;
 }
 
-export interface CreateEntityBindingsResponse {
+export interface CreateEntryResponse extends EntryFields {
+    links: EntryFieldLinks;
+}
+
+export interface CreateEntryArgs {
+    scope: EntryScope;
+    type: string;
+    data: EntryFieldData;
+    key?: string;
+    meta?: EntryFieldMeta;
+    workbookId?: string;
+    name?: string;
+    mode?: EntryUpdateMode;
+    links?: EntryFieldLinks;
+    description?: string;
+    annotation?: EntryAnnotationArgs;
+}
+
+export interface UpdateEntryResponse extends EntryFields {
+    links?: EntryFieldLinks;
+}
+
+export interface UpdateEntryArgs {
+    entryId: string;
+    mode: EntryUpdateMode;
+    data: EntryFieldData;
+    revId?: string;
+    meta?: EntryFieldMeta;
+    links?: EntryFieldLinks;
+    description?: string;
+    annotation?: EntryAnnotationArgs;
+    skipSyncLinks?: boolean;
+}
+
+export interface EntityBindingsResponse {
     sourceId: string;
     targetId: string;
     isDelegated: boolean;
 }
 
-export interface CreateEntityBindingsArgs {
+export interface EntityBindingsArgs {
     sourceId: string;
     targetId: string;
     delegation: boolean;
+    bindedWorkbookId?: string | null;
 }
 
 export type GetSharedEntryBindingsArgs = {
@@ -282,6 +386,7 @@ export type GetSharedEntryBindingsArgs = {
     filterString?: string;
     page?: number;
     pageSize?: number;
+    includePermissionsInfo?: boolean;
 };
 
 export type SharedEntry = {
@@ -307,4 +412,14 @@ export type SharedEntryBindingsItem = {
 
 export type GetSharedEntryBindingsResponse = {
     items: SharedEntryBindingsItem[];
+};
+
+export type GetSharedEntryWorkbookRelationsArgs = {
+    entryId: string;
+    workbookId: string;
+    scope?: `${EntryScope}`;
+};
+
+export type GetSharedEntryWorkbookRelationsResponse = {
+    relations: SharedEntryRelationFields[];
 };

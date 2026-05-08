@@ -31,7 +31,6 @@ export type EntryRowProps = {
     rightSectionSlot?: React.ReactNode;
     className?: string;
     enableHover?: boolean;
-    disableHover?: boolean;
     showUndefinedIcon?: boolean;
     overrideIconType?: EntityIconType;
 } & (RowWithEntry | CustomRow);
@@ -113,8 +112,8 @@ export const EntryRow = ({
                         {renderIcon()}
                         <div className={b('name')} title={entryName}>
                             {entryName}
-                            {renderLock()}
                         </div>
+                        {renderLock()}
                     </React.Fragment>
                 ) : (
                     <Link

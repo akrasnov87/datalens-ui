@@ -1,5 +1,3 @@
-import type {mockSharedEntriesTexts} from 'ui/units/collections/components/constants';
-
 export const Attachment = {
     TARGET: 'target',
     SOURCE: 'source',
@@ -7,9 +5,11 @@ export const Attachment = {
 
 export type AttachmentValue = (typeof Attachment)[keyof typeof Attachment];
 
-export const ObjectsListTitles: Record<AttachmentValue, keyof typeof mockSharedEntriesTexts> = {
-    target: 'entries-list-title-workbook',
-    source: 'entries-list-title-source',
+export const ObjectsListTitles: Record<AttachmentValue, string> = {
+    source: 'list-title-workbook',
+    target: 'list-title-connection',
 };
 
 export const SEARCH_DELAY = 1000;
+
+export const DialogClassName = 'dialog-shared-entries-binding';

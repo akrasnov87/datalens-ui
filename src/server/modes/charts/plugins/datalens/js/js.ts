@@ -35,6 +35,7 @@ import type {PivotData} from '../preparers/backend-pivot-table/types';
 import {prepareGravityChartBarX, prepareHighchartsBarX} from '../preparers/bar-x';
 import {prepareGravityChartsBarY, prepareHighchartsBarY} from '../preparers/bar-y';
 import prepareFlatTableData from '../preparers/flat-table';
+import {prepareFunnel} from '../preparers/funnel';
 import prepareGeopointData from '../preparers/geopoint';
 import prepareGeopointWithClusterData from '../preparers/geopoint-with-cluster';
 import prepareGeopolygonData from '../preparers/geopolygon';

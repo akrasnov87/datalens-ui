@@ -25,7 +25,7 @@
         width: 100%;
     }
 
-    &_with-color {
+    &_with-internal-margins {
         .dashkit-plugin-title {
             padding: 5px 10px;
             align-items: center;
@@ -49,17 +49,6 @@
 
         .dashkit-plugin-title {
             padding-right: 0;
-        }
-    }
-
-    &__extra-elements-container {
-        display: flex;
-        padding: 0 5px 5px;
-        right: 0;
-        z-index: 1;
-
-        &_absolute {
-            position: absolute;
         }
     }
 

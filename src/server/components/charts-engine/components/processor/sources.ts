@@ -9,6 +9,7 @@ import {
     DATASET_ID_PLACEHOLDER,
     DATASET_RESULT_URL,
 } from '../../../../modes/charts/plugins/control/url/constants';
+import {config as configConstants} from '../../constants';
 import type {
     APIConnectorParams,
     Source,
@@ -69,7 +70,10 @@ export const getApiConnectorParamsFromSource = (
 };
 
 export const prepareSourceWithAPIConnector = (source: SourceWithAPIConnector) => {
-    source._original = {...source};
+    // Only save _original if it doesn't exist yet (avoid overwriting on second call)
+    if (!source._original) {
+        source._original = {...source};
+    }
     const sourceUrl = CONNECTIONS_TYPED_QUERY_RAW_URL.replace(
         CONNECTION_ID_PLACEHOLDER,
         encodeURIComponent(source.apiConnectionId),

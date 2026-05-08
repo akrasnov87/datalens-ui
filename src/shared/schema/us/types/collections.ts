@@ -14,9 +14,15 @@ import type {moveCollectionResultSchema} from '../actions/collections/move-colle
 import type {moveCollectionsResultSchema} from '../actions/collections/move-collections';
 import type {updateCollectionResultSchema} from '../actions/collections/update-collection';
 
-import type {SharedEntryFields, SharedEntryFieldsWithPermissions} from './fields';
+import type {
+    SharedEntryFieldsWithOptionalPermissions,
+    SharedEntryFieldsWithPermissions,
+} from './fields';
 import type {OrderBasicField, OrderDirection} from './sort';
-import type {ExtendedWorkbook, ExtendedWorkbookWithPermissions} from './workbooks';
+import type {
+    ExtendedWorkbookWithOptionalPermissions,
+    ExtendedWorkbookWithPermissions,
+} from './workbooks';
 
 export type GetStructureItemsMode = 'all' | 'onlyCollections' | 'onlyWorkbooks' | 'onlyEntries';
 
@@ -91,10 +97,18 @@ export type StructureItemWithPermissions =
     | ExtendedWorkbookWithPermissions
     | SharedEntryFieldsWithPermissions;
 
-export type StructureItem = ExtendedCollection | ExtendedWorkbook | SharedEntryFields;
+export type StructureItemWithOptionalPermissions =
+    | ExtendedCollectionWithOptionalPermissions
+    | ExtendedWorkbookWithOptionalPermissions
+    | SharedEntryFieldsWithOptionalPermissions;
+
+export type StructureItem =
+    | ExtendedCollectionWithOptionalPermissions
+    | ExtendedWorkbookWithOptionalPermissions
+    | SharedEntryFieldsWithOptionalPermissions;
 
 export type GetStructureItemsResponse = {
-    items: StructureItemWithPermissions[];
+    items: StructureItemWithOptionalPermissions[];
     nextPageToken?: string | null;
 };
 

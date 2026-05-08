@@ -9,6 +9,16 @@ const {join, parse} = require('path');
 
 const LANGUAGES = ['ru', 'en'];
 
+const trimValue = (value) => {
+    if (typeof value === 'string') {
+        return value.trim();
+    }
+    if (Array.isArray(value)) {
+        return value.map((v) => (typeof v === 'string' ? v.trim() : v));
+    }
+    return value;
+};
+
 const getPairedLanguageKeysets = (filePath) => {
     const parsedData = parse(filePath);
 

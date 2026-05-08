@@ -9,6 +9,7 @@ import {Feature} from '../../../../shared';
 import {DeveloperModeCheckStatus} from '../../../../shared/types';
 import type {ResolvedConfig} from '../components/storage/types';
 import {getDuration} from '../components/utils';
+import type {RunnerLocals} from '../runners';
 
 import {resolveChartConfig} from './utils';
 import US from '../../sdk/us';
@@ -174,10 +175,17 @@ export const runController = (
                 req.body.params['__embed'] = currentUser.data[0].isEmbed == true ? 1 : -1;
             }
 
-            await runnerFound.handler(ctx, {
+	    const runnerLocals: RunnerLocals = {
+                subrequestHeaders: res.locals.subrequestHeaders,
+                editMode: Boolean(res.locals.editMode),
+                login: res.locals.login ?? null,
+                iamToken: res.locals.iamToken ?? null,
+            };
+
+            const runnerHandlerResult = await runnerFound.handler(ctx, {
                 chartsEngine,
                 req,
-                res,
+                runnerLocals,
                 config: {
                     ...config,
                     data: {
@@ -190,6 +198,12 @@ export const runController = (
                 configResolving,
                 workbookId,
             });
+
+            if (runnerHandlerResult) {
+                res.status(runnerHandlerResult.status).send(runnerHandlerResult.payload);
+            }
+
+            return;
         } catch (error) {
             ctx.logError('CHARTS_ENGINE_RUNNER_ERROR', error);
             res.status(500).send({

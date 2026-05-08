@@ -7,12 +7,9 @@ import {ZodError} from 'zod';
 
 import {ServerError} from '../../../shared/constants/error';
 import {
-    PUBLIC_API_LATEST_VERSION,
     PUBLIC_API_VERSION_HEADER,
     PUBLIC_API_VERSION_HEADER_LATEST_VALUE,
 } from '../../components/public-api/constants';
-import type {PublicApiVersion} from '../../components/public-api/types';
-import {isPublicApiVersion} from '../../components/public-api/utils';
 import {isGatewayError} from '../../utils/gateway';
 
 import {PUBLIC_API_ERRORS, PublicApiError} from './constants';
@@ -58,7 +55,7 @@ export const prepareError = (
             };
         }
 
-        const originalError = innerError.debug.originalError;
+        const originalError = innerError.debug?.originalError;
 
         if (originalError instanceof AxiosError) {
             const status = originalError.status ?? 500;

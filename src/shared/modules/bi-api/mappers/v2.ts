@@ -1,3 +1,5 @@
+import groupBy from 'lodash/groupBy';
+
 import type {
     ApiV2Filter,
     ApiV2Parameter,

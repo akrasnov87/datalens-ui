@@ -233,7 +233,7 @@ const isVisibleEntryContextShareItem = ({entry, showSpecificItems}: ContextMenuP
                 }
 
                 return CONTEXT_MENU_COPY.isVisible(args);
-            }
+            },
         },
         {
             ...CONTEXT_MENU_COPY,
@@ -304,6 +304,6 @@ const isVisibleEntryContextShareItem = ({entry, showSpecificItems}: ContextMenuP
             ],
         },
         ...getAdditionalEntryContextMenuItems(),
-        getContextMenuMoveToWorkbooks()
+        getContextMenuMoveToWorkbooks(),
     ];
 };

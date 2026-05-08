@@ -99,9 +99,6 @@ export const EntitiesList = ({
                             }}>
                         </Switch>}
                     enableHover={enableHover}
-                    // rightSectionSlot={
-                    //     RightSectionSlot ? <RightSectionSlot entry={entity} /> : undefined
-                    // }
                 />
             ))}
         </div>

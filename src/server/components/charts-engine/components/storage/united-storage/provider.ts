@@ -21,7 +21,6 @@ import {
     EntryUpdateMode,
     FORWARDED_FOR_HEADER,
     PROJECT_ID_HEADER,
-    SERVICE_USER_ACCESS_TOKEN_HEADER,
     SuperuserHeader,
     TENANT_ID_HEADER,
     TRACE_ID_HEADER,
@@ -29,7 +28,7 @@ import {
     RPC_AUTHORIZATION,
     WORKBOOK_ID_HEADER,
 } from '../../../../../../shared';
-import {ErrorCode} from '../../../../../../shared/constants';
+import {ErrorCode, TIMEOUT_10_SEC} from '../../../../../../shared/constants';
 import {createErrorHandler} from '../../error-handler';
 import {getDuration} from '../../utils';
 import { unitedStorageConfigLoadedTimeout } from '../../../../../app-env';
@@ -157,7 +156,6 @@ function formatPassedHeaders(
         headersMap.subjectToken,
         PROJECT_ID_HEADER,
         TENANT_ID_HEADER,
-        SERVICE_USER_ACCESS_TOKEN_HEADER,
         ...(extraAllowedHeaders || []),
     ];
 
@@ -551,7 +549,7 @@ export class USProvider {
             method: 'get',
             headers: injectMetadata(formattedHeaders, ctx),
             timeout: TEN_SECONDS,
-            params
+            params,
         };
 
         return axios

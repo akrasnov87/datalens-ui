@@ -8,6 +8,7 @@ import type {
     IChartEditor,
     StringParams,
 } from '../../../../../shared';
+import type {Source} from '../../types';
 
 import type {
     CommentsFetcherFetchResult,
