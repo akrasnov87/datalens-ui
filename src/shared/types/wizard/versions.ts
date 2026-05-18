@@ -33,4 +33,6 @@ export enum ChartsConfigVersion {
     V14 = '14',
     // use standard visualization ids instead of d3
     V15 = '15',
+    // маппинг тайтла
+    V15p1 = '15p1',
 }

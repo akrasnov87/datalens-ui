@@ -1,10 +1,10 @@
-import React from 'react';
-import {Route, Switch, Redirect} from 'react-router-dom';
-import {useSelector} from 'react-redux';
+import React, { useEffect } from 'react';
+import {Route, Switch, Redirect, useLocation} from 'react-router-dom';
+// import {useSelector} from 'react-redux';
 import coreReducers from 'store/reducers';
 import {getIsAsideHeaderEnabled} from 'components/AsideHeaderAdapter';
 import LocationChange from '../components/LocationChange/LocationChange';
-import {selectIsLanding} from 'store/selectors/landing';
+// import {selectIsLanding} from 'store/selectors/landing';
 import FallbackPage from './pages/FallbackPage/FallbackPage';
 import DashAndWizardQLPages, {
     dashAndWizardQLRoutes,
@@ -19,6 +19,14 @@ import {useClearReloadedQuery} from '../units/auth/hooks/useClearReloadedQuery';
 import {reducer} from 'ui/units/auth/store/reducers';
 import {useIframeRender} from './hooks';
 import {OPEN_SOURCE_INSTALLATION_INFO} from 'ui/constants/navigation';
+
+import {getSdk} from '../libs/schematic-sdk';
+import {
+    RPC_AUTHORIZATION
+} from '../../shared';
+
+import CustomAuthPage from './pages/AuthPage/CustomAuthPage';
+import Utils from 'ui/utils';
 import {chartkitApi} from 'ui/store/toolkit/chartkit/api';
 
 reducerRegistry.register(coreReducers);
@@ -40,27 +48,57 @@ const ConnectionsPage = React.lazy(
 const CollectionsNavigtaionPage = React.lazy(
     () => import('./pages/CollectionsNavigationPage/CollectionsNavigationPage'),
 );
-const ServiceSettings = React.lazy(() => import('./pages/ServiceSettingsPage/ServiceSettingsPage'));
-const UserProfile = React.lazy(() => import('./pages/OwnUserProfilePage/OwnUserProfilePage'));
 
-const LandingPage = React.lazy(() => import('./pages/LandingPage/LandingPage'));
+const RolesPage = React.lazy(
+    () => import('./pages/AdminPage/RolesPage'),
+);
+const ProjectsPage = React.lazy(
+    () => import('./pages/AdminPage/ProjectsPage'),
+);
+
+const UsersPage = React.lazy(
+    () => import('./pages/AdminPage/UsersPage'),
+);
+
+const ServiceSettings = React.lazy(() => import('./pages/ServiceSettingsPage/ServiceSettingsPage'));
+//const UserProfile = React.lazy(() => import('./pages/OwnUserProfilePage/OwnUserProfilePage'));
+
+//const LandingPage = React.lazy(() => import('./pages/LandingPage/LandingPage'));
 const AuthPage = React.lazy(
     () => import(/* webpackChunkName: "auth-page" */ './pages/AuthPage/AuthPage'),
 );
 
-const DatalensPageView = () => {
-    useClearReloadedQuery();
-
-    const isLanding = useSelector(selectIsLanding);
-
-    if (isLanding) {
-        return (
-            <React.Suspense fallback={<FallbackPage />}>
-                <LandingPage />
-            </React.Suspense>
-        );
+export const AuthContext = React.createContext({
+    token: "",
+    setToken: function(token:string){
+        console.log(token)
+    },
+    superUser: {},
+    setSuperUser: function(value: boolean) {
+        console.log(value);
     }
+});
 
+const DatalensPageView = (props: any) => {
+    useClearReloadedQuery();
+    var token = props.token;
+    var setToken = props.setToken;
+
+    var superUser = props.superUser;
+    var setSuperUser = props.setSuperUser;
+
+    // const isLanding = useSelector(selectIsLanding);
+    const location = useLocation();
+
+    // if (isLanding) {
+    //     return (
+    //         <React.Suspense fallback={<FallbackPage />}>
+    //             <LandingPage />
+    //         </React.Suspense>
+    //     );
+    // }
+
+    console.log("superUser.isMaster", superUser.isMaster)
     if (DL.IS_AUTH_PAGE) {
         return (
             <React.Suspense fallback={<FallbackPage />}>
@@ -70,9 +108,28 @@ const DatalensPageView = () => {
     }
 
     return (
-        <React.Suspense fallback={<FallbackPage />}>
-            <Switch>
-                {DL.AUTH_ENABLED && <Route path="/auth" component={AuthPage} />}
+        <AuthContext.Provider value={{token, setToken, superUser, setSuperUser}}>
+            <React.Suspense fallback={<FallbackPage />}>
+                <Switch>
+                    {!token && location?.pathname !== "/auth" && <Redirect from="*" to="/auth"/>}
+                    {token && <Redirect from="/auth" to="/"/>}
+                    <Route
+                        path={'/auth'}
+                        component={()=><CustomAuthPage setToken={setToken} />}
+                    />
+                    <Route path={['/admin/users']} component={superUser.isMaster ? UsersPage : ()=><Redirect from="/admin/users" to="/"/>} />
+                    <Route path={['/admin/roles']} component={superUser.isMaster ? RolesPage : ()=><Redirect from="/admin/roles" to="/"/>} />
+                    <Route path={['/admin/projects']} component={superUser.isMaster ?  ProjectsPage : ()=><Redirect from="/admin/projects" to="/"/>} />
+                    <Route
+                        path={['/workbooks/:workbookId/datasets/new', '/datasets/:id']}
+                        component={DatasetPage}
+                    />
+                    {/* {Utils.isEnabledFeature(Feature.EnableChartEditor) && (
+                        <Route
+                            path={['/editor', '/workbooks/:workbookId/editor']}
+                            component={EditorPage}
+                        />
+                    )} */}
 
                 <Route
                     path={['/workbooks/:workbookId/datasets/new', '/datasets/:id']}
@@ -94,57 +151,91 @@ const DatalensPageView = () => {
                     component={ConnectionsPage}
                 />
 
-                {DL.AUTH_ENABLED && <Route path="/profile" component={UserProfile} />}
+                    <Route path="/settings" component={ServiceSettings} />
 
-                <Route path="/settings" component={ServiceSettings} />
+                    <Route path={['/collections']} component={CollectionsNavigtaionPage} />
 
-                <Route path={['/collections']} component={CollectionsNavigtaionPage} />
+                    <Route exact path={dashAndWizardQLRoutes} component={DashAndWizardQLPages} />
 
-                <Route exact path={dashAndWizardQLRoutes} component={DashAndWizardQLPages} />
+                    <Route
+                        path={['/collections/:collectionId', '/workbooks/:workbookId']}
+                        component={CollectionsNavigtaionPage}
+                    />
 
-                <Route
-                    path={['/collections/:collectionId', '/workbooks/:workbookId']}
-                    component={CollectionsNavigtaionPage}
-                />
+                    {DL.AUTH_ENABLED && <Route path="/auth" component={AuthPage} />}
 
-                <Route path="/">
-                    <Redirect to={`/collections${location.search}`} />
-                </Route>
+                    <Route path="/">
+                        <Redirect to={`/collections${location.search}`} />
+                    </Route>
 
-                {/* comment till we have main page */}
-                {/*<Route path="/" component={MainPage} />*/}
-            </Switch>
-            <LocationChange onLocationChanged={locationChangeHandler} />
-        </React.Suspense>
+                    {/* comment till we have main page */}
+                    {/*<Route path="/" component={MainPage} />*/}
+                </Switch>
+                <LocationChange onLocationChanged={locationChangeHandler} />
+            </React.Suspense>
+        </AuthContext.Provider>
     );
 };
 
 const DatalensPage: React.FC = () => {
     const showAsideHeaderAdapter = getIsAsideHeaderEnabled() && !isEmbeddedMode() && !isTvMode();
-    const showMobileHeader =
-        !isEmbeddedMode() && DL.IS_MOBILE && !DL.IS_NOT_AUTHENTICATED && !DL.IS_AUTH_PAGE;
+
+    const [superUser, setSuperUser] = React.useState<Object | null>(null);
+
+    useEffect(()=>{
+        Utils.universalService({"action": "datalens", "method": "currentUser", "data": [{}]}).then((value)=>{
+            if(value.err || value.data.length == 0) {
+                setSuperUser({})
+            } else {
+                setSuperUser(value.data[0])
+            }
+        }).catch(()=>{
+            setSuperUser({});
+        });
+    }, [])
+
+    const [token, _setToken] = React.useState(Utils.getRpcAuthorization() || "");
+    
+    function setToken(value: any) {
+        localStorage.setItem('x-rpc-authorization', value);
+        getSdk().sdk.setDefaultHeader({
+            name: RPC_AUTHORIZATION,
+            value: value,
+        });
+        _setToken(value);
+        // перегружаем страницу, чтобы применить LocalStorage
+        window.location.assign('/');
+    }
+    const showMobileHeader = !isEmbeddedMode() && DL.IS_MOBILE;
+    // const showMobileHeader =
+    //     !isEmbeddedMode() && DL.IS_MOBILE && !DL.IS_NOT_AUTHENTICATED && !DL.IS_AUTH_PAGE;
 
     useIframeRender();
 
-    if (showMobileHeader) {
+    if (token && showMobileHeader && superUser) {
         return (
-            <MobileHeaderComponent
-                renderContent={() => <DatalensPageView />}
+            <MobileHeaderComponent 
+                renderContent={() => <DatalensPageView token={token} setToken={setToken} superUser={superUser} setSuperUser={setSuperUser} /> }
+                logoTextProps={{installationInfo: OPEN_SOURCE_INSTALLATION_INFO}}
+            /> 
+        );
+    }
+
+    if (token && showAsideHeaderAdapter && superUser) {
+        return ( 
+            <AsideHeaderAdapter 
+                superUser={superUser} 
+                renderContent={() => <DatalensPageView token={token} setToken={setToken} superUser={superUser} setSuperUser={setSuperUser} />} 
                 logoTextProps={{installationInfo: OPEN_SOURCE_INSTALLATION_INFO}}
             />
         );
     }
 
-    if (showAsideHeaderAdapter) {
-        return (
-            <AsideHeaderAdapter
-                renderContent={() => <DatalensPageView />}
-                logoTextProps={{installationInfo: OPEN_SOURCE_INSTALLATION_INFO}}
-            />
-        );
+    if (superUser) {
+        return <DatalensPageView token={token} setToken={setToken} superUser={superUser} setSuperUser={setSuperUser} />;
     }
-
-    return <DatalensPageView />;
+    
+    return <div>currentUser loading error</div>;
 };
 
 export default DatalensPage;

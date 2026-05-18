@@ -36,6 +36,11 @@ export const getChartkitMenuByType = (props?: GetChartkitMenuByType) => {
 
     const isEditVisible = isEditAvaible === undefined ? {} : {isVisible: () => isEditAvaible};
 
+    /*const isEditVisible = isEditAvaible === undefined ? {} : {isVisible: () => { 
+        var decodedString = atob(Utils.getRpcAuthorization());
+        return 'manager' == decodedString.split(':')[0];
+    }};*/
+
     return getChartkitMenuItems({
         type,
         config,
@@ -47,6 +52,7 @@ export const getChartkitMenuByType = (props?: GetChartkitMenuByType) => {
                 action: ({propsData: {id, params}}) => {
                     window.open(`/preview/${id}?${stringify(params)}`);
                 },
+                isVisible: () => type != 'preview'
             },
             [MenuItemsIds.OPEN_AS_TABLE]: {
                 action: ({propsData: {id, params}}) => {
@@ -65,6 +71,9 @@ export const getChartkitMenuByType = (props?: GetChartkitMenuByType) => {
             },
             [MenuItemsIds.FULLSCREEEN]: {
                 onFullscreenClick,
+            },
+            [MenuItemsIds.GET_LINK]: {
+                isVisible: () => false
             },
             ...customOptions,
         } as GetChartkitMenuByType['customOptions'],

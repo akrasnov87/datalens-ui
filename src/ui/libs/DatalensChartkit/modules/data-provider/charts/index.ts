@@ -51,7 +51,7 @@ import type {
     Widget,
 } from '../../../types';
 import axiosInstance, {initConcurrencyManager} from '../../axios/axios';
-import {REQUEST_ID_HEADER, TRACE_ID_HEADER, URL_OPTIONS} from '../../constants/constants';
+import {REQUEST_ID_HEADER, RPC_AUTHORIZATION, TRACE_ID_HEADER, URL_OPTIONS} from '../../constants/constants';
 import type {ExtraParams} from '../../datalens-chartkit-custom-error/datalens-chartkit-custom-error';
 import DatalensChartkitCustomError, {
     ERROR_CODE,
@@ -76,6 +76,7 @@ import type {
     SourcesConfig,
 } from './types';
 import processWizard from './wizard';
+import Utils from 'ui/utils';
 
 // from export-data module
 declare module 'highcharts' {
@@ -828,8 +829,12 @@ class ChartsDataProvider implements DataProvider<ChartsProps, ChartsData, Cancel
             const dataParams = requestOptions.data.params;
 
             Object.entries(dataParams).forEach(([paramKey, paramValue]) => {
-                dataParams[paramKey] =
-                    Array.isArray(paramValue) && paramValue.length < 1 ? [''] : paramValue;
+                if(paramKey.startsWith('__')) {
+                    dataParams[paramKey] = '';
+                } else {
+                    dataParams[paramKey] =
+                        Array.isArray(paramValue) && paramValue.length < 1 ? [''] : paramValue;
+                }
             });
         }
 
@@ -903,6 +908,10 @@ class ChartsDataProvider implements DataProvider<ChartsProps, ChartsData, Cancel
         };
         if (isEnabledFeature(Feature.UseComponentHeader)) {
             headers[DL_COMPONENT_HEADER] = DlComponentHeader.UI;
+        }
+
+        if(Utils.getRpcAuthorization()) {
+            headers[RPC_AUTHORIZATION] = Utils.getRpcAuthorization();
         }
 
         return headers;
@@ -1039,6 +1048,10 @@ class ChartsDataProvider implements DataProvider<ChartsProps, ChartsData, Cancel
                 headers: result.headers,
                 includeLogs,
             });
+
+            if(result.headers[RPC_AUTHORIZATION]) {
+                responseData.rpcAuthorization = result.headers[RPC_AUTHORIZATION]
+            }
 
             if (this.settings.includeUnresolvedParams) {
                 responseData.unresolvedParams = cloneDeep(params);

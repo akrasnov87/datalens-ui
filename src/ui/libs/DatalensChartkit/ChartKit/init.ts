@@ -12,6 +12,7 @@ import {
     Feature,
     SUPERUSER_SWITCH_MODE_COOKIE_NAME,
     SuperuserHeader,
+    RPC_AUTHORIZATION,
     TENANT_ID_HEADER,
 } from '../../../../shared';
 import {
@@ -52,6 +53,7 @@ export const initChartKitSettings = () => {
             const CSRFToken = Utils.getCSRFToken();
 
             request.headers[ACCEPT_LANGUAGE_HEADER] = DL.USER_LANG;
+            request.headers[RPC_AUTHORIZATION] = Utils.getRpcAuthorization();
 
             if (CSRFToken) {
                 request.headers[X_CSRF_TOKEN_HEADER] = CSRFToken;

@@ -13,12 +13,14 @@ import {registry} from 'ui/registry';
 import {isEnabledFeature} from 'ui/utils/isEnabledFeature';
 import type {DeepPartial} from 'utility-types';
 
+import {isExportPdfVisible} from './utils';
 import {ICONS_MENU_DEFAULT_SIZE, type MenuItemArgs} from '../../../../../../../../menu/MenuItems';
 import type {ChartKitDataProvider} from '../../../../../../types';
 
 import {csvExportAction} from './CsvExport/CsvExport';
 import type {ExportActionArgs, ExportChartArgs} from './types';
 import {copyData, downloadData, isExportVisible} from './utils';
+import { pdfExportAction } from './PdfExport/PdfExport';
 
 const i18n = I18n.keyset('chartkit.menu.export');
 
@@ -113,6 +115,12 @@ const getSubItems = ({
             action: xlsxAction,
         },
         {
+            id: MenuItemsIds.EXPORT_ODS,
+            title: i18n('format_ods'),
+            isVisible: ({loadedData, error}: MenuItemArgs) => isExportVisible({loadedData, error}),
+            action: directExportAction(EXPORT_FORMATS.ODS, onExportLoading),
+        },
+        {
             id: MenuItemsIds.EXPORT_CSV,
             title: i18n('format_csv'),
             isVisible: ({loadedData, error}: MenuItemArgs) => isExportVisible({loadedData, error}),
@@ -141,6 +149,47 @@ const getSubItems = ({
     ];
 
     return submenuItems;
+};
+
+export const getExportPDF = ({
+    showScreenshot,
+}: {
+    showWiki?: boolean;
+    showScreenshot?: boolean;
+    chartsDataProvider: ChartKitDataProvider;
+    customConfig?: Partial<MenuItemConfig>;
+}): MenuItemConfig => {
+    const pdfAction = pdfExportAction();
+
+    return {
+        id: MenuItemsIds.EXPORT_PDF,
+        title: ({loadedData, error}: MenuItemArgs) => {
+            return isExportPdfVisible({loadedData, error})
+                ? i18n('menu-export-pdf')
+                : i18n('menu-screenshot');
+        },
+        icon: ({loadedData, error}: MenuItemArgs) => {
+            const iconData =
+                isExportPdfVisible({loadedData, error}) && !error ? ArrowDownToLine : Picture;
+            return (
+                <Icon
+                    size={ICONS_MENU_DEFAULT_SIZE}
+                    data={iconData}
+                    //className={ICONS_MENU_DEFAULT_CLASSNAME}
+                />
+            );
+        },
+        items: [],
+        isVisible: ({loadedData, error}: MenuItemArgs) => {
+            const isExportAllowed = !loadedData?.extra.dataExportForbidden;
+            const isScreenshotVisible = loadedData?.data && showScreenshot;
+
+            return Boolean(
+                isExportAllowed && (isExportPdfVisible({loadedData, error}) || isScreenshotVisible),
+            );
+        },
+        action: pdfAction,
+    };
 };
 
 export function isExportItemDisabled() {

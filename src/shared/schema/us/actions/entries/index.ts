@@ -77,6 +77,43 @@ export const entriesActions = {
     getEntries,
     getEntry,
     _getEntryWithAudit: getEntry,
+    encodeId: createAction<any, any>({
+        method: 'GET',
+        path: (data) => { return `/encodeId?id=${data.id}` },
+        params: (_, headers) => ({
+            headers: {
+                ...headers
+            },
+        }),
+    }),
+    decodeId: createAction<any, any>({
+        method: 'GET',
+        path: (data) => { return `/decodeId?id=${data.id}` },
+        params: (_, headers) => ({
+            headers: {
+                ...headers
+            },
+        }),
+    }),
+    universalService: createAction<any, any>({
+        method: 'POST',
+        path: () => { return `/universal_service` },
+        params: (body, headers) => {
+            return {body, headers};
+        },
+    }),
+
+    getAuth: createAction<any, any>({
+        method: 'GET',
+        path: (data) => { 
+            return `/auth?login=${data.login}&password=${data.password}` 
+        },
+        params: (_, headers) => ({
+            headers: {
+                ...headers
+            },
+        }),
+    }),
     getEntryByKey: createAction<GetEntryByKeyResponse, GetEntryByKeyArgs>({
         method: 'GET',
         path: () => `${PATH_PREFIX}/entriesByKey`,

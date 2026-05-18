@@ -6,7 +6,7 @@ import {EntryIcon} from 'components/EntryIcon/EntryIcon';
 import {I18n} from 'i18n';
 import {useDispatch} from 'react-redux';
 import {Link} from 'react-router-dom';
-import {DEFAULT_DATE_FORMAT} from 'shared';
+import {DEFAULT_DATE_FORMAT, WorkbookEntry} from 'shared';
 import {WorkbookPageQa} from 'shared/constants/qa/workbooks';
 import type {WorkbookWithPermissions} from 'shared/schema/us/types/workbooks';
 import {DL} from 'ui/constants/common';
@@ -21,6 +21,9 @@ import {defaultRowStyle, mobileRowStyle} from '../constants';
 import {getIsCanShowContextMenu, getIsCanUpdateSharedEntryBindings} from '../utils';
 
 import './Row.scss';
+
+import {closeDialog, openDialog} from 'store/actions/dialog';
+import { DIALOG_ASSIGN_CLAIMS } from 'ui/components/OpenDialogAssignClaims/OpenDialogAssignClaims';
 
 const i18n = I18n.keyset('new-workbooks');
 
@@ -83,6 +86,21 @@ const Row = <T extends WorkbookUnionEntry>({
             }),
         );
     };
+
+    const onAssignClaims = (item: WorkbookEntry) => {
+        dispatch(
+            openDialog({
+                id: DIALOG_ASSIGN_CLAIMS,
+                props: {
+                    entryId: item.entryId,
+                    workbookId: item.workbookId,
+                    onClose: () => {
+                        dispatch(closeDialog());
+                    },
+                },
+            }),
+        );
+    }
 
     const {ButtonFavorite} = registry.common.components.getAll();
 
@@ -161,6 +179,9 @@ const Row = <T extends WorkbookUnionEntry>({
                             <EntryActions
                                 workbook={workbook}
                                 entry={item}
+                                onAssignClaims={() => {
+                                    onAssignClaims && onAssignClaims(item)
+                                }}                                
                                 onRenameClick={onRenameEntry && (() => onRenameEntry(item))}
                                 onDeleteClick={onDeleteEntry && (() => onDeleteEntry(item))}
                                 onDuplicateEntry={

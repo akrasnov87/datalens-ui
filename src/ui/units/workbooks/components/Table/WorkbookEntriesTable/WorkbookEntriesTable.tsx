@@ -4,7 +4,7 @@ import block from 'bem-cn-lite';
 import {I18n} from 'i18n';
 import {useDispatch} from 'react-redux';
 import type {EntryScope} from 'shared';
-import {getUserId} from 'shared/modules/user';
+//import {getUserId} from 'shared/modules/user';
 import {DIALOG_COPY_ENTRIES_TO_WORKBOOK} from 'ui/components/CopyEntriesToWorkbookDialog';
 import {DIALOG_SHARED_ENTRY_PERMISSIONS} from 'ui/components/DialogSharedEntryPermissions/DialogSharedEntryPermissions';
 import {DIALOG_SHARED_RELATED_ENTITIES} from 'ui/components/DialogSharedRelatedEntities/DialogSharedRelatedEntities';
@@ -12,7 +12,7 @@ import {EntryDialogName, EntryDialogues} from 'ui/components/EntryDialogues';
 import {DL} from 'ui/constants/common';
 import {getSdk} from 'ui/libs/schematic-sdk';
 import {showToast} from 'ui/store/actions/toaster';
-import {getResolveUsersByIdsAction} from 'ui/store/actions/usersByIds';
+//import {getResolveUsersByIdsAction} from 'ui/store/actions/usersByIds';
 import {copyTextWithToast} from 'ui/utils/copyText';
 
 import type {
@@ -61,7 +61,7 @@ type WorkbookEntriesTableProps = {
 export const WorkbookEntriesTable = React.memo<WorkbookEntriesTableProps>(
     ({
         workbook,
-        entries,
+        // entries,
         refreshEntries,
         retryLoadEntries,
         loadMoreEntries,
@@ -82,15 +82,15 @@ export const WorkbookEntriesTable = React.memo<WorkbookEntriesTableProps>(
         const dispatch: AppDispatch = useDispatch();
         const entryDialoguesRef = React.useRef<EntryDialogues>(null);
 
-        React.useEffect(() => {
-            const resolveUsersByIds = getResolveUsersByIdsAction();
-            const userIds = new Set<string>();
-            entries.forEach((entry) => {
-                userIds.add(getUserId(entry.createdBy));
-            });
+        // React.useEffect(() => {
+        //     const resolveUsersByIds = getResolveUsersByIdsAction();
+        //     const userIds = new Set<string>();
+        //     entries.forEach((entry) => {
+        //         userIds.add(getUserId(entry.createdBy));
+        //     });
 
-            dispatch(resolveUsersByIds(Array.from(userIds)));
-        }, [dispatch, entries]);
+        //     dispatch(resolveUsersByIds(Array.from(userIds)));
+        // }, [dispatch, entries]);
 
         const onRenameEntry = React.useCallback(
             (entity: WorkbookEntry) => {

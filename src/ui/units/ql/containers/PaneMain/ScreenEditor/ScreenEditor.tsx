@@ -88,9 +88,13 @@ class ScreenEditor extends React.PureComponent<ScreenEditorInnerProps, ScreenEdi
     }
 
     render() {
-        const {chartType, defaultPath, paneSize, entryDialoguesRef, valid, entry} = this.props;
+        var {chartType, defaultPath, paneSize, entryDialoguesRef, valid, entry} = this.props;
 
         const workbookId = entry?.workbookId || null;
+
+        valid = (entry?.permissions || { execute: true }).execute
+
+        const edit = (entry?.permissions || { edit: false }).edit
 
         const {getPlaceSelectParameters} = registry.common.functions.getAll();
         const {getConnectionsByChartType} = registry.ql.functions.getAll();
@@ -138,14 +142,15 @@ class ScreenEditor extends React.PureComponent<ScreenEditorInnerProps, ScreenEdi
                             />
                         )}
                     </div>
-                    {this.state.activeTab === 'queryTab' && (
+                    {edit == true && this.state.activeTab === 'queryTab' && (
                         <TabQuery
                             paneSize={paneSize}
                             entryDialoguesRef={entryDialoguesRef}
                         ></TabQuery>
                     )}
-                    {this.state.activeTab === 'paramsTab' && <TabParams></TabParams>}
+                    {edit == true && this.state.activeTab === 'paramsTab' && <TabParams></TabParams>}
                     <div className={b('action-bar-bottom')}>
+                    { edit == true && 
                         <Button
                             disabled={!valid}
                             view="action"
@@ -156,7 +161,8 @@ class ScreenEditor extends React.PureComponent<ScreenEditorInnerProps, ScreenEdi
                             qa="run-ql-script"
                         >
                             {i18n('sql', 'label_run')}
-                        </Button>
+                        </Button> 
+                    }
                     </div>
                 </div>
             )

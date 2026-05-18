@@ -377,6 +377,7 @@ export const getEntryNotChanged = createSelector(
                     return {
                         type: param.type,
                         name: param.name,
+                        label: param.label,
                         defaultValue: param.defaultValue,
                     };
                 }),
@@ -677,6 +678,7 @@ export default function ql(state: QLState = initialState, action: QLAction) {
                 {
                     name: '',
                     type: 'string',
+                    label: '',
                     defaultValue: '',
                 },
             ];
@@ -722,6 +724,7 @@ export default function ql(state: QLState = initialState, action: QLAction) {
                 {
                     name: '',
                     type: 'string',
+                    label: '',
                     defaultValue: '',
                 },
             ];
@@ -876,10 +879,11 @@ export default function ql(state: QLState = initialState, action: QLAction) {
                     {
                         type: 'datetime',
                         name: 'from',
+                        label: '',
                         defaultValue: defaultFrom,
                     },
-                    {type: 'datetime', name: 'to', defaultValue: defaultTo},
-                    {type: 'string', name: 'step', defaultValue: '300'},
+                    {type: 'datetime', label: '', name: 'to', defaultValue: defaultTo},
+                    {type: 'string', label: '', name: 'step', defaultValue: '300'},
                 ];
             }
 
@@ -890,9 +894,10 @@ export default function ql(state: QLState = initialState, action: QLAction) {
                     {
                         type: 'datetime',
                         name: 'from',
+                        label: '',
                         defaultValue: defaultFrom,
                     },
-                    {type: 'datetime', name: 'to', defaultValue: defaultTo},
+                    {type: 'datetime', label: '', name: 'to', defaultValue: defaultTo},
                 ];
             }
 

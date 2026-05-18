@@ -1,15 +1,15 @@
 /* eslint-disable camelcase */
-
 import type {AxiosRequestConfig, CancelTokenSource} from 'axios';
 import axios from 'axios';
 import type {DashData, EntryAnnotationArgs, EntryUpdateMode} from 'shared';
-import {ACCEPT_LANGUAGE_HEADER, TIMEZONE_OFFSET_HEADER, oldSchema} from 'shared';
+import {ACCEPT_LANGUAGE_HEADER, TIMEZONE_OFFSET_HEADER, RPC_AUTHORIZATION, oldSchema} from 'shared';
 import {DL} from 'ui/constants/common';
 
 import type {CreateWidgetArgs} from '../../../shared/old-schema/charts';
 import {registry} from '../../registry';
 import type {Entry} from '../../typings';
 import axiosInstance from '../axios/axios';
+import Utils from '../../utils';
 
 import type {
     ConfigSdk,
@@ -57,6 +57,7 @@ class SDK {
         setOldSdkDefaultHeaders(config, headers);
 
         headers[ACCEPT_LANGUAGE_HEADER] = DL.USER_LANG;
+        headers[RPC_AUTHORIZATION] = Utils.getRpcAuthorization();
 
         return headers;
     }
@@ -127,6 +128,13 @@ class SDK {
         requestConfig.headers[TIMEZONE_OFFSET_HEADER] = new Date().getTimezoneOffset().toString();
     }
 
+    passRpcAuthorizationHeader(requestConfig: AxiosRequestConfig) {
+        if (!requestConfig.headers) {
+            requestConfig.headers = {};
+        }
+        requestConfig.headers[RPC_AUTHORIZATION] = Utils.getRpcAuthorization();
+    }
+
     sendRequest({requestConfig, method, options = {}}: SendRequest) {
         const {cancelable, passTimezoneOffset = true} = options;
 
@@ -136,6 +144,10 @@ class SDK {
 
         if (passTimezoneOffset) {
             this.passTimezoneOffsetHeader(requestConfig);
+        }
+
+        if(Utils.getRpcAuthorization()) {
+            this.passRpcAuthorizationHeader(requestConfig);
         }
 
         return axiosInstance(requestConfig).then((response) => response.data);

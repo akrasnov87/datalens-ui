@@ -10,7 +10,7 @@ import type {
 import {Button, DropdownMenu, Icon, Tooltip} from '@gravity-ui/uikit';
 import block from 'bem-cn-lite';
 import {I18n} from 'i18n';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {useHistory} from 'react-router-dom';
 import {DropdownAction} from 'ui/components/DropdownAction/DropdownAction';
 import {isEnabledFeature} from 'ui/utils/isEnabledFeature';
@@ -25,6 +25,9 @@ import collectionIcon from '../../../../assets/icons/collections/collection.svg'
 import workbookIcon from '../../../../assets/icons/collections/workbook.svg';
 
 import './CollectionActions.scss';
+import { AppDispatch } from 'ui/store';
+import { closeDialog, openDialog } from 'ui/store/actions/dialog';
+import { DIALOG_ASSIGN_CLAIMS } from 'ui/components/OpenDialogAssignClaims/OpenDialogAssignClaims';
 
 const i18n = I18n.keyset('collections');
 
@@ -50,6 +53,7 @@ export const CollectionActions = React.memo<Props>(
         onDeleteClick,
     }) => {
         const collection = useSelector(selectCollection);
+        const dispatch: AppDispatch = useDispatch();
         const history = useHistory();
         const {CustomActionPanelCollectionActions} = registry.collections.components.getAll();
 
@@ -119,6 +123,27 @@ export const CollectionActions = React.memo<Props>(
             dropdownActions.push({
                 action: onMoveClick,
                 text: <DropdownAction icon={ArrowRight} text={i18n('action_move')} />,
+            });
+        }
+
+        if (collection && collection.permissions?.listAccessBindings) {
+            dropdownActions.push({
+                text: <DropdownAction icon={LockOpen} text={i18n('action_access')} />,
+                action: () => {
+                    dispatch(
+                        openDialog({
+                            id: DIALOG_ASSIGN_CLAIMS,
+                            props: {
+                                entryId: "",
+                                workbookId: "",
+                                collectionId: collection.collectionId,
+                                onClose: () => {
+                                    dispatch(closeDialog());
+                                },
+                            },
+                        }),
+                    );
+                },
             });
         }
 

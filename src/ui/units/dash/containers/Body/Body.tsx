@@ -115,6 +115,8 @@ type DashBodyState = {
     fixedHeaderCollapsed: Record<string, boolean>;
     dashEl: HTMLDivElement | null;
     isGlobalDragging: boolean;
+    // hasCopyInBuffer: CopiedConfigData | null;
+    isExportLoading: boolean;
     loaded: boolean;
     prevMeta: {tabId: string | null; entryId: string | null};
     loadedItemsMap: Map<string, boolean>;
@@ -231,6 +233,9 @@ class BodyInternal extends React.PureComponent<BodyInternalProps, DashBodyState>
 
         this.state = {
             fixedHeaderCollapsed: {},
+            // fixedHeaderControlsEl: null,
+            // fixedHeaderContainerEl: null,
+            isExportLoading: false,
             dashEl: null,
             isGlobalDragging: false,
             prevMeta: {tabId: null, entryId: null},

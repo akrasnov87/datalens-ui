@@ -8,6 +8,8 @@ import {appEnv, isApiMode, isChartsMode, isDatalensMode, isFullMode} from '../..
 import {getAuthRoutes} from '../../components/auth/routes';
 import type {ChartsEngine} from '../../components/charts-engine';
 import {ping} from '../../controllers/ping';
+import {exportEntries} from '../../controllers/export-entries';
+import {printEntry} from '../../controllers/print-entry';
 import {workbooksTransferController} from '../../controllers/workbook-transfer';
 import {getConnectorIconsMiddleware} from '../../middlewares';
 import {getTenantSettingsMiddleware} from '../../middlewares/tenant-settings';
@@ -33,6 +35,18 @@ export function getRoutes({
             route: 'GET /ping',
             handler: ping,
             authPolicy: AuthPolicy.disabled,
+        },
+        exportDash: {
+            beforeAuth: beforeAuth,
+            afterAuth: afterAuth,
+            route: 'POST /export-entries',
+            handler: exportEntries
+        },
+        printEntry: {
+            beforeAuth: beforeAuth,
+            afterAuth: afterAuth,
+            route: 'POST /print-entry',
+            handler: printEntry
         },
     };
 

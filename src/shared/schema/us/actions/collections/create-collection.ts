@@ -6,6 +6,7 @@ import {datalensOperationSchema} from '../../schemas/operation';
 
 const createCollectionArgsSchema = z.object({
     title: z.string(),
+    project: z.string().optional(),
     description: z.string().optional(),
     parentId: z.string().nullable(),
 });
@@ -22,8 +23,8 @@ export const createCollection = createTypedAction(
     {
         method: 'POST',
         path: () => '/v1/collections',
-        params: ({title, description, parentId}, headers) => ({
-            body: {title, description, parentId},
+        params: ({title, project, description, parentId}, headers) => ({
+            body: {title, project, description, parentId},
             headers,
         }),
     },

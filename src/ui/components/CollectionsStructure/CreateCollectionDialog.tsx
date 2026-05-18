@@ -39,11 +39,12 @@ export const CreateCollectionDialog: React.FC<Props> = (props) => {
         handleError: handleDialogError,
     } = useCollectionEntityDialogState({
         title: '',
+        project: '',
         description: '',
     });
 
     const handleApply = async (
-        {title, description}: CollectionDialogValues,
+        {title, project, description}: CollectionDialogValues,
         dialogOnClose: () => void,
     ) => {
         const {parentId, onApply} = props;
@@ -53,6 +54,7 @@ export const CreateCollectionDialog: React.FC<Props> = (props) => {
                 createCollection(
                     {
                         title,
+                        project,
                         description,
                         parentId,
                     },

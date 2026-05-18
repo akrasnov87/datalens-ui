@@ -14,6 +14,8 @@ import {
     getInspectorMenuItem,
     getNewWindowMenuItem,
     getOpenAsTableMenuItem,
+    getLinkMenuItem,
+    getExportMenuPDF
 } from './MenuItems';
 import {getChartModelingMenuItem} from './chart-modeling';
 
@@ -108,6 +110,10 @@ export const getDefaultChartMenu = ({
             chartsDataProvider,
             customConfig: customOptions[MenuItemsIds.EXPORT],
         }),
+        getExportMenuPDF({
+            chartsDataProvider,
+            customConfig: customOptions[MenuItemsIds.EXPORT_PDF],
+        }),
         getNewWindowMenuItem({
             chartsDataProvider,
             customConfig: customOptions[MenuItemsIds.NEW_WINDOW],
@@ -127,6 +133,9 @@ export const getDefaultChartMenu = ({
             chartsDataProvider,
             customConfig: customOptions[MenuItemsIds.OPEN_AS_TABLE],
         }),
+        getLinkMenuItem(
+            customOptions[MenuItemsIds.GET_LINK]
+        )
     ];
     return menuItemsGroups;
 };

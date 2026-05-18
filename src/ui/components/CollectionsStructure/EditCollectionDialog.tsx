@@ -18,6 +18,7 @@ const i18n = I18n.keyset('component.collections-structure');
 type Props = {
     collectionId: string;
     title: string;
+    project?: string;
     description: string;
     open: boolean;
     onClose: () => void;
@@ -33,7 +34,7 @@ export type OpenDialogEditCollectionArgs = {
 
 export const EditCollectionDialog: React.FC<Props> = (props) => {
     const dispatch: AppDispatch = useDispatch();
-    const {title, description, open, onClose} = props;
+    const {title, project, description, open, onClose} = props;
 
     const {
         values: dialogValues,
@@ -43,11 +44,12 @@ export const EditCollectionDialog: React.FC<Props> = (props) => {
     } = useCollectionEntityDialogState({
         title,
         description,
+        project
     });
 
     const handleApply = React.useCallback(
         async (
-            {title: dialogTitle, description: dialogDescription}: CollectionDialogValues,
+            {title: dialogTitle, description: dialogDescription, project: dialogProject}: CollectionDialogValues,
             dialogOnClose,
         ) => {
             const {collectionId, onApply} = props;
@@ -58,6 +60,7 @@ export const EditCollectionDialog: React.FC<Props> = (props) => {
                         {
                             collectionId,
                             title: dialogTitle,
+                            project: dialogProject,
                             description: dialogDescription,
                         },
                         true,

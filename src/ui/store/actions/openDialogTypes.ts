@@ -52,6 +52,8 @@ import type {OpenDialogDeleteCollectionsWorkbooksArgs} from '../../components/Co
 import type {OpenDialogDeleteWorkbookArgs} from '../../components/CollectionsStructure/DeleteWorkbookDialog';
 import type {OpenDialogCreateEntryInWorkbookArgs} from '../../components/CollectionsStructure/CreateEntryInWorkbookDialog';
 import type {OpenDialogIamAccessArgs} from '../../components/IamAccessDialog';
+import type {OpenDialogAssignClaimsArgs} from '../../components/OpenDialogAssignClaims/OpenDialogAssignClaims';
+import type {OpenDialogShareArgs} from 'ui/components/OpenDialogShare/OpenDialogShare';
 import type {OpenDialogTooltipSettingsArgs} from '../../units/wizard/components/Dialogs/DialogTooltipSettings/DialogTooltipSettings';
 import type {OpenDialogChangeDatasetFieldsArgs} from '../../units/datasets/components/DatasetTable/components/BatchActionPanel/components/DialogChangeDatasetFields/DialogChangeDatasetFields';
 import type {OpenDialogCollectionNoCreatePermissionArgs} from 'ui/components/CollectionsStructure/CollectionNoCreatePermissionDialog';
@@ -133,4 +135,6 @@ export type OpenDialogArgs<T = unknown> =
     | OpenDialogSelectSharedEntryArgs
     | OpenDialogSharedRelatedEntitiesArgs
     | OpenDialogAddSharedEntryFromLinkArgs
+    | OpenDialogAssignClaimsArgs
+    | OpenDialogShareArgs
     | OpenDialogEntryDescriptionArgs;

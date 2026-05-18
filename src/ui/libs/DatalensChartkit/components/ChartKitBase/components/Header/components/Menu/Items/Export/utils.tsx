@@ -119,6 +119,26 @@ const setSuccessToast = () => {
     });
 };
 
+export const isExportPdfVisible = ({
+    loadedData,
+    error,
+}: {
+    loadedData: MenuLoadedData;
+    error?: DatalensChartkitCustomError;
+}) => {
+    if (!loadedData || error || DL.IS_MOBILE) {
+        return false;
+    }
+
+    const data = loadedData?.data;
+    const type = loadedData?.type as WidgetKind;
+    return (
+        !isEmpty(data) && ([WidgetKind.Graph, WidgetKind.Table, WidgetKind.GravityCharts] as WidgetKind[]).includes(
+            type,
+        )
+    );
+};
+
 export const isExportVisible = ({
     loadedData,
     error,

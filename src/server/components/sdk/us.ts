@@ -18,6 +18,65 @@ import type {
 import {getAxios} from '../axios';
 
 class US {
+    /**
+     * Универсальный метод для запросов RPC через backend UI
+     * 
+     * @param data данные в формате RPC {action:string, method:string, data:any[], tid: number}
+     * @param headers заголовки запроса, главное чтобы был x-rpc-authorization
+     * @param ctx 
+     * @returns объект {err:any, data:any}, если err заполнен, то ошибка
+     */
+    static async universalService(
+        data: any,
+        headers: IncomingHttpHeaders,
+        ctx: AppContext,
+    ): Promise<any> {
+        try {
+            var axios = getAxios(ctx.config);
+            const {data: result}  = await axios({
+                method: 'POST',
+                url: `${ctx.config.endpoints.api.us}/universal_service`,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-rpc-authorization': headers['x-rpc-authorization']
+                },
+                data,
+                'axios-retry': {retries: 1},
+            });
+
+            ctx.log('SDK_US_UNIVERSAL_SERVICE_SUCCESS', US.getLoggedEntry(result));
+
+            return result;
+        } catch (error) {
+            ctx.logError('SDK_US_UNIVERSAL_SERVICE_FAILED', error, {});
+            throw error;
+        }
+    }
+
+    static async oidcAuth(
+        data: any,
+        ctx: AppContext,
+    ): Promise<any> {
+        try {
+            var axios = getAxios(ctx.config);
+            const {data: result}  = await axios({
+                method: 'GET',
+                url: `${ctx.config.endpoints.api.us}/oidc/auth?login=${data.login}&token=${data.token}&data=${encodeURIComponent(data.data)}`,
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                'axios-retry': {retries: 1},
+            });
+
+            ctx.log('SDK_US_UNIVERSAL_SERVICE_SUCCESS', US.getLoggedEntry(result));
+
+            return result;
+        } catch (error) {
+            ctx.logError('SDK_US_UNIVERSAL_SERVICE_FAILED', error, {});
+            throw error;
+        }
+    }
+
     static async createEntry(
         data: CreateEntryRequest,
         headers: IncomingHttpHeaders,
@@ -48,6 +107,10 @@ class US {
         ctx: AppContext,
     ): Promise<Entry> {
         try {
+            if(entryId == undefined) {
+                throw Error('SDK_US_READ_EMPTY_ENTRY_FAILED')
+            }
+
             const {data} = await getAxios(ctx.config)({
                 method: 'GET',
                 url: `${ctx.config.endpoints.api.us}/v1/entries/${filterUrlFragment(entryId)}`,

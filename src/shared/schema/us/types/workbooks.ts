@@ -38,6 +38,7 @@ export type Workbook = {
     title: string;
     description: string | null;
     tenantId: string;
+    projectId: string | null;
     meta: {importId?: string; [key: string]: unknown};
     createdBy: string;
     createdAt: string;

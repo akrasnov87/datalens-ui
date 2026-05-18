@@ -12,6 +12,7 @@ import {getDuration} from '../components/utils';
 import type {RunnerLocals} from '../runners';
 
 import {resolveChartConfig} from './utils';
+import US from '../../sdk/us';
 
 type RunControllerExtraSettings = {
     storageApiPath?: string;
@@ -154,6 +155,26 @@ export const runController = (
 
             req.body.key = req.body.key || config.key;
 
+            var currentUser = await US.universalService({
+                "action": "datalens", 
+                "method": "currentUser", 
+                "data": [{}]
+            }, req.headers, req.ctx);
+
+            if(!currentUser.err) {
+                var _params:any = req.body.params;
+                for(var i in _params) {
+                    if(i.startsWith('__')) {
+                        delete req.body.params[i];
+                    }
+                }
+
+                // подставляем идентификатор текущего пользователя
+                req.body.params['__user_id'] = currentUser.data[0].id;
+                // подставляем признак "внедрения"
+                req.body.params['__embed'] = currentUser.data[0].isEmbed == true ? 1 : -1;
+            }
+            
             const runnerLocals: RunnerLocals = {
                 subrequestHeaders: res.locals.subrequestHeaders,
                 editMode: Boolean(res.locals.editMode),

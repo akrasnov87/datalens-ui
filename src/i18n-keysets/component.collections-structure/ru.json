@@ -40,6 +40,7 @@
   "label_ql": "QL-чарта",
   "label_report": "отчёта",
   "label_title": "Название",
+  "label_project": "Проект",
   "label_wizard": "чарта",
   "label_workbook-already-exists-error": "Воркбук с таким названием уже существует",
   "section_delete-collection": "Вы действительно хотите удалить коллекцию \"{{name}}\"?",

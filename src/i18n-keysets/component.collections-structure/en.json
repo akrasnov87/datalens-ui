@@ -40,6 +40,7 @@
   "label_ql": "QL chart",
   "label_report": "report",
   "label_title": "Name",
+  "label_project": "Project",
   "label_wizard": "chart",
   "label_workbook-already-exists-error": "A workbook with that name already exists",
   "section_delete-collection": "Are you sure you want to delete the collection \"{{name}}\"?",

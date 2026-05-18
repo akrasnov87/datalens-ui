@@ -1,8 +1,10 @@
 export const MenuItemsIds = {
     EXPORT: 'export',
     EXPORT_CSV: 'exportCsv',
+    EXPORT_ODS: 'exportOds',
     EXPORT_XLSX: 'exportXlsx',
     EXPORT_MARKDOWN: 'exportMarkdown',
+    EXPORT_PDF: 'exportPdf',
     EXPORT_WIKI: 'exportWiki',
     EXPORT_SCREENSHOT: 'exportScreenshot',
     INSPECTOR: 'inspector',

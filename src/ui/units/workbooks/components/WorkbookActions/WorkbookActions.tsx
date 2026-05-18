@@ -29,6 +29,7 @@ import {ResourceType} from '../../../../registry/units/common/types/components/I
 import {CreateEntry} from '../CreateEntry/CreateEntry';
 
 import './WorkbookActions.scss';
+import { DIALOG_ASSIGN_CLAIMS } from 'ui/components/OpenDialogAssignClaims/OpenDialogAssignClaims';
 
 const b = block('dl-workbook-actions');
 
@@ -78,8 +79,9 @@ export const WorkbookActions: React.FC<Props> = ({workbook, refreshWorkbookInfo}
     const {useAdditionalWorkbookActions} = registry.workbooks.functions.getAll();
     const {CustomActionPanelWorkbookActions} = registry.workbooks.components.getAll();
 
-    const {getCurrentUserRights, getGloballyEntrySettings} = registry.common.functions.getAll();
-    const currentUserRights = getCurrentUserRights();
+    const {//getCurrentUserRights, 
+        getGloballyEntrySettings} = registry.common.functions.getAll();
+    //const currentUserRights = getCurrentUserRights();
 
     const globallyEntrySettings = getGloballyEntrySettings();
     const isWorkbookExportDisabled = Boolean(globallyEntrySettings?.isWorkbookExportDisabled);
@@ -144,9 +146,29 @@ export const WorkbookActions: React.FC<Props> = ({workbook, refreshWorkbookInfo}
         });
     }
 
+    if (workbook.permissions.listAccessBindings) {
+        dropdownActions.push({
+            action: () => {
+                dispatch(
+                    openDialog({
+                        id: DIALOG_ASSIGN_CLAIMS,
+                        props: {
+                            entryId: "",
+                            workbookId: workbook.workbookId,
+                            onClose: () => {
+                                dispatch(closeDialog());
+                            },
+                        },
+                    }),
+                );
+            },
+            text: <DropdownAction icon={LockOpen} text={i18n('action_access')} />,
+        });
+    }
+
     if (
         isEnabledFeature(Feature.EnableExportWorkbookFile) &&
-        currentUserRights.admin &&
+        workbook.permissions.listAccessBindings &&
         !isWorkbookExportDisabled
     ) {
         dropdownActions.push({

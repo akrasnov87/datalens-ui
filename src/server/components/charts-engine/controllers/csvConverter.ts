@@ -1,3 +1,7 @@
+import * as path from 'path';
+import * as fs from 'fs';
+import * as child_process from 'child_process';
+
 import {monitorEventLoopDelay, performance} from 'perf_hooks';
 
 import type {Request, Response} from '@gravity-ui/expresskit';
@@ -7,7 +11,7 @@ import moment from 'moment/moment';
 import type {Graph} from '../components/processor/comments-fetcher';
 
 const DAY_MS = 1000 * 60 * 60 * 24;
-const CSV_DATA_LIMIT = 1024 * 1024 * 50; // 50MB
+const CSV_DATA_LIMIT = 1024 * 1024 * 500; // 500MB
 
 export function csvConverter(
     req: Request,
@@ -22,6 +26,7 @@ export function csvConverter(
         delValues: string;
         delNumbers: string;
         encoding: 'cp1251' | 'win1251';
+        format: string;
     },
     downloadConfig: {
         filename: string;
@@ -125,6 +130,70 @@ export function csvConverter(
 
     if (formSettings.encoding === 'cp1251') {
         csvContent = iconv.encode(csvContent, 'win1251');
+    }
+
+    if(formSettings.format === 'ods') {
+        const exportPath = path.join(__dirname, '../', '../', '../', '../', '../', 'export');
+        const pythonScript = path.join(exportPath, 'csv2ods.py');
+        const publicOutputCsvPath = path.join(exportPath, `${downloadConfig.filename}.csv`);
+        const publicOutputOdsPath = path.join(exportPath, `${downloadConfig.filename}.ods`);
+        const context:any = req.ctx;
+
+        var err = fs.writeFileSync(publicOutputCsvPath, csvContent.toString());
+        if(err != null) {
+            ctx.logError(`EXPORT_ODS_DATA_WRITE_ERROR`, {
+                outputPath: publicOutputCsvPath,
+                message: `Ошибка сохранения файла CSV: ${err}`
+            });
+            req.ctx.stats('exportSizeStats', {
+                datetime: Date.now(),
+                exportType: 'ods',
+                sizeBytes: reqDataLength,
+                timings: 0,
+                rejected: 'true',
+            });
+            res.sendStatus(500);
+            fs.unlinkSync(publicOutputCsvPath);
+            return;
+        }
+
+        // тут нужно вызвать скрипт python
+        var resSpawn = child_process.spawnSync(context.config.python || 'python3', [pythonScript, `FILE_PATH="${publicOutputCsvPath}"`]);
+        if (resSpawn != null && resSpawn.stderr.byteLength > 0) {
+            ctx.logError(`EXPORT_ODS_DATA_WRITE_ERROR`, {
+                outputPath: publicOutputCsvPath,
+                message: `Ошибка при вызове python скрипта: ${resSpawn.stderr.toString()}`
+            });
+            req.ctx.stats('exportSizeStats', {
+                datetime: Date.now(),
+                exportType: 'ods',
+                sizeBytes: reqDataLength,
+                timings: 0,
+                rejected: 'true',
+            });
+            res.sendStatus(500);
+            fs.unlinkSync(publicOutputCsvPath);
+            return;
+        }
+
+        ctx.log('EXPORT_ODS_FINISH_PREPARING');
+        const csvStop = performance.now();
+        monitorHistogram.disable();
+        req.ctx.stats('exportSizeStats', {
+            datetime: Date.now(),
+            exportType: 'ods',
+            sizeBytes: reqDataLength,
+            timings: csvStop - csvStart,
+            rejected: 'false',
+            requestId: req.id,
+            eventLoopDelay: monitorHistogram.max / 1000000,
+        });
+        res.status(200).send(fs.readFileSync(publicOutputOdsPath));
+
+        fs.unlinkSync(publicOutputCsvPath);
+        fs.unlinkSync(publicOutputOdsPath);
+
+        return;
     }
 
     ctx.log('EXPORT_CSV_FINISH_PREPARING');

@@ -378,10 +378,12 @@ export type CreateCollectionAction =
 export const createCollection = (
     {
         title,
+        project,
         description,
         parentId,
     }: {
         title: string;
+        project?: string;
         description?: string;
         parentId: string | null;
     },
@@ -394,6 +396,7 @@ export const createCollection = (
         return getSdk()
             .sdk.us.createCollection({
                 title,
+                project,
                 description,
                 parentId,
             })
@@ -463,10 +466,12 @@ export type CreateWorkbookAction =
 export const createWorkbook = (
     {
         title,
+        project,
         description,
         collectionId,
     }: {
         title: string;
+        project?: string;
         description?: string;
         collectionId: string | null;
     },
@@ -479,6 +484,7 @@ export const createWorkbook = (
         return getSdk()
             .sdk.us.createWorkbook({
                 title,
+                project,
                 description,
                 collectionId,
             })
@@ -1182,10 +1188,12 @@ export const updateWorkbook = (
     {
         workbookId,
         title,
+        project,
         description,
     }: {
         workbookId: string;
         title: string;
+        project?: string;
         description: string;
     },
     shouldThrow = false,
@@ -1198,6 +1206,7 @@ export const updateWorkbook = (
             .sdk.us.updateWorkbook({
                 workbookId,
                 title,
+                project,
                 description,
             })
             .then((data) => {
@@ -1252,10 +1261,12 @@ export const updateCollection = (
     {
         collectionId,
         title,
+        project,
         description,
     }: {
         collectionId: string;
         title: string;
+        project?: string;
         description: string;
     },
     shouldThrow = false,
@@ -1268,6 +1279,7 @@ export const updateCollection = (
             .sdk.us.updateCollection({
                 collectionId,
                 title,
+                project,
                 description,
             })
             .then((data) => {

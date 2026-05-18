@@ -5,6 +5,7 @@ import {workbookSchema} from '../../schemas/workbooks';
 
 const updateWorkbookArgsSchema = z.object({
     workbookId: z.string(),
+    project: z.string().optional(),
     title: z.string().optional(),
     description: z.string().optional(),
 });
@@ -19,6 +20,6 @@ export const updateWorkbook = createTypedAction(
     {
         method: 'POST',
         path: ({workbookId}) => `/v2/workbooks/${workbookId}/update`,
-        params: ({title, description}, headers) => ({body: {title, description}, headers}),
+        params: ({title, project, description}, headers) => ({body: {title, project, description}, headers}),
     },
 );

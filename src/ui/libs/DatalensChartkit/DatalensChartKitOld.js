@@ -11,6 +11,7 @@ import {
     Feature,
     SUPERUSER_SWITCH_MODE_COOKIE_NAME,
     SuperuserHeader,
+    RPC_AUTHORIZATION,
     TENANT_ID_HEADER,
 } from '../../../shared';
 import {DL} from '../../constants';
@@ -53,6 +54,9 @@ ChartKit.setDataProviderSettings({
             request.headers[TENANT_ID_HEADER] = DL.CURRENT_TENANT_ID;
         }
 
+        if (Utils.getRpcAuthorization()) {
+            request.headers[RPC_AUTHORIZATION] = Utils.getRpcAuthorization();
+        }
         let dispayMode = 'basic';
 
         if (isEmbeddedEntry()) {

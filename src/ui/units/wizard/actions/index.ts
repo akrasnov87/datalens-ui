@@ -652,6 +652,8 @@ export function removeDataset({
                             'columnSettings',
                             'barsSettings',
                             'hintSettings',
+                            'overrideTitleSettings',
+                            'bandTitleSettings',
                         ];
 
                         if (item.filter) {

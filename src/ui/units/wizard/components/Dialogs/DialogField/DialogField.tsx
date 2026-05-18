@@ -34,11 +34,13 @@ import {
 import type {Optional} from 'utility-types';
 
 import type {
+    BandTitleSettings,
     ClientChartsConfig,
     CommonNumberFormattingOptions,
     DatasetFieldAggregation,
     DatasetOptions,
     NestedPartial,
+    OverrideTitleSettings,
     Field as TField,
     TableBarsSettings,
 } from '../../../../../../shared/types';
@@ -56,6 +58,7 @@ import {DialogRadioButtons} from '../components/DialogRadioButtons/DialogRadioBu
 
 import {BackgroundSettings} from './components/BackgroundSettings/BackgroundSettings';
 import {BarsSettings} from './components/BarsSettings/BarsSettings';
+import {DialogFieldInput} from './components/DialogFieldInput/DialogFieldInput';
 import {DialogFieldMainSection} from './components/DialogFieldMainSection/DialogFieldMainSection';
 import {DialogFieldRow} from './components/DialogFieldRow/DialogFieldRow';
 import {SubTotalsSettings} from './components/SubTotalsSettings/SubTotalsSettings';
@@ -113,6 +116,8 @@ export type DialogFieldState = Optional<FieldStateExtend> & {
     visualizationId?: string;
     currentPlaceholder?: Placeholder;
     hintSettings?: HintSettings;
+    overrideTitleSettings?: OverrideTitleSettings;
+    bandTitleSettings?: BandTitleSettings;
     markupType?: MarkupType;
 };
 
@@ -142,6 +147,8 @@ class DialogField extends React.PureComponent<DialogFieldInnerProps, DialogField
         const initialState: DialogFieldState = {
             formatting: props.item?.formatting || ({} as CommonNumberFormattingOptions),
             hintSettings: props.item?.hintSettings,
+            overrideTitleSettings: props.item?.overrideTitleSettings,
+            bandTitleSettings: props.item?.bandTitleSettings,
             isBarsSettingsEnabled:
                 !isPivotFallbackTurnedOn &&
                 showBarsInDialogField(visualizationId, props.placeholderId, props.item),
@@ -330,6 +337,8 @@ class DialogField extends React.PureComponent<DialogFieldInnerProps, DialogField
             this.renderFormattingItem(),
             this.renderSubTotalsSettings(),
             this.renderBarsSettings(),
+            this.renderTitleSettings(),
+            this.renderBandTitleSettings(),
             this.renderBackgroundSettings(),
         ];
 
@@ -535,6 +544,92 @@ class DialogField extends React.PureComponent<DialogFieldInnerProps, DialogField
                     onUpdate={this.handleSubTotalsSettingsUpdate}
                 />
             </>
+        );
+    }
+
+    private renderBandTitleSettings() {
+        const {item} = this.props;
+
+        if (!item) {
+            return null;
+        }
+
+        const bandTitleSettings = this.state.bandTitleSettings;
+        const enabled = bandTitleSettings?.enabled;
+        const text = bandTitleSettings?.text || item?.description || '';
+
+        return (
+            <React.Fragment>
+                <DialogFieldRow
+                    title={i18n('wizard', 'label_group_title')}
+                    setting={
+                        <Switch
+                            onUpdate={(checked) =>
+                                this.setState({bandTitleSettings: {enabled: checked, text}})
+                            }
+                            checked={enabled}
+                        />
+                    }
+                />
+                {enabled && (
+                    <DialogFieldRow
+                        title={''}
+                        setting={
+                            <DialogFieldInput
+                                value={text}
+                                qa={DialogFieldSettingsQa.FieldTitleInput}
+                                onUpdate={(value) =>
+                                    this.setState({bandTitleSettings: {enabled, text: value}})
+                                }
+                                disabled={!enabled}
+                            />
+                        }
+                    />
+                )}
+            </React.Fragment>
+        );
+    }
+
+    private renderTitleSettings() {
+        const {item} = this.props;
+
+        if (!item) {
+            return null;
+        }
+
+        const overrideTitleSettings = this.state.overrideTitleSettings;
+        const enabled = overrideTitleSettings?.enabled;
+        const text = overrideTitleSettings?.text || item?.description || '';
+
+        return (
+            <React.Fragment>
+                <DialogFieldRow
+                    title={i18n('wizard', 'label_override_title')}
+                    setting={
+                        <Switch
+                            onUpdate={(checked) =>
+                                this.setState({overrideTitleSettings: {enabled: checked, text}})
+                            }
+                            checked={enabled}
+                        />
+                    }
+                />
+                {enabled && (
+                    <DialogFieldRow
+                        title={''}
+                        setting={
+                            <DialogFieldInput
+                                value={text}
+                                qa={DialogFieldSettingsQa.FieldTitleInput}
+                                onUpdate={(value) =>
+                                    this.setState({overrideTitleSettings: {enabled, text: value}})
+                                }
+                                disabled={!enabled}
+                            />
+                        }
+                    />
+                )}
+            </React.Fragment>
         );
     }
 

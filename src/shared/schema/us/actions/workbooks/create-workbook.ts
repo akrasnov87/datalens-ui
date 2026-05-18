@@ -6,6 +6,7 @@ import {workbookSchema} from '../../schemas/workbooks';
 
 const createWorkbookArgsSchema = z.object({
     collectionId: z.string().nullable().optional(),
+    project: z.string().optional(),
     title: z.string(),
     description: z.string().optional(),
 });
@@ -22,8 +23,8 @@ export const createWorkbook = createTypedAction(
     {
         method: 'POST',
         path: () => '/v2/workbooks',
-        params: ({collectionId, title, description}, headers) => ({
-            body: {collectionId, title, description},
+        params: ({collectionId, project, title, description}, headers) => ({
+            body: {collectionId, project, title, description},
             headers,
         }),
     },

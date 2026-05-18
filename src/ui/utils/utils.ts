@@ -174,10 +174,28 @@ export default class Utils {
         window.sdk = getSdk().sdk;
     }
 
+    static setRpcAuthorization() {
+        var loc:any = document.location;
+        let params = (new URL(loc)).searchParams;
+        let token:any = params.get("x-rpc-authorization");
+        if(token && loc.search.indexOf('_embedded=1') == -1) {
+            window.localStorage.setItem('x-rpc-authorization', token);
+        }
+    }
+
+    static getRpcAuthorization() {
+        var loc:any = document.location;
+        let params = (new URL(loc)).searchParams;
+        let token:any = params.get("x-rpc-authorization");
+        
+        return window.localStorage.getItem('x-rpc-authorization') || token;
+    }
+
     static setup() {
         Utils.setBodyFeatures();
         Utils.setLang();
         Utils.setSdk();
+        Utils.setRpcAuthorization();
     }
 
     static setMobileMetaViewport() {
@@ -265,5 +283,121 @@ export default class Utils {
 
     static convertToSnakeCase(data: {[key: string]: unknown}) {
         return _mapKeys(data, (_value, key) => _snakeCase(key));
+    }
+
+    static getAuthToken = async (propsData: any) => {
+        var result = await getSdk().sdk.us.getAuth({login: propsData.login, password: propsData.password});
+
+        return result;
+    }
+
+    static getEmbedToken = async (propsData: any) => {
+
+        var workbookId = await this.decodeId({id: propsData.workbookId || propsData.id});
+        var entryId = await this.decodeId({id: propsData.entryId || propsData.id});
+        
+        var result = await this.universalService({"action": "datalens", "method": "embed", "data": [{workbookId: workbookId, entryId: entryId, reject: propsData.reject}]});
+
+        return result.data && result.data.length > 0 ? result.data[0].embed : '';
+    }
+
+    static getRoles = async (propsData: any) => {
+        var result = await this.universalService({"action": "datalens", "method": "roles", "data": [propsData]});
+
+        return result.data && result.data.length > 0 ? result.data : [];
+    }
+
+    static getAccesses = async (propsData: any) => {
+        var result = await this.universalService({"action": "datalens", "method": "accesses", "data": [propsData]});
+
+        return result.data && result.data.length > 0 ? result.data : [];
+    }
+
+    static encodeId = async (propsData: any) => {
+        var result = await getSdk().sdk.us.encodeId({ id: propsData.id});
+
+        return result.id;
+    }
+
+    static decodeId = async (propsData: any) => {
+        var result = await getSdk().sdk.us.decodeId({ id: propsData.id});
+
+        return result.id;
+    }
+
+    static setAccesses = async (propsData: any) => {
+        var result = await this.universalService({"action": "datalens", "method": "updateAccesses", "data": Array.isArray(propsData) ? propsData : [propsData]});
+
+        return result.data && result.data.length > 0 ? result.data : [];
+    }
+
+    /**
+     * Создание пользователя
+     * @param propsData {"login": "user04", "password": "qwe-123", "email": "", "claims": ["datalens"]}
+     * @returns 
+     */
+    static createUser = async (propsData: any) => {
+        return await this.universalService({"action": "datalens", "method": "create_user", "data": [propsData]});
+    }
+
+    /**
+     * Обновление пользователя
+     * @param propsData {"id": 12, "c_login": "user04", "с_email": ""}
+     * @returns 
+     */
+    static updateUser = async (propsData: any) => {
+        return await this.universalService({"action": "datalens", "method": "update_user", "data": [propsData]});
+    }
+
+    /**
+     * Сброс пароля пользователя
+     * @param propsData {"c_login": "user04", "c_password": ""}
+     * @returns 
+     */
+    static passwordReset = async (propsData: any) => {
+        return await this.universalService({"action": "datalens", "method": "password_reset", "data": [propsData]});
+    }
+
+    /**
+     * Обновление привязки к ролям
+     * @param propsData {"id": 12, "c_claims": "['datalens']"}
+     * @returns 
+     */
+    static updateRoles = async (propsData: any) => {
+        return await this.universalService({"action": "datalens", "method": "update_roles", "data": [propsData]});
+    }
+
+    /**
+     * Получение списка пользователей
+     * @param propsData {}
+     * @returns 
+     */
+    static users = async (propsData: any) => {
+        var result = await this.universalService({"action": "datalens", "method": "users", "data": [propsData]});
+
+        return result.data && result.data.length > 0 ? result.data : [];
+    }
+
+    /**
+     * Универсальный метод для запросов RPC через frontend UI
+     * 
+     * @param propsData данные в формате RPC {action:string, method:string, data:any[], tid: number}
+     * @returns объект {err:any, data:any}, если err заполнен, то ошибка
+     */
+    static universalService = async (propsData: any) => {
+        var result = await getSdk().sdk.us.universalService(propsData);
+
+        return result;
+    }
+
+    /**
+     * Получение списка проектов
+     * @param propsData {}
+     * @returns 
+     */
+    static projects = async (propsData: any) => {
+        var result = await this.universalService({"action": "datalens", "method": "projects", "data": [propsData]});
+
+        return result.data && result.data.length > 0 ? result.data : [];
     }
 }

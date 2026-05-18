@@ -393,7 +393,7 @@ export function buildSource({
     query,
     params,
     paramsDescription,
-    qlConnectionTypeMap,
+    qlConnectionTypeMap
 }: {
     id: string;
     connectionType: string;

@@ -286,7 +286,7 @@ function prepareValues({widget, data, widgetType, extra, options = {}}) {
                 });
             });
 
-            return {graphs};
+            return {graphs, widgetKey: widget.key};
         }
     }
 

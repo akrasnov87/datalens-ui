@@ -18,6 +18,7 @@ const i18n = I18n.keyset('component.collections-structure');
 type Props = {
     workbookId: string;
     title: string;
+    project?: string;
     description: string;
     open: boolean;
     onClose: () => void;
@@ -34,7 +35,7 @@ export type OpenDialogEditWorkbookArgs = {
 export const EditWorkbookDialog: React.FC<Props> = (props) => {
     const dispatch: AppDispatch = useDispatch();
 
-    const {title, description, open, onClose} = props;
+    const {title, project, description, open, onClose} = props;
 
     const {
         values: dialogValues,
@@ -44,13 +45,14 @@ export const EditWorkbookDialog: React.FC<Props> = (props) => {
     } = useCollectionEntityDialogState({
         title,
         description,
+        project
     });
 
     const isLoading = useSelector(selectUpdateWorkbookIsLoading);
 
     const handleApply = React.useCallback(
         async (
-            {title: dialogTitle, description: dialogDescription}: WorkbookDialogValues,
+            {title: dialogTitle, project: dialogProject, description: dialogDescription}: WorkbookDialogValues,
             dialogOnClose: () => void,
         ) => {
             const {workbookId, onApply} = props;
@@ -61,6 +63,7 @@ export const EditWorkbookDialog: React.FC<Props> = (props) => {
                         {
                             workbookId,
                             title: dialogTitle,
+                            project: dialogProject,
                             description: dialogDescription ?? '',
                         },
                         true,

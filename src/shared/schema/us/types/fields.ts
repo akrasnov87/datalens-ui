@@ -87,6 +87,7 @@ export interface SharedEntryFields {
     updatedAt: string;
     workbookId: WorkbookId;
     scope: SharedScope;
+    projectId: string;
     type: string;
     key: string;
     entryId: string;

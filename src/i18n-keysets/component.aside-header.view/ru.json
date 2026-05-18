@@ -11,5 +11,8 @@
   "label_profile-settings": "Настройки профиля",
   "label_settings": "Настройки",
   "switch_collections": "Коллекции и воркбуки",
-  "switch_service-settings": "Настройки сервиса"
+  "switch_service-settings": "Настройки сервиса",
+  "switch_service-projects": "Проекты",
+  "switch_service-roles": "Роли",
+  "switch_service-users": "Пользователи"
 }

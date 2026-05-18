@@ -28,6 +28,8 @@
   "title_remove-global-selector": "Удаление селектора",
   "toast_paste-invalid-workbook-entry": "Не допускается вставка виджетов, у которых есть связи с объектами из другого воркбука",
   "toast_unsaved": "На странице есть несохраненные изменения. Вы уверены?",
+  "export": "Экспорт",
+  "export_error": "Экспорт в excel не удался",
   "tooltip_collapse-fixed-group": "Свернуть закреплённую группу",
   "tooltip_expand-fixed-group": "Развернуть закреплённую группу",
   "value_state-limit-error": "Состояние дашборда не сохранено",

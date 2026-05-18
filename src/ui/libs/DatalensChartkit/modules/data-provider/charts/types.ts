@@ -311,6 +311,7 @@ interface ResponseSuccessWizardBase
     extends Pick<ResponseSuccessNodeBase, 'params' | 'usedParams' | 'sources'> {
     unresolvedParams?: StringParams;
     requestId: string;
+    rpcAuthorization?: string;
     traceId: string;
     executionTime: number;
     data: object;
@@ -332,6 +333,7 @@ export interface ResponseSuccessNodeBase extends DashWidgetConfig {
     unresolvedParams?: StringParams;
     defaultParams: StringParams;
     requestId: string;
+    rpcAuthorization?: string;
     traceId: string;
     logs_v2?: string;
     key: string;

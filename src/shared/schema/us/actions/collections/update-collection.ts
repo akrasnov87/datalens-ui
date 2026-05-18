@@ -5,6 +5,7 @@ import {collectionSchema} from '../../schemas/collections';
 
 const updateCollectionArgsSchema = z.object({
     collectionId: z.string(),
+    project: z.string().optional(),
     title: z.string().optional(),
     description: z.string().optional(),
 });
@@ -19,9 +20,10 @@ export const updateCollection = createTypedAction(
     {
         method: 'POST',
         path: ({collectionId}) => `/v1/collections/${collectionId}/update`,
-        params: ({title, description}, headers) => ({
+        params: ({title, project, description}, headers) => ({
             body: {
                 title,
+                project,
                 description,
             },
             headers,

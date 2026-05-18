@@ -3,6 +3,7 @@
   "export_limit_error": "You can export data up to {{limit}}; your data size is {{length}}.",
   "export_success": "Copied to clipboard",
   "format_csv": "CSV",
+  "format_ods": "ODS",
   "format_image": "Image",
   "format_markdown": "Markdown",
   "format_wiki": "Wiki",
@@ -17,5 +18,6 @@
   "label_export-forbidden.PROHIBITED_EXPORT_TENANT": "Data export is unavailable in this organization",
   "label_export-forbidden.PROHIBITED_EXPORT_TYPED_QUERY": "Data export is unavailable for this chart type",
   "menu-export": "Save as",
+  "menu-export-pdf": "Save as PDF",
   "menu-screenshot": "Save as image"
 }

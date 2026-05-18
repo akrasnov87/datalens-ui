@@ -325,6 +325,14 @@ export const generateTableHead = ({
             if (field.hintSettings?.enabled) {
                 head[index].hint = field.hintSettings?.text;
             }
+
+            if (field.overrideTitleSettings?.enabled) {
+                head[index].name = field.overrideTitleSettings?.text;
+            }
+
+            if (field.bandTitleSettings?.enabled) {
+                head[index].band = field.bandTitleSettings?.text;
+            }
         }
 
         head[index].name = fieldName;

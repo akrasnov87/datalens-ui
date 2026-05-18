@@ -96,6 +96,7 @@ export const CreateWorkbookDialog: React.FC<CreateWorkbookDialogProps> = ({
     } = useCollectionEntityDialogState({
         title: publicGalleryState?.title || defaultWorkbookTitle || '',
         description: publicGalleryState?.description || '',
+        project: '',
     });
 
     const isCreatingLoading = useSelector(selectCreateWorkbookIsLoading);
@@ -272,7 +273,7 @@ export const CreateWorkbookDialog: React.FC<CreateWorkbookDialogProps> = ({
     );
 
     const handleApply = React.useCallback(
-        async ({title, description}: WorkbookDialogValues, dialogOnClose: () => void) => {
+        async ({title, project, description}: WorkbookDialogValues, dialogOnClose: () => void) => {
             if (isEnabledFeature(Feature.EnableExportWorkbookFile) && importStatus === 'success') {
                 dialogOnClose();
                 handleCreateCallback(importProgressData?.workbookId);
@@ -291,6 +292,7 @@ export const CreateWorkbookDialog: React.FC<CreateWorkbookDialogProps> = ({
             const workbookData = {
                 title,
                 description: description ?? '',
+                project,
                 collectionId,
             };
 

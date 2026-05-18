@@ -8,6 +8,7 @@ import {
     Link,
     Tag,
     TrashBin,
+    LockOpen
 } from '@gravity-ui/icons';
 import type {ConnectorType} from 'shared/constants/connections';
 import {ActionPanelEntryContextMenuQa} from 'shared/constants/qa/action-panel';
@@ -35,7 +36,9 @@ export const ENTRY_CONTEXT_MENU_ACTION = {
     SHARE: 'share',
     REVISIONS: 'revisions',
     MIGRATE_TO_WORKBOOK: 'migrate-to-workbook',
-    SHOW_RELATED_ENTITIES: 'show-related-entities',
+    CLAIMS: 'claims',
+    EMBED: 'embed',
+    SHOW_RELATED_ENTITIES: 'show-related-entities'
 } as const;
 
 const CONTEXT_MENU_COPY = {
@@ -119,6 +122,20 @@ export const getEntryContextMenu = (): ContextMenuItem[] => {
                 if (!entry || !entry.scope || isLimitedView) return false;
 
                 return getEntryScopesWithRevisionsList().includes(entry.scope as EntryScope);
+            },
+        },
+        {
+            id: ENTRY_CONTEXT_MENU_ACTION.CLAIMS,
+            action: ENTRY_CONTEXT_MENU_ACTION.CLAIMS,
+            icon: LockOpen,
+            text: 'value_access',
+            qa: 'value_access',
+            enable: (entry: any) => { return entry && entry.permissions && entry.permissions.edit },
+            scopes: getAllEntryScopes(),
+            // isSpecific: true,
+            // isOnEditMode: false,
+            isVisible() {
+                return true;
             },
         },
         {
@@ -224,6 +241,14 @@ export const getEntryContextMenu = (): ContextMenuItem[] => {
             permissions: {admin: true, edit: true, read: false, execute: false},
             isStrictPermissions: true, // strict check with disallow when there are no permissions object
         },
+        {
+            id: ENTRY_CONTEXT_MENU_ACTION.EMBED,
+            action: ENTRY_CONTEXT_MENU_ACTION.EMBED,
+            icon: ArrowShapeTurnUpRight,
+            text: 'value_embed',
+            enable: () => true,
+            scopes: getAllEntryScopes()
+        },
         getContextMenuAccess(),
         {
             ...CONTEXT_MENU_COPY_LINK,
@@ -238,6 +263,15 @@ export const getEntryContextMenu = (): ContextMenuItem[] => {
                 EntryScope.Connection,
                 ...getTopLevelEntryScopes(),
             ],
+        },
+        {
+            id: ENTRY_CONTEXT_MENU_ACTION.SHARE,
+            action: ENTRY_CONTEXT_MENU_ACTION.SHARE,
+            icon: ArrowShapeTurnUpRight,
+            text: 'value_share',
+            enable: () => true,
+            scopes: getAllEntryScopes(),
+            isVisible: isVisibleEntryContextShareItem,
         },
         {
             id: ENTRY_CONTEXT_MENU_ACTION.SHARE,

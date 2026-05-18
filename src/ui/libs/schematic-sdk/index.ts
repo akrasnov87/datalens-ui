@@ -12,6 +12,7 @@ import {
     SuperuserHeader,
     TENANT_ID_HEADER,
     TIMEZONE_OFFSET_HEADER,
+    RPC_AUTHORIZATION
 } from '../../../shared';
 import type {WithRequired, authSchema, schema} from '../../../shared';
 import {DL} from '../../constants';
@@ -66,6 +67,11 @@ export type TypedSchema = {
 
 export const initSdk = () => {
     const sdk: DatalensSdk<TypedSchema> = sdkFactory<TypedSchema>(sdkConfig);
+
+    sdk.setDefaultHeader({
+        name: RPC_AUTHORIZATION,
+        value: Utils.getRpcAuthorization(),
+    });
 
     sdk.setDefaultHeader({
         name: TIMEZONE_OFFSET_HEADER,

@@ -1,6 +1,6 @@
 {
-  "name": "@datalens-ui/opensource",
-  "version": "0.0.0",
+  "name": "@datalens-platform/datalens-ui",
+  "version": "0.3498.1",
   "files": [
     "build",
     "scripts"
@@ -49,7 +49,8 @@
     "test:e2e:docker:logs": "cd ./tests && docker --log-level error compose -f ./docker-compose.e2e.yml logs --no-color",
     "test:e2e:docker:logs-nginx": "cd ./tests && docker --log-level error compose -f ./docker-compose.e2e.nginx.yml logs --no-color",
     "statoscope:validate-diff": "statoscope validate --input input.json --reference reference.json",
-    "statoscope:validate": "statoscope validate --input ./dist/public/build/stats.json"
+    "statoscope:validate": "statoscope validate --input ./dist/public/build/stats.json",
+    "build:image": "./build.sh"
   },
   "repository": {
     "type": "git",
@@ -84,6 +85,7 @@
     "chroma-js": "^3.1.2",
     "clipboard-copy": "^3.2.0",
     "dotenv": "^8.2.0",
+    "express-openid-connect": "^2.20.1",
     "form-data": "^4.0.0",
     "hashids": "^2.2.1",
     "iconv-lite": "^0.4.24",
@@ -104,11 +106,17 @@
     "markdown-it-mark": "^4.0.0",
     "markdown-it-sub": "^2.0.0",
     "mime": "^1.6.0",
+    "mimic-response": "^1.0.1",
+    "mkdir-recursive": "^0.4.0",
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.34",
     "node-cache": "^5.1.2",
     "object-sizeof": "^2.6.5",
     "p-queue": "^6.6.2",
+    "passport": "^0.5.3",
+    "passport-openidconnect": "^0.1.2",
+    "path-to-regexp": "^6.3.0",
+    "puppeteer": "^23.11.1",
     "qs": "^6.11.2",
     "querystring": "^0.2.0",
     "quickjs-emscripten": "^0.31.0",
@@ -231,6 +239,7 @@
     "monaco-editor": "^0.36.1",
     "monaco-editor-webpack-plugin": "^7.1.0",
     "playwright-core": "1.48.2",
+    "patch-package": "^8.0.1",
     "postcss": "^8.4.33",
     "prettier": "^3.2.5",
     "prop-types": "^15.8.0",

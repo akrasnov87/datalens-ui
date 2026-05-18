@@ -31,6 +31,11 @@ import {
 import type {FilterEntryContextMenuItems} from './withConfiguredEntryContextMenu/withConfiguredEntryContextMenu';
 import {withConfiguredEntryContextMenu} from './withConfiguredEntryContextMenu/withConfiguredEntryContextMenu';
 
+import {DIALOG_ASSIGN_CLAIMS} from 'components/OpenDialogAssignClaims/OpenDialogAssignClaims';
+import {closeDialog, openDialog} from 'store/actions/dialog';
+import { WorkbookId } from 'shared';
+import { DIALOG_SHARE_WIDGET } from '../OpenDialogShare/OpenDialogShare';
+
 const contextMenuI18n = I18n.keyset('component.entry-context-menu.view');
 
 const ConfiguredEntryContextMenu = withConfiguredEntryContextMenu(EntryContextMenuBase);
@@ -120,6 +125,14 @@ class EntryContextMenu extends React.PureComponent<Props> {
                 renameEntry(this.entryDialoguesRef, entry);
                 break;
             }
+            case ENTRY_CONTEXT_MENU_ACTION.CLAIMS: {
+                this.props.actions.openDialog(entry.entryId, entry.workbookId);
+                break;
+            }
+            case ENTRY_CONTEXT_MENU_ACTION.EMBED: {
+                this.props.actions.openDialogShare(entry.entryId, entry.scope);
+                break;
+            }
             case ENTRY_CONTEXT_MENU_ACTION.MOVE: {
                 moveEntry(this.entryDialoguesRef, entry);
                 break;
@@ -191,12 +204,44 @@ const mapsStateToProps = (state: DatalensGlobalState) => {
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
     return {
-        actions: bindActionCreators(
-            {
-                toggleRevisionsMode,
+        actions: {
+            ...bindActionCreators(
+                {
+                    toggleRevisionsMode,
+                },
+                dispatch,
+            ), 
+            openDialog: (entryId:string, workbookId:WorkbookId) => {
+                dispatch(
+                    openDialog({
+                        id: DIALOG_ASSIGN_CLAIMS,
+                        props: {
+                            entryId: entryId,
+                            workbookId: workbookId,
+                            onClose: () => {
+                                dispatch(closeDialog());
+                            },
+                        },
+                    }),
+                );
             },
-            dispatch,
-        ),
+            openDialogShare: (entryId:string, scope: string) => { // см. DialogShareProps
+                dispatch(
+                    openDialog({
+                        id: DIALOG_SHARE_WIDGET,
+                        props: {
+                            entryId: entryId,
+                            scope: scope,
+                            onClose: () => {
+                                dispatch(closeDialog());
+                            },
+                        },
+                    }),
+                );
+            },
+
+            
+        },
     };
 };
 

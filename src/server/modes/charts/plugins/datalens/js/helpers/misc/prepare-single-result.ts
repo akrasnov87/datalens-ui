@@ -8,6 +8,9 @@ import type {
     ServerVisualization,
     ServerVisualizationLayer,
 } from '../../../../../../../../shared';
+
+import common from '../../../../../../../configs/common';
+
 import {WizardVisualizationId, isMonitoringOrPrometheusChart} from '../../../../../../../../shared';
 import {prepareGravityChartArea} from '../../../preparers/area';
 import prepareBackendPivotTableData from '../../../preparers/backend-pivot-table';
@@ -211,7 +214,7 @@ export default ({
 
         case WizardVisualizationId.FlatTable:
             prepare = prepareFlatTableData;
-            rowsLimit = 100000;
+            rowsLimit = common.flatTableRowsLimit;
             break;
 
         case WizardVisualizationId.PivotTable: {

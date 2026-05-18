@@ -133,6 +133,9 @@ export const CollectionContentTable = React.memo<Props>(
                                     {i18n('label_title')}
                                 </div>
                                 <div className={b('header-cell')}>
+                                    {i18n('label_project')}
+                                </div>
+                                <div className={b('header-cell')}>
                                     {i18n('label_last-modified')}
                                 </div>
                                 <div className={b('header-cell', {controls: true})} />
@@ -161,6 +164,9 @@ export const CollectionContentTable = React.memo<Props>(
                                             disabled={nonInteractive}
                                         />
                                         <CollectionTitleCell item={item} />
+                                        <div className={b('content-cell', {date: false})}>
+                                            {item.projectId || ''}
+                                        </div>
 
                                         <div className={b('content-cell', {date: true})}>
                                             {!nonInteractive && (

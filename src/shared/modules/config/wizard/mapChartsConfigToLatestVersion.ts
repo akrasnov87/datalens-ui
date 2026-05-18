@@ -7,6 +7,7 @@ import {mapV11ConfigToV12} from './v11/mapV11ConfigToV12';
 import {mapV12ConfigToV13} from './v12/mapV12ConfigToV13';
 import {mapV13ConfigToV14} from './v13/mapV13ConfigToV14';
 import {mapV14ConfigToV15} from './v14/mapV14ConfigToV15';
+import {mapV15ConfigToV15p1} from './v14/mapV15ConfigToV15p1';
 import {mapV2ConfigToV3} from './v2/mapV2ConfigToV3';
 import {mapV3ConfigToV4, migrateDatetime} from './v3/mapV3ConfigToV4';
 import {mapV4ConfigToV5} from './v4/mapV4ConfigToV5';
@@ -87,6 +88,11 @@ export const mapChartsConfigToLatestVersion = (
     if (config.version === ChartsConfigVersion.V14) {
         config = mapV14ConfigToV15(config);
     }
+
+    if (config.version === ChartsConfigVersion.V15) {
+        config = mapV15ConfigToV15p1(config);
+    }
+ 
 
     return config as ChartsConfig;
 };

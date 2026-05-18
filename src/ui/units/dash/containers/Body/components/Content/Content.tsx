@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 
 import type {ConfigItem, ConfigLayout, DashKitGroup, DashKitProps} from '@gravity-ui/dashkit';
 import {DashKitDnDWrapper, ActionPanel as DashkitActionPanel} from '@gravity-ui/dashkit';
@@ -35,11 +35,15 @@ import {
     selectTabs,
 } from '../../../../store/selectors/dashTypedSelectors';
 import {DashError} from '../../../DashError/DashError';
+import {i18n} from 'i18n';
+import {showToast} from 'ui/store/actions/toaster';
 import TableOfContent from '../../../TableOfContent/TableOfContent';
 import {Tabs} from '../../../Tabs/Tabs';
 import {DashkitWrapper} from '../DashkitWrapper/DashkitWrapper';
 
 import {useCopiedData} from './hooks/useCopiedData';
+import {Button} from '@gravity-ui/uikit';
+import {getSdk} from 'ui/libs/schematic-sdk';
 
 const b = block('dash-body');
 
@@ -128,6 +132,7 @@ const Content = ({
     const showTableOfContent = useSelector(selectShowTableOfContent);
     const tabs = useSelector(selectTabs);
     const userSettings = useSelector(selectUserSettings);
+    const [isExportLoading, setIsExportLoading] = useState(false);
 
     const theme = useThemeType();
 
@@ -176,6 +181,76 @@ const Content = ({
 
     const hideDashTitle = settings.hideDashTitle || (DL.IS_MOBILE && !isMobileFixedHeaderEnabled);
 
+    const exportDashboard = async () => {
+        const links = tabs
+            .map((item: any) => { item?.items[0]?.data?.tabs[0]?.chartId || '' })
+            .filter(item=>item);
+        const result = await Promise.allSettled(
+            links.map((id: any) =>
+                getSdk().sdk.us.getEntry({
+                    entryId: id,
+                    includePermissionsInfo: true,
+                }),
+            ),
+        );
+        const entries = result
+            .filter(({status}: any) => status === 'fulfilled')
+            .filter(
+                (item: any) => ['table_ql_node', 'table_wizard_node'].indexOf(item.value.type) >= 0
+            );
+
+        setIsExportLoading(true);
+        const body = JSON.stringify({
+            "links": entries.map((item: any)=>item.value.entryId),
+            "host": window.location.origin, //getConfig().REPORTS_URL,
+            "formSettings": {
+                "delNumbers": null,
+                "delValues": null,
+                "encoding": null,
+                "format": "csv"
+            },
+            "lang": "ru",
+            "outputFormat": "xlsx",
+            "exportFilename": "excel",
+            "params": {}
+        });
+        fetch("/export-entries", {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'x-rpc-authorization': Utils.getRpcAuthorization() 
+            },
+            body: body
+        }).then(res => {
+            if (res.status === 200) {
+                return res.blob();
+            } else {
+                return null;
+            }
+        }).then(blob => {
+            if (blob) {
+                var url = window.URL.createObjectURL(blob);
+                const anchorElement = document.createElement('a');
+                document.body.appendChild(anchorElement);
+                anchorElement.style.display = 'none';
+                anchorElement.href = url;
+                anchorElement.download = `${url.split('/').pop()}.xlsx`;
+                anchorElement.click();
+                
+                window.URL.revokeObjectURL(url);
+            } else {
+                dispatch(
+                    showToast({
+                        title: i18n("dash.main.view", "export_error"),
+                        error: Error(body),
+                    }),
+                );
+            }
+        }).finally(()=>{
+            setIsExportLoading(false);
+        });
+    };
+
     return (
         <DashKitDnDWrapper onDragStart={onDragStart} onDragEnd={onDragEnd}>
             <div
@@ -212,9 +287,22 @@ const Content = ({
                         })}
                     >
                         {!hideDashTitle && dashEntryKey && (
-                            <div className={b('entry-name')} data-qa={DashEntryQa.EntryName}>
-                                {Utils.getEntryNameFromKey(dashEntryKey)}
-                            </div>
+                            <>
+                                <div className={b('entry-name')} data-qa={DashEntryQa.EntryName}>
+                                    {Utils.getEntryNameFromKey(dashEntryKey)}
+                                    {(!DL.EXPORT_DASH_EXCEL) ? null : 
+                                        <Button
+                                            className={b('export-button')}
+                                            onClick={exportDashboard}
+                                            loading={isExportLoading}
+                                            view="action"
+                                            size="m"
+                                        >
+                                            {i18n('dash.main.view', 'export')}
+                                        </Button>
+                                    }
+                                </div>
+                            </>
                         )}
                         {!settings.hideTabs && <Tabs className={b('tabs')} />}
 

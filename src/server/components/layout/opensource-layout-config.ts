@@ -7,7 +7,7 @@ import type {
     DLUser,
     TenantSettings,
 } from '../../../shared';
-import {FALLBACK_LANGUAGES, Language, USER_SETTINGS_KEY} from '../../../shared';
+import {FALLBACK_LANGUAGES, Feature, Language, USER_SETTINGS_KEY} from '../../../shared';
 import type {AppLayoutSettings, GetLayoutConfig} from '../../types/app-layout';
 import {addTranslationsScript} from '../../utils/language';
 
@@ -28,7 +28,7 @@ export const getOpensourceLayoutConfig: GetLayoutConfig = async (args) => {
     const allowLanguages = (regionalEnvConfig?.allowLanguages || FALLBACK_LANGUAGES) as Language[];
 
     const cookie = req.cookies[USER_SETTINGS_KEY];
-    let lang = Language.En;
+    let lang = Language.Ru;
     let theme;
     try {
         const preparedCookie = JSON.parse(cookie);
@@ -40,7 +40,7 @@ export const getOpensourceLayoutConfig: GetLayoutConfig = async (args) => {
 
     const isAllowed = allowLanguages.includes(lang || '');
     if (!isAllowed) {
-        lang = Language.En;
+        lang = Language.Ru;
     }
 
     const isAuthEnabled = req.ctx.config.isAuthEnabled;
@@ -64,6 +64,11 @@ export const getOpensourceLayoutConfig: GetLayoutConfig = async (args) => {
         };
     }
 
+    const isRebrandingEnabled = req.ctx.get('isEnabledServerFeature')(Feature.EnableDLRebranding);
+
+    // applying new favicon from rebranding
+    const faviconUrl = isRebrandingEnabled ? '/os-favicon.ico' : config.faviconUrl;
+    
     const tenantSettings: TenantSettings = {
         defaultColorPaletteId: res.locals.tenantDefaultColorPaletteId,
     };
@@ -84,11 +89,24 @@ export const getOpensourceLayoutConfig: GetLayoutConfig = async (args) => {
         defaultColorPaletteId: config.defaultColorPaletteId,
         allowLanguages,
         headersMap: req.ctx.config.headersMap,
+        oidc: req.ctx.config.oidc,
+        oidc_name: req.ctx.config.oidc_name,
+        oidc_base_url: req.ctx.config.oidc_base_url,
+        oidc_2: req.ctx.config.oidc_2,
+        oidc_name_2: req.ctx.config.oidc_name_2,
+        oidc_base_url_2: req.ctx.config.oidc_base_url_2,
+        oidc_3: req.ctx.config.oidc_3,
+        oidc_name_3: req.ctx.config.oidc_name_3,
+        oidc_base_url_3: req.ctx.config.oidc_base_url_3,
+        oidc_4: req.ctx.config.oidc_4,
+        oidc_name_4: req.ctx.config.oidc_name_4,
+        oidc_base_url_4: req.ctx.config.oidc_base_url_4,
         isAuthEnabled,
         ymapApiKey: config.chartkitSettings?.yandexMap?.token,
         connectorIcons: res.locals.connectorIcons,
         apiPrefix: config.apiPrefix,
         releaseVersion: config.releaseVersion,
+        exportDashExcel: req.ctx.config.exportDashExcel,
         docsUrl: config.docsUrl,
         orderedAuthRoles: config.orderedAuthRoles,
         authSignupDisabled: req.ctx.config.authSignupDisabled,
@@ -102,16 +120,16 @@ export const getOpensourceLayoutConfig: GetLayoutConfig = async (args) => {
         lang,
         icon: {
             type: 'image/ico',
-            href: config.faviconUrl,
+            href: faviconUrl,
             sizes: '32x32',
         },
         inlineScripts: ['window.DL = window.__DATA__.DL', ...chartkitInlineScripts],
         scripts: [addTranslationsScript({allowLanguages, lang}), ...chartkitScripts],
         links: [
             {
-                href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap',
+                href: 'fonts.css',
                 rel: 'stylesheet',
-            },
+            }
         ],
         pluginsOptions: {
             layout: {name: appLayoutSettings.bundleName},

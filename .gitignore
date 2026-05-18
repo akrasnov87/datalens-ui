@@ -14,6 +14,11 @@ dist/i18n
 dist/shared
 dist/public/build
 dist/run/*
+artifacts
+export/*.csv
+export/*.xlsx
+export/*.ods
+export/*.pdf
 
 build/
 
@@ -32,4 +37,7 @@ tests/logs
 reference.json
 input.json
 result.json
+export/temp
 .last-run.json
+
+table-report-headers

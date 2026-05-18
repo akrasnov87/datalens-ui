@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {CodeTrunk, Copy, CopyArrowRight, FontCursor, Shield, TrashBin} from '@gravity-ui/icons';
+import {CodeTrunk, Copy, CopyArrowRight, FontCursor, Shield, LockOpen, TrashBin} from '@gravity-ui/icons';
 import type {DropdownMenuItemMixed} from '@gravity-ui/uikit';
 import {DropdownMenu} from '@gravity-ui/uikit';
 import {I18n} from 'i18n';
@@ -29,6 +29,7 @@ type EntryActionsProps = {
     entry: WorkbookUnionEntry;
     onRenameClick?: () => void;
     onDeleteClick?: () => void;
+    onAssignClaims: () => void;
     onDuplicateEntry?: () => void;
     onCopyEntry?: () => void;
     onShowRelatedClick?: () => void;
@@ -41,6 +42,7 @@ export const EntryActions = ({
     entry,
     onRenameClick,
     onDeleteClick,
+    onAssignClaims,
     onDuplicateEntry,
     onCopyEntry,
     onShowRelatedClick,
@@ -82,6 +84,11 @@ export const EntryActions = ({
         items.push(...additionalWorkbookEntryActions);
     }
     const subMenu = [];
+    subMenu.push({
+        action: onAssignClaims,
+        text: <DropdownAction icon={LockOpen} text={i18n('action_access')} />,
+    });
+    
     if (onShowRelatedClick) {
         subMenu.push({
             action: onShowRelatedClick,

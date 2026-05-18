@@ -28,6 +28,8 @@
   "title_remove-global-selector": "Deleting a selector",
   "toast_paste-invalid-workbook-entry": "Pasting widgets linked to objects from another workbook is forbidden",
   "toast_unsaved": "There are unsaved changes on the page. Are you sure?",
+  "export": "Export",
+  "export_error": "Export to excel failed",
   "tooltip_collapse-fixed-group": "Collapse pinned group",
   "tooltip_expand-fixed-group": "Expand pinned group",
   "value_state-limit-error": "Dashboard state not saved",

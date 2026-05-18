@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {Dialog, TextArea, TextInput} from '@gravity-ui/uikit';
+import {Dialog, TextArea, TextInput, Select} from '@gravity-ui/uikit';
 import type {QAProps} from '@gravity-ui/uikit';
 import block from 'bem-cn-lite';
 import {I18n} from 'i18n';
@@ -9,6 +9,7 @@ import {WorkbookDialogQA} from 'shared/constants/qa';
 import type {GetDialogFooterPropsOverride} from './types';
 
 import './WorkbookDialog.scss';
+import Utils from 'ui/utils';
 
 const i18n = I18n.keyset('component.collections-structure');
 
@@ -16,6 +17,7 @@ const b = block('dl-workbook-dialog');
 
 export type WorkbookDialogValues = {
     title: string;
+    project: string | undefined;
     description: string;
 };
 
@@ -25,6 +27,7 @@ export type Props = {
     values: WorkbookDialogValues;
     errors?: WorkbookDialogErrors;
     title: string;
+    project?: string;
     textButtonApply: string;
     open: boolean;
     isLoading: boolean;
@@ -56,6 +59,26 @@ export const WorkbookDialog = React.memo<Props>(
         getDialogFooterPropsOverride,
         qa,
     }) => {
+        var [projects, setProjects] = React.useState([]);
+        var [projectDefault, setProjectDefault] = React.useState("");
+
+
+        React.useEffect(() => {
+            Utils.projects({}).then((values)=>{
+                var results: any = [];
+                for(var idx in values) {
+                    var value = values[idx];
+                    var item = {"content": value.name, "value": value.name };
+                    results.push(item);
+
+                    if(value.isbase) {
+                        setProjectDefault(value.name);
+                    }
+                }
+                setProjects(results);
+            })
+        }, []);
+
         const handleChange = React.useCallback(
             (params) => {
                 const {target} = params;
@@ -113,6 +136,23 @@ export const WorkbookDialog = React.memo<Props>(
                             onChange={handleChange}
                             autoFocus={titleAutoFocus}
                             qa={WorkbookDialogQA.TITLE_INPUT}
+                        />
+                    </div>
+                    <div className={b('field')}>
+                        <div className={b('title')}>{i18n('label_project')}</div>
+
+                        <Select 
+                            width={'max'}
+                            defaultValue={[values.project || projectDefault]} 
+                            options={projects} 
+                            onUpdate={
+                                (value: any) => handleChange({
+                                    target: {
+                                        name: "project",
+                                        value: value[0]
+                                    }
+                                })
+                            } 
                         />
                     </div>
                     {!isHiddenDescription && (

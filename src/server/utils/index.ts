@@ -14,6 +14,7 @@ import {
     FORWARDED_FOR_HEADER,
     PROJECT_ID_HEADER,
     REQUEST_ID_HEADER,
+    RPC_AUTHORIZATION,
     REQUEST_SOURCE_HEADER,
     RequestSourceHeaderValue,
     SuperuserHeader,
@@ -43,6 +44,7 @@ class Utils {
             folderIdHeader,
             TENANT_ID_HEADER,
             PROJECT_ID_HEADER,
+            RPC_AUTHORIZATION,
             subjectTokenHeader,
         ];
 
@@ -71,14 +73,32 @@ class Utils {
         return pick(headers, FORWARDED_FOR_HEADER);
     }
 
+    static pickRpcAuthorizationHeaders(headers: IncomingHttpHeaders) {
+        return pick(headers, RPC_AUTHORIZATION);
+    }
+
     static pickHeaders(req: Request) {
         return {
             ...Utils.pickServiceHeaders(req.headers, req),
             ...Utils.pickSuperuserHeaders(req.headers),
             ...Utils.pickDlContextHeaders(req.headers),
             ...Utils.pickForwardHeaders(req.headers),
+            ...Utils.pickRpcAuthorizationHeaders(req.headers),
             ...(req.ctx.config.isAuthEnabled ? {...Utils.pickAuthHeaders(req)} : {}),
             [REQUEST_ID_HEADER]: req.id,
+        };
+    }
+
+    static pickRpcHeaders(req: Request) {
+        const headersMap = req.ctx.config.headersMap;
+
+        const orgId = req.headers[PUBLIC_API_ORG_ID_HEADER];
+        const tenantId = orgId && !Array.isArray(orgId) ? makeTenantIdFromOrgId(orgId) : undefined;
+
+        return {
+            ...pick(req.headers, [AuthHeader.Authorization, headersMap.subjectToken]),
+            ...Utils.pickForwardHeaders(req.headers),
+            [TENANT_ID_HEADER]: tenantId,
         };
     }
 

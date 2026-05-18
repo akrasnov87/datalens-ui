@@ -5,22 +5,23 @@ import type {V11ChartsConfig} from './v11';
 import type {V12ChartsConfig} from './v12';
 import type {V13ChartsConfig} from './v13';
 import type {V14ChartsConfig} from './v14';
+import type {V15ChartsConfig} from './v15';
 import type {
-    V15ChartsConfig,
-    V15ChartsConfigDatasetField,
-    V15ColorsConfig,
-    V15CommonPlaceholders,
-    V15CommonSharedExtraSettings,
-    V15Field,
-    V15Filter,
-    V15Formatting,
-    V15HierarchyField,
-    V15Layer,
-    V15PlaceholderSettings,
-    V15ShapesConfig,
-    V15TooltipConfig,
-    V15Update,
-} from './v15';
+    V15p1ChartsConfig,
+    V15p1ChartsConfigDatasetField,
+    V15p1ColorsConfig,
+    V15p1CommonPlaceholders,
+    V15p1CommonSharedExtraSettings,
+    V15p1Field,
+    V15p1Filter,
+    V15p1Formatting,
+    V15p1HierarchyField,
+    V15p1Layer,
+    V15p1PlaceholderSettings,
+    V15p1ShapesConfig,
+    V15p1TooltipConfig,
+    V15p1Update,
+} from './v15p1';
 import type {V2ChartsConfig} from './v2';
 import type {V3ChartsConfig} from './v3';
 import type {V4ChartsConfig} from './v4';
@@ -44,8 +45,10 @@ export * from './v12';
 export * from './v13';
 export * from './v14';
 export * from './v15';
+export * from './v15p1';
 
-export type ChartsConfig = V15ChartsConfig;
+export type ChartsConfig = V15p1ChartsConfig;
+
 export type PreviousChartsConfigs =
     | Shared
     | V2ChartsConfig
@@ -60,8 +63,10 @@ export type PreviousChartsConfigs =
     | V11ChartsConfig
     | V12ChartsConfig
     | V13ChartsConfig
-    | V14ChartsConfig;
-export type CommonPlaceholders = V15CommonPlaceholders;
+    | V14ChartsConfig
+    | V15ChartsConfig
+    | V15p1ChartsConfig;
+export type CommonPlaceholders = V15p1CommonPlaceholders;
 
 export type ExtendedChartsConfig = ChartsConfig | PreviousChartsConfigs;
 
@@ -87,30 +92,30 @@ export type ServerLayerSettings = NonNullable<
     ChartsConfig['visualization']['layers']
 >[0]['layerSettings'];
 
-export type ServerFieldFormatting = V15Formatting;
+export type ServerFieldFormatting = V15p1Formatting;
 
-export type ServerShapesConfig = V15ShapesConfig;
+export type ServerShapesConfig = V15p1ShapesConfig;
 
-export type ServerColorsConfig = V15ColorsConfig;
+export type ServerColorsConfig = V15p1ColorsConfig;
 
 export type ServerPointSizeConfig = NonNullable<ChartsConfig['geopointsConfig']>;
 
-export type ServerField = V15Field;
+export type ServerField = V15p1Field;
 
-export type ServerFieldUpdate = V15Update;
+export type ServerFieldUpdate = V15p1Update;
 
-export type ServerFilter = V15Filter;
+export type ServerFilter = V15p1Filter;
 
-export type ServerDatasetField = V15ChartsConfigDatasetField;
+export type ServerDatasetField = V15p1ChartsConfigDatasetField;
 
-export type ServerVisualizationLayer = V15Layer;
+export type ServerVisualizationLayer = V15p1Layer;
 
 export type ServerLink = ChartsConfig['links'][0];
 
-export type ServerHierarchy = V15HierarchyField;
+export type ServerHierarchy = V15p1HierarchyField;
 
-export type ServerCommonSharedExtraSettings = V15CommonSharedExtraSettings;
+export type ServerCommonSharedExtraSettings = V15p1CommonSharedExtraSettings;
 
-export type ServerPlaceholderSettings = V15PlaceholderSettings;
+export type ServerPlaceholderSettings = V15p1PlaceholderSettings;
 
-export type ServerTooltipConfig = V15TooltipConfig;
+export type ServerTooltipConfig = V15p1TooltipConfig;

@@ -8,6 +8,7 @@ export const workbookSchema = z.object({
     title: z.string(),
     description: z.string().nullable(),
     tenantId: z.string(),
+    projectId: z.string().nullable(),
     meta: z
         .object({
             importId: z.string().optional(),

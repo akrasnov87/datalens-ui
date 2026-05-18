@@ -762,6 +762,10 @@ export class DataFetcher {
             ctx.getMetadata(),
         );
 
+        if(subrequestHeaders['x-rpc-authorization']) {
+            headers['x-request-id'] = '{{' + subrequestHeaders['x-rpc-authorization'] + '}}.' + headers['x-request-id'];
+        }
+
         if (sourceType === 'charts') {
             const incomingHeader = originalReqHeaders.xChartsFetcherVia || '';
 

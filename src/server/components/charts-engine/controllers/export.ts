@@ -5,7 +5,7 @@ import {registry} from '../../../registry';
 
 import {csvConverter} from './csvConverter';
 
-const DATA_LIMIT = 1024 * 1024 * 100; // 100MB
+const DATA_LIMIT = 1024 * 1024 * 1000; // 1000MB
 
 export const exportController = () => {
     return async (req: Request, res: Response) => {
@@ -69,6 +69,8 @@ export const exportController = () => {
         downloadConfig.filename += `_${moment().format('YYYY_MM_DD_HH_mm')}`;
 
         if (POST.formSettings.format === 'csv') {
+            csvConverter(req, res, chartData, dataArray, POST.formSettings, downloadConfig);
+        } else if  (POST.formSettings.format === 'ods') {
             csvConverter(req, res, chartData, dataArray, POST.formSettings, downloadConfig);
         } else if (POST.formSettings.format === 'xlsx') {
             const xlsxConverter = registry.getXlsxConverter();

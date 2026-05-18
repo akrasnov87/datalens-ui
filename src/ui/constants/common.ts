@@ -140,7 +140,7 @@ export const DL = {
         return window.DL.userSettings;
     },
     get USER_LANG() {
-        return window.DL.user.lang || 'en';
+        return window.DL.user.lang || 'ru';
     },
     get REGION_LANG() {
         return window.DL.langRegion;
@@ -238,6 +238,47 @@ export const DL = {
     get HIDE_NAVIGATION() {
         return window.DL.hideNavigation;
     },
+    get OIDC() {
+        return window.DL.oidc === true;
+    },
+    get OIDC_BASE_URL() {
+        return window.DL.oidc_base_url || '';
+    },
+    get OIDC_NAME() {
+        return window.DL.oidc_name || 'OIDC';
+    },
+    get OIDC_2() {
+        return window.DL.oidc_2 === true;
+    },
+    get OIDC_BASE_URL_2() {
+        return window.DL.oidc_base_url_2 || '';
+    },
+    get OIDC_NAME_2() {
+        return window.DL.oidc_name_2 || 'OIDC';
+    },
+    get OIDC_3() {
+        return window.DL.oidc_3 === true;
+    },
+    get OIDC_BASE_URL_3() {
+        return window.DL.oidc_base_url_3 || '';
+    },
+    get OIDC_NAME_3() {
+        return window.DL.oidc_name_3 || 'OIDC';
+    },
+    get OIDC_4() {
+        return window.DL.oidc_4 === true;
+    },
+    get OIDC_BASE_URL_4() {
+        return window.DL.oidc_base_url_4 || '';
+    },
+    get OIDC_NAME_4() {
+        return window.DL.oidc_name_4 || 'OIDC';
+    },
+    // TODO: delete
+    // get RUN_ENDPOINT() {
+    //     return window.DL.runEndpoint || '/api/run';
+    // },
+    // TODO: add fallback
     get API_PREFIX() {
         return window.DL.apiPrefix || '/api';
     },
@@ -246,6 +287,9 @@ export const DL = {
     },
     get RELEASE_VERSION() {
         return window.DL.releaseVersion;
+    },
+    get EXPORT_DASH_EXCEL() {
+        return window.DL.exportDashExcel === true;
     },
     get DOCS_URL() {
         return window.DL.docsUrl;
@@ -271,7 +315,7 @@ export const DATALENS_DARK_THEME_MONACO = 'vs-dark-datalens';
 export const DATALENS_DARK_HC_THEME_MONACO = 'vs-dark-hc-datalens';
 
 export const PRODUCT_NAME = 'DataLens';
-export const FULL_PRODUCT_NAME = `Yandex ${PRODUCT_NAME}`;
+export const REBRANDING_PRODUCT_NAME = `Yandex ${PRODUCT_NAME}`;
 
 export const URL_OPTIONS = {
     THEME: '_theme',

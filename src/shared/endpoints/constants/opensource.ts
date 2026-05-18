@@ -1,9 +1,12 @@
 export const opensourceEndpoints = {
     development: {
         api: {
-            us: process.env.US_ENDPOINT || 'http://localhost:3030',
-            bi: process.env.BI_API_ENDPOINT || 'http://localhost:8010',
-            biData: process.env.BI_DATA_ENDPOINT || 'http://localhost:8020',
+            us: process.env.US_ENDPOINT || 'http://localhost:8083',
+            bi: process.env.BI_API_ENDPOINT || 'http://localhost:8081',
+            biData: process.env.BI_DATA_ENDPOINT || 'http://localhost:8082',
+            rpc: process.env.NODE_RPC_URL || 'http://localhost:5000',
+            biConverter: process.env.BI_FILE_UPLOADER_ENDPOINT || 'http://localhost:8084',
+            csvConverter: process.env.BI_FILE_UPLOADER_ENDPOINT || 'http://localhost:8084',
             metaManager: process.env.META_MANAGER_ENDPOINT || 'http://localhost:3050',
 
             charts: process.env.CHARTS_ENDPOINT || '/',

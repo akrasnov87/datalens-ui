@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {CircleQuestion, Gear, Sliders} from '@gravity-ui/icons';
+import {CircleQuestion, Gear, Sliders, ArrowRightFromSquare} from '@gravity-ui/icons';
 import type {AsideHeaderProps, MenuItem, TopAlertProps} from '@gravity-ui/navigation';
 import {AsideHeader, FooterItem} from '@gravity-ui/navigation';
 import type {IconData} from '@gravity-ui/uikit';
@@ -9,7 +9,7 @@ import block from 'bem-cn-lite';
 import {I18n, i18n as baseI18n} from 'i18n';
 import {useDispatch, useSelector} from 'react-redux';
 import {Link, useLocation} from 'react-router-dom';
-import {DlNavigationQA, Feature} from 'shared';
+import {DlNavigationQA, Feature, RPC_AUTHORIZATION} from 'shared';
 import {DL} from 'ui/constants';
 import {closeDialog, openDialog} from 'ui/store/actions/dialog';
 import {
@@ -29,21 +29,26 @@ import {Settings as SettingsPanel} from './Settings/Settings';
 import {DIALOG_RELEASE_VERSION} from './VersionDialog/VersionDialog';
 import {ASIDE_HEADER_LOGO_ICON_SIZE} from './constants';
 
+import defaultLogoIcon from '../../assets/icons/logo.svg';
 import iconCollection from '../../assets/icons/mono-collection.svg';
-import defaultLogoIcon from '../../assets/icons/os-logo.svg';
+import rebrandingLogoIcon from '../../assets/icons/os-logo.svg';
 
 import './AsideHeaderAdapter.scss';
+import { getSdk } from 'ui/libs/schematic-sdk';
 
 const b = block('dl-aside-header');
 const i18n = I18n.keyset('component.aside-header.view');
 
 const COLLECTIONS_PATH = '/collections';
 const SERVICE_SETTINGS_PATH = '/settings';
+const PROJECTS_PATH = '/admin/projects';
+const ROLES_PATH = '/admin/roles';
+const USERS_PATH = '/admin/users';
 
 const FOOTER_ITEM_DEFAULT_SIZE = 18;
 const PROMO_SITE_DOMAIN = 'https://datalens.ru/opensource';
 const PROMO_DOC_PATH = '/docs';
-const GITHUB_URL = 'https://github.com/datalens-tech/datalens';
+const GITHUB_URL = 'https://github.com/akrasnov87/datalens';
 
 export const DOCUMENTATION_LINK =
     DL.DOCS_URL || `${PROMO_SITE_DOMAIN}${PROMO_DOC_PATH}/${DL.USER_LANG}/`;
@@ -52,6 +57,7 @@ export const ITEMS_NAVIGATION_DEFAULT_SIZE = 18;
 
 export type AsideHeaderAdapterProps = {
     renderContent?: AsideHeaderProps['renderContent'];
+    superUser?: any;
     logoIcon?: IconData;
     logoTextProps?: LogoTextProps & {ref?: React.RefObject<HTMLDivElement>};
     collapseButtonWrapper?: AsideHeaderProps['collapseButtonWrapper'];
@@ -108,6 +114,7 @@ const renderDocsItem = (item: DocsItem) => {
 
 export const AsideHeaderAdapter = ({
     renderContent,
+    superUser,
     logoIcon,
     logoTextProps,
     collapseButtonWrapper,
@@ -175,6 +182,31 @@ export const AsideHeaderAdapter = ({
                     return getLinkWrapper(makeItem(params), SERVICE_SETTINGS_PATH);
                 },
             },
+            ...(superUser?.isMaster ? [
+            {
+                id: 'users',
+                title: i18n('switch_service-users'),
+                current: pathname.includes(USERS_PATH),
+                itemWrapper: (params: any, makeItem: any) => {
+                    return getLinkWrapper(makeItem(params), USERS_PATH);
+                },
+            },
+            {
+                id: 'projects',
+                title: i18n('switch_service-projects'),
+                current: pathname.includes(PROJECTS_PATH),
+                itemWrapper: (params: any, makeItem: any) => {
+                    return getLinkWrapper(makeItem(params), PROJECTS_PATH);
+                },
+            },
+            {
+                id: 'roles',
+                title: i18n('switch_service-roles'),
+                current: pathname.includes(ROLES_PATH),
+                itemWrapper: (params: any, makeItem: any) => {
+                    return getLinkWrapper(makeItem(params), ROLES_PATH);
+                },
+            }] : [])
         ],
         [pathname, customMenuItems],
     );
@@ -220,6 +252,8 @@ export const AsideHeaderAdapter = ({
     const handleClosePopup = React.useCallback(() => {
         setCurrentPopup(null);
     }, []);
+
+    const isRebrandingEnabled = isEnabledFeature(Feature.EnableDLRebranding);
 
     const renderFooter = () => {
         return (
@@ -293,6 +327,25 @@ export const AsideHeaderAdapter = ({
                         );
                     }}
                 />
+                <FooterItem
+                    compact={isCompact}
+                    item={{
+                        id: 'logout',
+                        icon: ArrowRightFromSquare,
+                        iconSize: FOOTER_ITEM_DEFAULT_SIZE,
+                        title: superUser.username || superUser.c_login,
+                        tooltipText: i18n('label_logout'),
+                        current: visiblePanel === Panel.Settings,
+                        onItemClick: () => {
+                            localStorage.removeItem('x-rpc-authorization');
+                            getSdk().sdk.setDefaultHeader({
+                                name: RPC_AUTHORIZATION,
+                                value: "",
+                            });
+                            window.location.assign('/auth');
+                        }
+                    }}
+                />
                 {DL.AUTH_ENABLED && (
                     <FooterItem
                         compact={isCompact}
@@ -325,12 +378,14 @@ export const AsideHeaderAdapter = ({
         );
     };
 
+    const defaultLogo = isRebrandingEnabled ? rebrandingLogoIcon : defaultLogoIcon;
+
     return (
         <AsideHeader
             compact={isCompact}
             logo={{
                 text: () => <LogoText {...logoTextProps} />,
-                icon: logoIcon ?? defaultLogoIcon,
+                icon: logoIcon ?? defaultLogo,
                 iconSize: ASIDE_HEADER_LOGO_ICON_SIZE,
                 iconClassName: b('logo-icon'),
                 className: b('logo'),
