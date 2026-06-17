@@ -88,8 +88,8 @@ demo
 ## Сборка
 <pre>
 docker login -u [username]
-docker build -t akrasnov87/datalens-ui:0.3831.0 .
-docker push akrasnov87/datalens-ui:0.3831.0
+docker build -t akrasnov87/datalens-ui:1.65.0 .
+docker push akrasnov87/datalens-ui:1.65.0
 </pre>
 
 Для сборки так же можно вызвать команду `npm run build:image` (предварительно проверить, что для файла `build.sh` есть права на выполнение `chmod +X build.sh`)
@@ -118,9 +118,11 @@ APP_DEV_MODE=1
 
 Выполняем команды:
 <pre>
-npm ci
-npm run dev
+pnpm install
+pnpm run dev
 </pre>
+
+Возможно потребуется выполнить команду `pnpm approve-builds` после `pnpm install`
 
 ### Новые параметры
 
@@ -204,6 +206,10 @@ npx patch-package @types/cacheable-request
   }
 }
 </pre>
+
+## rest.js
+
+Чтобы найти файл, который отвечает за запросы `/api/run` нужно искать `const response = await axiosClient.request(requestConfig);`
 
 ## Авторы доработки
 

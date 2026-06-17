@@ -11,7 +11,7 @@
     "preinstall": "npx only-allow pnpm",
     "deps:global": "pnpm --version | grep -q 10.17.1 && echo 'pnpm@10.17.1 already installed' || npm i -g pnpm@10.17.1",
     "i18n:prepare": "tsc src/i18n/prepare-keysets/index.ts --esModuleInterop --outDir dist/i18n && node dist/i18n/prepare-keysets/index.js",
-    "dev": "pnpm run i18n:prepare && SETUP_DEV_ENV_INSTALLATION=opensource node ./scripts/setup-dev-env.js && APP_BUILDER_ENTRY_FILTER=dl-main LOCAL_DEV_PORT=8080 app-builder dev",
+    "dev": "pnpm run i18n:prepare && SETUP_DEV_ENV_INSTALLATION=opensource node ./scripts/setup-dev-env.js && APP_BUILDER_ENTRY_FILTER=dl-main LOCAL_DEV_PORT=3030 app-builder dev",
     "build": "pnpm run i18n:prepare && NODE_ENV=production NODE_OPTIONS=--max_old_space_size=4096 APP_BUILDER_CDN=false app-builder build",
     "build:analyze": "pnpm run i18n:prepare && APP_BUILDER_ANALYZE_BUNDLE=statoscope UI_CORE_CDN=false APP_BUILDER_CDN=false NODE_ENV=production NODE_ENV=production NODE_OPTIONS=--max_old_space_size=4096 app-builder build",
     "cdn": "pnpm run i18n:prepare && NODE_ENV=production NODE_OPTIONS=--max_old_space_size=4096 app-builder build",
@@ -238,8 +238,8 @@
     "mockdate": "^3.0.5",
     "monaco-editor": "^0.36.1",
     "monaco-editor-webpack-plugin": "^7.1.0",
-    "playwright-core": "1.48.2",
     "patch-package": "^8.0.1",
+    "playwright-core": "1.48.2",
     "postcss": "^8.4.33",
     "prettier": "^3.2.5",
     "prop-types": "^15.8.0",
@@ -280,7 +280,18 @@
       "react-router-dom": "^5.3.4",
       "@gravity-ui/uikit>react-virtualized-auto-sizer": "1.0.24",
       "@gravity-ui/gateway>@grpc/grpc-js": "^1.13.2"
-    }
+    },
+    "onlyBuiltDependencies": [
+      "@parcel/watcher",
+      "@scarf/scarf",
+      "@swc/core",
+      "core-js",
+      "core-js-pure",
+      "es5-ext",
+      "esbuild",
+      "protobufjs",
+      "puppeteer"
+    ]
   },
   "deploy": {
     "project": "stat",
