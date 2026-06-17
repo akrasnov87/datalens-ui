@@ -292,11 +292,11 @@ export default class Utils {
     }
 
     static getEmbedToken = async (propsData: any) => {
-
         var workbookId = await this.decodeId({id: propsData.workbookId || propsData.id});
         var entryId = await this.decodeId({id: propsData.entryId || propsData.id});
+        var tenantId = DL.CURRENT_TENANT_ID || 'common';
         
-        var result = await this.universalService({"action": "datalens", "method": "embed", "data": [{workbookId: workbookId, entryId: entryId, reject: propsData.reject}]});
+        var result = await this.universalService({"action": "datalens", "method": "embed", "data": [{workbookId: workbookId, entryId: entryId, tenantId: tenantId, reject: propsData.reject}]});
 
         return result.data && result.data.length > 0 ? result.data[0].embed : '';
     }
